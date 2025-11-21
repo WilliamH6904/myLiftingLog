@@ -1,0 +1,526 @@
+import 'package:flutter/material.dart';
+import 'package:gym_app/preset_programs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'home_screen.dart';
+import 'programs_page.dart';
+import 'workout_log.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'notification.dart';
+part 'main.g.dart';
+
+
+Future main() async {
+  await Hive.deleteFromDisk();
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationServices().initNotification();
+
+  Future<void> getPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    HomeScreen.streakLength = prefs.getInt("streakLength") ?? prefs.getInt("streakLength") ?? 0;
+    String? lastStreakDayString = prefs.getString("lastStreakDay");
+    HomeScreen.lastStreakDay = lastStreakDayString != null ? DateTime.parse(lastStreakDayString) : null;
+    MuscleGroups.muscleGroupsList = prefs.getStringList("muscleGroups") ?? prefs.getStringList("muscleGroups") ?? MuscleGroups.muscleGroupsList;
+    PresetPrograms.easterEggDiscovered = prefs.getBool("easterEggDiscovered") ?? prefs.getBool("easterEggDiscovered") ?? false;
+    ProgramsPage.globalDayID = prefs.getInt("globalDayID") ?? prefs.getInt("globalDayID") ?? 0;
+    AppSettings.dateFormat = prefs.getString("dateFormat") ?? prefs.getString("dateFormat") ?? AppSettings.dateFormat;
+    ChartSettings.selectedFormula = prefs.getString("selectedFormula") ?? prefs.getString("selectedFormula") ?? ChartSettings.selectedFormula;
+    ChartSettings.lineColor = prefs.getString("lineColor") ?? prefs.getString("lineColor") ?? ChartSettings.lineColor;
+    ChartSettings.dataDisplay = prefs.getString("dataDisplay") ?? prefs.getString("dataDisplay") ?? ChartSettings.dataDisplay;
+    ProgressChart.yearViewActive = prefs.getBool("yearViewActive") ?? prefs.getBool("yearViewActive") ?? true;
+    ProgressChart.dotsActive = prefs.getBool("dotsActive") ?? prefs.getBool("dotsActive") ?? false;
+    AppSettings.rirActive = prefs.getBool("rirActive") ?? prefs.getBool("rirActive") ?? true;
+    AppSettings.selectedUnit = prefs.getString("selectedUnit") ?? prefs.getString("selectedUnit") ?? AppSettings.selectedUnit;
+    AppSettings.selectedTheme = prefs.getString("selectedTheme") ?? prefs.getString("selectedTheme") ?? AppSettings.selectedTheme;
+    AppSettings.setColor();
+  }
+
+
+  await getPrefs();
+
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(ResultSetAdapter());
+
+  Hive.registerAdapter(MovementAdapter());
+
+  Hive.registerAdapter(DayAdapter());
+
+  Hive.registerAdapter(WeekAdapter());
+
+  Hive.registerAdapter(ProgramAdapter());
+  await Hive.openBox<Program>('programs');
+
+  Hive.registerAdapter(ResultSetBlockAdapter());
+
+  Hive.registerAdapter(GoalAdapter());
+
+  Hive.registerAdapter(MovementLogAdapter());
+  await Hive.openBox<MovementLog>('logs');
+
+  /*
+  Remember that the order in which you register the adapters is very important.
+  You have to register the child adapter before the parent if a class has an object
+  as a property. So for example, you have to register days before you can register weeks, and weeks before programs etc.
+   */
+
+
+
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+
+
+
+  @override
+  Widget build(BuildContext context) {
+
+
+    return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
+          backgroundColor: Colors.white,
+        ),
+      ),
+      home: PageManager() /*FutureBuilder<void>(
+        future: getPrefs(),
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return pageManager();
+          } else {
+            return const Scaffold();
+          }
+        },
+      ),*/
+    );
+  }
+}
+
+
+class PageManager extends StatefulWidget {
+
+
+  @override
+  PageManagerState createState() => PageManagerState();
+}
+
+class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
+ static int selectedIndex = 1;
+ List<Widget> _pages = <Widget>[];
+
+
+  Future <void> onItemTapped(int index) async {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
+  refreshPageCallback() {
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+
+    //this is to disable any timers that did not get disabled if the app abruptly closed
+    for(int programIndex = 0; programIndex < ProgramsPage.programsList.length; programIndex ++) {
+
+      for (int weekIndex = 0; weekIndex < ProgramsPage.programsList[programIndex].weeks.length; weekIndex++) {
+
+        for (int dayIndex = 0; dayIndex < ProgramsPage.programsList[programIndex].weeks[weekIndex].days.length; dayIndex++) {
+
+          for (int movementIndex = 0; movementIndex < ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements.length; movementIndex++) {
+              ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements[movementIndex].timerActive = false;
+            }
+          }
+        }
+      }
+
+
+    super.initState();
+  }
+
+
+@override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+ @override
+ void didChangeAppLifecycleState(AppLifecycleState state) {
+   super.didChangeAppLifecycleState(state);
+   if (state == AppLifecycleState.paused) {
+     // App is in the background
+     print("App is now in the background");
+   }
+ }
+
+  @override
+  Widget build(BuildContext context) {
+    _pages = <Widget>[
+      ProgramsPage(),
+      HomeScreen(selectedPageCallback: onItemTapped, refreshPageCallback: refreshPageCallback),
+      LogPage()
+    ];
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: _pages[selectedIndex],
+
+      bottomNavigationBar: Theme(
+    data: Theme.of(context).copyWith(
+canvasColor: Colors.transparent
+    ),
+    child: Container(
+        decoration: BoxDecoration(
+          boxShadow: const [
+            BoxShadow(
+             color: Colors.black87,
+             spreadRadius: 5,
+             blurRadius: 6,
+            offset: Offset(0, 3),
+            ),
+          ],
+          gradient: Styles.darkGradient()
+        ),
+    child: BottomNavigationBar(
+      elevation: 0,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_list_bulleted_outlined),
+            label: 'Programs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_filled),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.note_alt_rounded),
+            label: 'Workout Log',
+          ),
+        ],
+        currentIndex: selectedIndex,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white54,
+        onTap: onItemTapped,
+      ),
+    )
+      )
+   );
+  }
+}
+
+day? copiedDay;
+Movement? copiedMovement;
+List<day>? copiedWeeksDays;
+
+class Boxes {
+  static Box<MovementLog> getMovementLogs() => Hive.box<MovementLog>('logs');
+
+  static Box<Program> getPrograms() => Hive.box<Program>('programs');
+}
+
+
+@HiveType(typeId: 0)
+class Program extends HiveObject {
+  @HiveField(0)
+  List<Week> weeks = [];
+  @HiveField(1)
+  DateTime date;
+  @HiveField(2)
+  String name;
+  @HiveField(3)
+  String? notes = "";
+  @HiveField(4)
+  bool isCurrentProgram = false;
+
+  String experienceLevel = "Beginner";
+
+
+  Program({this.notes, required this.weeks, required this.date, required this.name});
+}
+
+
+
+
+@HiveType(typeId: 1)
+class MovementLog extends HiveObject {
+  @HiveField(0)
+  String name;
+  @HiveField(1)
+  bool favorited;
+  @HiveField(2)
+  List <ResultSetBlock> resultSetBlocks = [];
+  @HiveField(3)
+  DateTime date;
+  @HiveField(4)
+  List <ResultSetBlock> prHistory = [];
+  @HiveField(5)
+  Goal goal = Goal(startDate: null, endDate: null, startWeight: null, targetWeight: null);
+  @HiveField(6)
+  List <String>? primaryMuscleGroups;
+  @HiveField(7)
+  List <String>? secondaryMuscleGroups;
+  @HiveField(8)
+  String notes;
+  MovementLog({this.secondaryMuscleGroups, this.primaryMuscleGroups, required this.date, required this.name, required this.resultSetBlocks, required this.favorited, required this.notes});
+}
+
+
+@HiveType(typeId: 2)
+class Week {
+  @HiveField(0)
+  String name;
+  @HiveField(1)
+  List<day> days;
+
+  Week({required this.name, required this.days});
+
+}
+
+@HiveType(typeId: 3)
+class day {
+  @HiveField(0)
+  int id;
+  @HiveField(1)
+  String name;
+  @HiveField(2)
+  List<Movement> movements;
+  @HiveField(3)
+  bool checked;
+  @HiveField(4)
+  List <String>? muscleGroups;
+
+
+  day({this.muscleGroups, this.checked = false, required this.id, required this.name, required this.movements});
+}
+
+@HiveType(typeId: 4)
+class ResultSet {
+  @HiveField(0)
+  int idForKey = 0;
+  @HiveField(1)
+  int reps;
+  @HiveField(2)
+  int rir;
+  @HiveField(3)
+  int setNumber;
+  @HiveField(4)
+  double weight;
+  @HiveField(5)
+  String setType;
+
+  ResultSet({
+    this.setType = "SET",
+    required this.reps,
+    required this.setNumber,
+    required this.rir,
+    required this.weight,
+    required this.idForKey
+  });
+}
+
+@HiveType(typeId: 5)
+class ResultSetBlock {
+  @HiveField(0)
+  double oneRepMax = 0;
+  @HiveField(1)
+  DateTime date;
+  @HiveField(2)
+  int dayIdForNavigation;
+  @HiveField(3)
+  List<ResultSet> resultSets;
+
+
+
+  ResultSetBlock({this.dayIdForNavigation = -1, required this.date, required this.resultSets});
+}
+
+@HiveType(typeId: 6)
+class Movement {
+  @HiveField(0)
+  bool hasBeenLogged;
+  @HiveField(1)
+  bool timerActive;
+  @HiveField(2)
+  String name;
+  @HiveField(3)
+  int sets;
+  @HiveField(4)
+  String reps;
+  @HiveField(5)
+  String rir;
+  @HiveField(6)
+  double weight;
+  @HiveField(7)
+  Duration rest;
+  @HiveField(8)
+  Duration remainingRestTime;
+  @HiveField(9)
+  String notes;
+  @HiveField(10)
+  bool superset;
+  @HiveField(11)
+  List<ResultSet> resultSets;
+  @HiveField(12)
+  List<String>? primaryMuscleGroups;
+  @HiveField(13)
+  List<String>? secondaryMuscleGroups;
+
+  Movement({
+    this.secondaryMuscleGroups,
+    this.primaryMuscleGroups,
+    this.hasBeenLogged = false,
+    this.timerActive = false,
+    this.superset = false,
+    required this.resultSets,
+    required this.notes,
+    required this.name,
+    required this.sets,
+    required this.reps,
+    required this.rir,
+    required this.weight,
+    required this.rest,
+    required this.remainingRestTime
+  });
+}
+
+@HiveType(typeId: 7)
+class Goal extends HiveObject {
+  @HiveField(0)
+  DateTime? startDate;
+  @HiveField(1)
+  DateTime? endDate;
+  @HiveField(2)
+  double? startWeight;
+  @HiveField(3)
+  double? targetWeight;
+
+  Goal({required this.startDate, required this.endDate, required this.startWeight, required this.targetWeight});
+}
+
+
+String? stripDecimals(double? data) {
+  return data?.toStringAsFixed(data.truncateToDouble() == data ? 0 : 1);
+}
+
+class Styles {
+  static List<Color> verticalColors = [
+    const Color(0xFF0A1C43),
+    const Color(0xFF0C2251),
+    const Color(0xFF0D2B56),
+    const Color(0xFF0C3A62),
+    const Color(0xFF1E4E70)
+  ];
+  static List<Color> horizontalColors = [
+    const Color(0xFF0A1C43),
+    const Color(0xFF0C2251),
+    const Color(0xFF0D2B56),
+    const Color(0xFF0C3A62),
+    const Color(0xFF1E4E70)
+  ];
+  static List<Color> darkColors = [
+    const Color(0xFF01152b),
+    const Color(0xFF03274f),
+    const Color(0xFF042f5e),
+    const Color(0xFF0a4482),
+  ];
+
+
+
+  static LinearGradient vertical() {
+    return LinearGradient(
+      colors: verticalColors,
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    );
+  }
+
+  static void setVerticalColors(List<Color> colors) {
+    verticalColors = colors;
+  }
+
+
+
+
+  static LinearGradient darkGradient() {
+    return LinearGradient(
+      colors: darkColors,
+      begin: Alignment.topLeft,
+      end: Alignment.topRight,
+    );
+  }
+
+  static void setDarkColors(List<Color> colors) {
+    darkColors = colors;
+  }
+
+
+
+
+  static LinearGradient horizontal() {
+    return LinearGradient(
+      colors: horizontalColors,
+      begin: Alignment.topRight,
+      end: Alignment.topLeft,
+    );
+  }
+
+  static void setHorizontalColors(List<Color> colors) {
+    horizontalColors = colors;
+  }
+
+  static Color secondaryColor = const Color(0xFF042f5e);
+  static Color primaryColor = const Color(0xFF10396A);
+  static Color chartColor = const Color(0xFF10396A);
+
+  static const TextStyle regularText = TextStyle(
+      fontSize: 20,
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      overflow: TextOverflow.ellipsis
+  );
+  static const TextStyle paragraph = TextStyle(
+    fontSize: 15,
+    color: Colors.white70,
+    fontWeight: FontWeight.bold,
+  );
+  static const TextStyle labelText = TextStyle(
+      fontSize: 25,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+      overflow: TextOverflow.ellipsis
+  );
+  static const TextStyle smallTextBlack = TextStyle(
+      fontSize: 15,
+      color: Colors.black54,
+      overflow: TextOverflow.ellipsis
+  );
+  static const TextStyle smallTextWhite = TextStyle(
+      fontSize: 15,
+      color: Colors.white60,
+      overflow: TextOverflow.ellipsis
+  );
+
+/* static LinearGradient mainGradient() {
+    return const LinearGradient(
+      colors: [
+        Color(0xFF0f57a8),
+        Color(0xFF0c5b9c),
+        Color(0xFF0e65ad),
+        Color(0xFF1976D2),
+        Color(0xFF1E88E5),
+        Color(0xFF1ba6f7)
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    );
+  }*/
+
+}
+
