@@ -1195,11 +1195,29 @@ void startTimer() {
                                    Row(
                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                        children: [
-                                         Container(
-                                             margin: const EdgeInsets.only(left: 10),
-                                             width: 65,
-                                             child: Text(thisResultSet.setType != "SET" ? thisResultSet.setType : "${thisResultSet.setType}: ${index + 1}:", style: Styles.smallTextWhite)
-                                         ),
+                                        if(!widget.thisMovement.hasBeenLogged)...[
+                                          DropdownButton(
+                                            isDense: true,
+                                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                                            iconSize: 20,
+                                            dropdownColor: Styles.primaryColor,
+                                            style: Styles.smallTextWhite,
+                                            hint: Text("SET ${index + 1}:", style: Styles.smallTextWhite),
+                                            value: thisResultSet.setType,
+                                            items: setTypes,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                value != "default" ? thisResultSet.setType = value : thisResultSet.setType = null;
+                                              });
+                                            },
+                                          ),
+                                        ]
+                                         else ...[
+                                           Container(
+                                               margin: const EdgeInsets.only(left: 10),
+                                               width: 65,
+                                               child: Text(thisResultSet.setType != null ? thisResultSet.setType! : "SET ${index + 1}:", style: Styles.smallTextWhite))
+                                          ],
                                          ElevatedButton(
                                              style: buttonStyle,
                                              onPressed: () {},
@@ -1252,15 +1270,34 @@ void startTimer() {
                                            children: [
                                              Container(
                                                  margin: const EdgeInsets.only(left: 10),
-                                                 width: 65,
                                                  child: InkWell(
                                                      onTap: (){
                                                      setState(() {
                                                          // change set type button
                                                        });
                                                      },
-                                                     child: Text(thisResultSet.setType != "SET" ? thisResultSet.setType : "${thisResultSet.setType}: ${index + 1}:", style: Styles.smallTextWhite))
+                                                     child: !widget.thisMovement.hasBeenLogged ? DropdownButton(
+                                                       isDense: true,
+                                                       borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                       iconSize: 20,
+                                                       dropdownColor: Styles.primaryColor,
+                                                       style: Styles.smallTextWhite,
+                                                       hint: Text("SET ${index + 1}:", style: Styles.smallTextWhite),
+                                                       value: thisResultSet.setType,
+                                                       items: setTypes,
+                                                       onChanged: (value) {
+                                                         setState(() {
+                                                           value != "default" ? thisResultSet.setType = value : thisResultSet.setType = null;
+                                                         });
+                                                       },
+                                                     ) : Container(
+                                                         margin: const EdgeInsets.only(left: 10),
+                                                         width: 65,
+                                                         child: Text(thisResultSet.setType != null ? thisResultSet.setType! : "SET ${index + 1}:", style: Styles.smallTextWhite))
+                                                 ),
                                              ),
+                                             if(!widget.thisMovement.hasBeenLogged)...[
+
                                              ElevatedButton(
                                                  style: buttonStyle,
                                                  onPressed: () {
@@ -1311,6 +1348,7 @@ void startTimer() {
                                                const SizedBox(width: 1)
                                              ] else ...[const SizedBox(width: 60)]
                                          ]
+                                        ]
                                        ),
                                      ),
                                    );
@@ -1390,7 +1428,7 @@ void startTimer() {
                                            Container(
                                                margin: const EdgeInsets.only(left: 10),
                                                width: 65,
-                                               child: Text(pastResultSet.setType != "SET" ? pastResultSet.setType : "${pastResultSet.setType}: ${index + 1}:", style: Styles.smallTextWhite)),
+                                               child: Text(pastResultSet.setType != null ? pastResultSet.setType! : "SET ${index + 1}:", style: Styles.smallTextWhite)),
                                            const Spacer(),
                                            SizedBox(
                                                width: 120,
@@ -1547,6 +1585,7 @@ void startTimer() {
                                            setNumber: nonZeroResultSets[i].setNumber,
                                            rir: nonZeroResultSets[i].rir,
                                            weight: nonZeroResultSets[i].weight,
+                                           setType: nonZeroResultSets[i].setType,
                                            idForKey: nonZeroResultSets[i].idForKey
                                        )
                                      );

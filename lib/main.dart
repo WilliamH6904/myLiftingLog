@@ -313,10 +313,10 @@ class ResultSet {
   @HiveField(4)
   double weight;
   @HiveField(5)
-  String setType;
+  String? setType;
 
   ResultSet({
-    this.setType = "SET",
+    this.setType,
     required this.reps,
     required this.setNumber,
     required this.rir,
@@ -324,6 +324,15 @@ class ResultSet {
     required this.idForKey
   });
 }
+
+List<DropdownMenuItem> setTypes = [
+  DropdownMenuItem(value: "default", child: Text("Default")),
+  DropdownMenuItem(value: "Dropset:", child: Text("Dropset:")),
+  DropdownMenuItem(value: "Partials:", child: Text("Partials:")),
+  DropdownMenuItem(value: "Left side:", child: Text("Left side:")),
+  DropdownMenuItem(value: "Right side:", child: Text("Right side:")),
+];
+
 
 @HiveType(typeId: 5)
 class ResultSetBlock {

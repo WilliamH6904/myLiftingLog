@@ -1817,7 +1817,7 @@ class _SetBlockWidgetState extends State<SetBlockWidget> {
                   return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(width: 65, child: Row(children: [Text(thisEntry.setType != "SET" ? thisEntry.setType : "SET: ${thisEntry.setNumber.toString()}:", style: Styles.smallTextWhite)])),
+                        SizedBox(width: 65, child: Row(children: [Text(thisEntry.setType != null ? thisEntry.setType! : "SET ${thisEntry.setNumber.toString()}:", style: Styles.smallTextWhite)])),
                         SizedBox(width: 120,child: Row(children: [Text("${stripDecimals(thisEntry.weight)}", style: Styles.regularText.copyWith(fontWeight: FontWeight.normal)), Text(AppSettings.selectedUnit, style: Styles.smallTextWhite)])),
                         SizedBox(width: 80, child: Row(children: [Text(thisEntry.reps.toString(), style: Styles.regularText.copyWith(fontWeight: FontWeight.normal)), const Text("REPS", style: Styles.smallTextWhite)])),
                         if(AppSettings.rirActive) SizedBox(width: 80, child: Row(children: [Text(thisEntry.rir.toString(), style: Styles.regularText.copyWith(fontWeight: FontWeight.normal)), const Text("RIR", style: Styles.smallTextWhite)])),
