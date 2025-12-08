@@ -2332,7 +2332,7 @@ class AddPreset extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Styles.primaryColor,
-      content: Text("Do you want to add '${thisProgram.name}' to your programs?", style: Styles.paragraph.copyWith(color: Colors.white)),
+      content: Text("Would you like to automatically fill your '${thisProgram.name}' program with movements?", style: Styles.paragraph.copyWith(color: Colors.white)),
       actions: [
         TextButton(
           onPressed: () {
@@ -2373,6 +2373,17 @@ class AddPreset extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
+            for(int i = 0; i < thisProgram.weeks.length; i ++) {
+              for (int j = 0; j < thisProgram.weeks[i].days.length; j ++) {
+                thisProgram.weeks[i].days[j].id = ProgramsPage.globalDayID ++;
+              }
+            }
+
+
+
+            ProgramsPage.setDayIDPref();
+            updateCallback(removeMovements(thisProgram));
+            Navigator.of(context).pop();
             Navigator.of(context).pop();
           },
           child: const Text('No', style: Styles.regularText),
@@ -2381,6 +2392,21 @@ class AddPreset extends StatelessWidget {
     );
   }
 }
+
+Program removeMovements(thisProgram) {
+  for (int weekIndex = 0; weekIndex < thisProgram.weeks.length; weekIndex++) {
+
+    for (int dayIndex = 0; dayIndex < thisProgram.weeks[weekIndex].days.length; dayIndex++) {
+
+      for (int movementIndex = thisProgram.weeks[weekIndex].days[dayIndex].movements.length - 1; movementIndex >= 0; movementIndex--) {
+        thisProgram.weeks[weekIndex].days[dayIndex].movements.removeAt(movementIndex);
+      }
+    }
+  }
+
+  return thisProgram;
+}
+
 /*
 class NotesDialog extends StatefulWidget {
   final String notes;
