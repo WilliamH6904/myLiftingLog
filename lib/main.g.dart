@@ -46,9 +46,9 @@ class ProgramAdapter extends TypeAdapter<Program> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ProgramAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is ProgramAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }
 
 class MovementLogAdapter extends TypeAdapter<MovementLog> {
@@ -104,9 +104,9 @@ class MovementLogAdapter extends TypeAdapter<MovementLog> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MovementLogAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is MovementLogAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }
 
 class WeekAdapter extends TypeAdapter<Week> {
@@ -141,9 +141,9 @@ class WeekAdapter extends TypeAdapter<Week> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WeekAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is WeekAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }
 
 class DayAdapter extends TypeAdapter<day> {
@@ -187,9 +187,9 @@ class DayAdapter extends TypeAdapter<day> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DayAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is DayAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }
 
 class ResultSetAdapter extends TypeAdapter<ResultSet> {
@@ -236,9 +236,9 @@ class ResultSetAdapter extends TypeAdapter<ResultSet> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ResultSetAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is ResultSetAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }
 
 class ResultSetBlockAdapter extends TypeAdapter<ResultSetBlock> {
@@ -278,9 +278,9 @@ class ResultSetBlockAdapter extends TypeAdapter<ResultSetBlock> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ResultSetBlockAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is ResultSetBlockAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }
 
 class MovementAdapter extends TypeAdapter<Movement> {
@@ -351,9 +351,9 @@ class MovementAdapter extends TypeAdapter<Movement> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MovementAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is MovementAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }
 
 class GoalAdapter extends TypeAdapter<Goal> {
@@ -394,7 +394,7 @@ class GoalAdapter extends TypeAdapter<Goal> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is GoalAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is GoalAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }
