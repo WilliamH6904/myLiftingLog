@@ -541,6 +541,7 @@ class _MovementWidgetState extends State<MovementWidget> {
 
 class OpenMovement extends StatefulWidget {
 final Function() refreshPage;
+static bool inMovementTimerActive = false;
 final day currentDay;
 final int movementIndex;
 final Movement thisMovement;
@@ -583,11 +584,13 @@ class _OpenMovementState extends State<OpenMovement> {
 
 void stopTimer () {
   widget.thisMovement.timerActive = false;
+  OpenMovement.inMovementTimerActive = false;
   secondsTimer?.cancel();
 }
 
 void startTimer() {
-    widget.thisMovement.timerActive = true;
+  OpenMovement.inMovementTimerActive = true;
+  widget.thisMovement.timerActive = true;
     secondsTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
         setState(() {
           if (widget.thisMovement.remainingRestTime.inSeconds > 0) {

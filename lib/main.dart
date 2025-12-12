@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_app/preset_programs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
+import 'movements.dart';
 import 'programs_page.dart';
 import 'workout_log.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -106,6 +107,8 @@ class PageManager extends StatefulWidget {
 }
 
 class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
+  DateTime? start;
+  Duration? difference;
  static int selectedIndex = 1;
  List<Widget> _pages = <Widget>[];
 
@@ -154,9 +157,23 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
  @override
  void didChangeAppLifecycleState(AppLifecycleState state) {
    super.didChangeAppLifecycleState(state);
-   if (state == AppLifecycleState.paused) {
-     // App is in the background
-     print("App is now in the background");
+
+   if (GlobalTimerWidgetState.localTimerActive || GlobalTimerWidgetState.backgroundTimerActive || OpenMovement.inMovementTimerActive) {
+     if (state == AppLifecycleState.paused) {
+       start = DateTime.now();
+     }
+
+     if (state == AppLifecycleState.resumed) {
+       if (start != null) {
+         difference = DateTime.now().difference(start!);
+         if (GlobalTimerWidgetState.movementOfTimer.remainingRestTime - difference! > Duration(seconds: 0)) {
+           GlobalTimerWidgetState.movementOfTimer.remainingRestTime -= difference!;
+         }
+         else {
+           GlobalTimerWidgetState.movementOfTimer.remainingRestTime = Duration(seconds: 0);
+         }
+       }
+     }
    }
  }
 
