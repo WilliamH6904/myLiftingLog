@@ -517,6 +517,7 @@ double borderWidth1 = 4;
                         });
                       },
                         child: Container(
+                          height: 60,
                         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                         decoration: BoxDecoration(
                           border: Border(

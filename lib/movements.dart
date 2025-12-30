@@ -57,452 +57,466 @@ class _MovementWidgetState extends State<MovementWidget> {
           Colors.grey.withOpacity(thisMovement.hasBeenLogged == true ? 0.3 : 0),
           BlendMode.srcATop,
           ),
-            child: Container(
-                    width: MediaQuery.of(context).size.width - 30,
-                    height: 90,
-                    padding: const EdgeInsets.only(top: 4, left: 5, right: 5),
-                    decoration: BoxDecoration(
-                        gradient: Styles.horizontal(),
-                        borderRadius: BorderRadius.circular(20),
-                        border: const Border(
-                            bottom: BorderSide(
-                                color: Colors.black45,
-                                width: 5
-                            ),
-                            right: BorderSide(
+            child: ShowcaseTemplate(
+              radius: 20,
+              currentStep: 9,
+              globalKey: movementListKey,
+              title: "Movements List",
+              content: "This is where the movements of the day are listed. You can rearrange the list by holding down on a movement and then dragging up or down. Tap the movement to open it and make changes to it or add sets to its log.",
+              child: Container(
+                      width: MediaQuery.of(context).size.width - 30,
+                      height: 90,
+                      padding: const EdgeInsets.only(top: 4, left: 5, right: 5),
+                      decoration: BoxDecoration(
+                          gradient: Styles.horizontal(),
+                          borderRadius: BorderRadius.circular(20),
+                          border: const Border(
+                              bottom: BorderSide(
+                                  color: Colors.black45,
+                                  width: 5
+                              ),
+                              right: BorderSide(
+                                  color: Colors.black45,
+                                  width: 3
+                              ),
+                              left: BorderSide(
                                 color: Colors.black45,
                                 width: 3
-                            ),
-                            left: BorderSide(
-                              color: Colors.black45,
-                              width: 3
-                            )
-                        )
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  if(thisMovement.hasBeenLogged == true)
-                                    const Icon(Icons.done_outline_sharp, color: Colors.white),
-                                  const SizedBox(width: 10),
-                                  Expanded(child: Text(thisMovement.name, style: Styles.regularText)),
-                                ],
-                              ),
-                              const Divider(thickness: 2, endIndent: 15),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text("${thisMovement.sets}", style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
-                                      Text("x", style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.normal)),
-                                      Text(thisMovement.reps, style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(thisMovement.weight.toStringAsFixed(thisMovement.weight.truncateToDouble() == thisMovement.weight ? 0 : 1),
-                                          style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
-                                      Text(AppSettings.selectedUnit, style: Styles.smallTextWhite.copyWith(fontSize: 15, fontWeight: FontWeight.normal)),
-                                    ],
-                                  ),
+                              )
+                          )
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    if(thisMovement.hasBeenLogged == true)
+                                      const Icon(Icons.done_outline_sharp, color: Colors.white),
+                                    const SizedBox(width: 10),
+                                    Expanded(child: Text(thisMovement.name, style: Styles.regularText)),
+                                  ],
+                                ),
+                                const Divider(thickness: 2, endIndent: 15),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
                                     Row(
                                       children: [
-                                        if (!AppSettings.rirActive) ...[
-                                        Text("${thisMovement.rest.inMinutes}", style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
-                                        Text(":", style: Styles.smallTextWhite.copyWith(fontSize: 20,)),
-                                        Text((thisMovement.rest.inSeconds % 60).toString().padLeft(2, '0'), style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
-                                        Text(" REST", style: Styles.smallTextWhite.copyWith(fontSize: 15)),
-                                        ]
-                                        else ...[
-                                          Text(thisMovement.rir, style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
-                                          Text("RIR", style: Styles.smallTextWhite.copyWith(fontSize: 15))
-                                        ]
+                                        Text("${thisMovement.sets}", style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
+                                        Text("x", style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.normal)),
+                                        Text(thisMovement.reps, style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
-                                ],
-                              )
+                                    Row(
+                                      children: [
+                                        Text(thisMovement.weight.toStringAsFixed(thisMovement.weight.truncateToDouble() == thisMovement.weight ? 0 : 1),
+                                            style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
+                                        Text(AppSettings.selectedUnit, style: Styles.smallTextWhite.copyWith(fontSize: 15, fontWeight: FontWeight.normal)),
+                                      ],
+                                    ),
+                                      Row(
+                                        children: [
+                                          if (!AppSettings.rirActive) ...[
+                                          Text("${thisMovement.rest.inMinutes}", style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
+                                          Text(":", style: Styles.smallTextWhite.copyWith(fontSize: 20,)),
+                                          Text((thisMovement.rest.inSeconds % 60).toString().padLeft(2, '0'), style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
+                                          Text(" REST", style: Styles.smallTextWhite.copyWith(fontSize: 15)),
+                                          ]
+                                          else ...[
+                                            Text(thisMovement.rir, style: Styles.smallTextWhite.copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
+                                            Text("RIR", style: Styles.smallTextWhite.copyWith(fontSize: 15))
+                                          ]
+                                        ],
+                                      ),
+                                  ],
+                                )
 
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        PopupMenuButton<ListTile>(
-                          padding: const EdgeInsets.all(0),
-                            itemBuilder: (context) {
-                              return [
-                               if(thisMovement != widget.currentDay.movements.last) PopupMenuItem<ListTile>(
-                                  onTap: () {
-                                    setState(() {
-                                      thisMovement.superset = !thisMovement.superset;
-                                    });
-                                    thisProgram.save();
-                                  },
-                                  child: ListTile(
-                                    leading: Icon(thisMovement.superset == false ? Icons.add_box : Icons.indeterminate_check_box, color: Styles.primaryColor),
-                                    title: Text('Superset', style: TextStyle(color: Styles.primaryColor)),
-                                  ),
-                                ),
-                                PopupMenuItem<ListTile>(
-                                    onTap: () {
-                                      copiedMovement = Movement(
-                                        resultSets: [],
-                                        superset: thisMovement.superset,
-                                        name: thisMovement.name,
-                                        sets: thisMovement.sets,
-                                        reps: thisMovement.reps,
-                                        rir: thisMovement.rir,
-                                        notes: "",
-                                        weight: thisMovement.weight,
-                                        rest: thisMovement.rest,
-                                        remainingRestTime: thisMovement.rest,
-                                      );
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                         SnackBar(
-                                          backgroundColor: Colors.white,
-                                          content: Text('Movement copied',
-                                              style: TextStyle(color: Styles.primaryColor)),
-                                          duration: const Duration(milliseconds: 1500),
-                                        ),
-                                      );
-                                    },
-                                  child: ListTile(
-                                    leading: Icon(Icons.copy, color: Styles.primaryColor),
-                                    title: Text('Copy', style: TextStyle(color: Styles.primaryColor)),
-                                  ),
-                                ),
-                                PopupMenuItem<ListTile>(
-                                  onTap: () {
-                                    // not necessary after change - LogPage.currentMovementLogIndex = LogPage.movementsLogged.indexWhere((log) =>log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == thisMovement.name.replaceAll(RegExp(r'\s+'), '').toLowerCase());
+                          ShowcaseTemplate(
+                            radius: 5,
+                            globalKey: movementOptionsKey,
+                            currentStep: 10,
+                            title: "Making Changes To The Movements List",
+                            content: "Tap this button to make changes to the days list, such as copying, deleting, or changing movements, as well as adding supersets.",
+                            child: PopupMenuButton<ListTile>(
+                              padding: const EdgeInsets.all(0),
+                                itemBuilder: (context) {
+                                  return [
+                                   if(thisMovement != widget.currentDay.movements.last) PopupMenuItem<ListTile>(
+                                      onTap: () {
+                                        setState(() {
+                                          thisMovement.superset = !thisMovement.superset;
+                                        });
+                                        thisProgram.save();
+                                      },
+                                      child: ListTile(
+                                        leading: Icon(thisMovement.superset == false ? Icons.add_box : Icons.indeterminate_check_box, color: Styles.primaryColor),
+                                        title: Text('Superset', style: TextStyle(color: Styles.primaryColor)),
+                                      ),
+                                    ),
+                                    PopupMenuItem<ListTile>(
+                                        onTap: () {
+                                          copiedMovement = Movement(
+                                            resultSets: [],
+                                            superset: thisMovement.superset,
+                                            name: thisMovement.name,
+                                            sets: thisMovement.sets,
+                                            reps: thisMovement.reps,
+                                            rir: thisMovement.rir,
+                                            notes: "",
+                                            weight: thisMovement.weight,
+                                            rest: thisMovement.rest,
+                                            remainingRestTime: thisMovement.rest,
+                                          );
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                             SnackBar(
+                                              backgroundColor: Colors.white,
+                                              content: Text('Movement copied',
+                                                  style: TextStyle(color: Styles.primaryColor)),
+                                              duration: const Duration(milliseconds: 1500),
+                                            ),
+                                          );
+                                        },
+                                      child: ListTile(
+                                        leading: Icon(Icons.copy, color: Styles.primaryColor),
+                                        title: Text('Copy', style: TextStyle(color: Styles.primaryColor)),
+                                      ),
+                                    ),
+                                    PopupMenuItem<ListTile>(
+                                      onTap: () {
+                                        // not necessary after change - LogPage.currentMovementLogIndex = LogPage.movementsLogged.indexWhere((log) =>log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == thisMovement.name.replaceAll(RegExp(r'\s+'), '').toLowerCase());
 
-                                    final FocusNode focusNode = FocusNode();
-                                    TextEditingController dialogController = TextEditingController();
+                                        final FocusNode focusNode = FocusNode();
+                                        TextEditingController dialogController = TextEditingController();
 
-                                    bool showAllMuscleGroups = false;
+                                        bool showAllMuscleGroups = false;
 
-                                    late FocusNode searchFocus = FocusNode();
-                                    TextEditingController searchController = TextEditingController();
-
-
-                                    List<MovementLog> rootList = [];
-                                    List<MovementLog> displayList = [];
+                                        late FocusNode searchFocus = FocusNode();
+                                        TextEditingController searchController = TextEditingController();
 
 
-                                      if(widget.currentDay.muscleGroups != null && widget.currentDay.muscleGroups!.isNotEmpty) {
-                                        //get all the muscle movements that match the muscle groups in this day
-                                        rootList = LogPage.movementsLogged.where((log) {
-                                          if ((log.primaryMuscleGroups == null && log.secondaryMuscleGroups == null) || widget.currentDay.muscleGroups == null) {
-                                            return false;
+                                        List<MovementLog> rootList = [];
+                                        List<MovementLog> displayList = [];
+
+
+                                          if(widget.currentDay.muscleGroups != null && widget.currentDay.muscleGroups!.isNotEmpty) {
+                                            //get all the muscle movements that match the muscle groups in this day
+                                            rootList = LogPage.movementsLogged.where((log) {
+                                              if ((log.primaryMuscleGroups == null && log.secondaryMuscleGroups == null) || widget.currentDay.muscleGroups == null) {
+                                                return false;
+                                              }
+
+                                              bool primaryMatches = log.primaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
+                                              bool secondaryMatches = log.secondaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
+
+                                              return primaryMatches || secondaryMatches;
+                                            }).toList();
+                                          }
+                                          else {
+                                            showAllMuscleGroups = true;
+                                            rootList = LogPage.movementsLogged;
                                           }
 
-                                          bool primaryMatches = log.primaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
-                                          bool secondaryMatches = log.secondaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
 
-                                          return primaryMatches || secondaryMatches;
-                                        }).toList();
-                                      }
-                                      else {
-                                        showAllMuscleGroups = true;
-                                        rootList = LogPage.movementsLogged;
-                                      }
-
-
-                                    displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
+                                        displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
 
 
 
 
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
 
-                                          focusNode.requestFocus();
-                                          dialogController.text = thisMovement.name;
+                                              focusNode.requestFocus();
+                                              dialogController.text = thisMovement.name;
 
-                                          return  StatefulBuilder(
-                                              builder: (context, setDialogState) {
-                                              return Dialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(20.0),
-                                                ),
-                                                insetPadding: const EdgeInsets.only(left: 30, right: 30),
-                                                child: Container(
-                                                  height: MediaQuery.of(context).size.height * 0.4,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(20.0),
-                                                        gradient: Styles.horizontal()
+                                              return  StatefulBuilder(
+                                                  builder: (context, setDialogState) {
+                                                  return Dialog(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(20.0),
                                                     ),
-                                                    child: Stack(
-                                                      children: [
-                                                        Column(
+                                                    insetPadding: const EdgeInsets.only(left: 30, right: 30),
+                                                    child: Container(
+                                                      height: MediaQuery.of(context).size.height * 0.4,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(20.0),
+                                                            gradient: Styles.horizontal()
+                                                        ),
+                                                        child: Stack(
                                                           children: [
-                                                            Row(children: [
-                                                              Expanded(
-                                                                child: TextField(
-                                                                  focusNode: searchFocus,
-                                                                  onTap: () {
-                                                                    setDialogState(() {
-                                                                      if (searchFocus.hasFocus == true) {
-                                                                        searchFocus.unfocus();
-                                                                      }
-                                                                      else {
-                                                                        displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
-                                                                      }
-                                                                    });
-                                                                  },
-                                                                  onChanged: (text) {
-                                                                    setDialogState(() {
-                                                                      displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
-                                                                    });
-                                                                  },
-                                                                  inputFormatters: <TextInputFormatter>[
-                                                                    LengthLimitingTextInputFormatter(27)
-                                                                  ],
-                                                                  controller: searchController,
-                                                                  decoration: const InputDecoration(
-                                                                    contentPadding: EdgeInsets.only(right: 40, left: 20, top: 15, bottom: 15),
-                                                                    hintText: 'Search',
-                                                                    hintStyle: Styles.smallTextWhite,
-                                                                    focusedBorder: OutlineInputBorder(
-                                                                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                                                                      borderSide: BorderSide(color: Colors.white),
-                                                                    ),
-                                                                    enabledBorder: OutlineInputBorder(
-                                                                      borderRadius: BorderRadius.all(Radius.circular(20),
+                                                            Column(
+                                                              children: [
+                                                                Row(children: [
+                                                                  Expanded(
+                                                                    child: TextField(
+                                                                      focusNode: searchFocus,
+                                                                      onTap: () {
+                                                                        setDialogState(() {
+                                                                          if (searchFocus.hasFocus == true) {
+                                                                            searchFocus.unfocus();
+                                                                          }
+                                                                          else {
+                                                                            displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
+                                                                          }
+                                                                        });
+                                                                      },
+                                                                      onChanged: (text) {
+                                                                        setDialogState(() {
+                                                                          displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
+                                                                        });
+                                                                      },
+                                                                      inputFormatters: <TextInputFormatter>[
+                                                                        LengthLimitingTextInputFormatter(27)
+                                                                      ],
+                                                                      controller: searchController,
+                                                                      decoration: const InputDecoration(
+                                                                        contentPadding: EdgeInsets.only(right: 40, left: 20, top: 15, bottom: 15),
+                                                                        hintText: 'Search',
+                                                                        hintStyle: Styles.smallTextWhite,
+                                                                        focusedBorder: OutlineInputBorder(
+                                                                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                                          borderSide: BorderSide(color: Colors.white),
+                                                                        ),
+                                                                        enabledBorder: OutlineInputBorder(
+                                                                          borderRadius: BorderRadius.all(Radius.circular(20),
+                                                                          ),
+                                                                          borderSide: BorderSide(color: Colors.white60),
+                                                                        ),
                                                                       ),
-                                                                      borderSide: BorderSide(color: Colors.white60),
+                                                                      style: Styles.regularText,
+                                                                      cursorColor: Colors.white,
                                                                     ),
-                                                                  ),
-                                                                  style: Styles.regularText,
-                                                                  cursorColor: Colors.white,
-                                                                ),
-                                                              )
-                                                            ]),
-                                                            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                                                            if(displayList.isNotEmpty)...[
-                                                              Expanded(
-                                                                  child: ListView.builder(
-                                                                      scrollDirection: Axis.vertical,
-                                                                      shrinkWrap: true,
-                                                                      itemCount: displayList.length,
-                                                                      itemBuilder: (context, index) {
-                                                                        return InkWell(
-                                                                          onTap: () {
-                                                                            setDialogState(() {
-                                                                              showDialog(
-                                                                                context: context,
-                                                                                builder: (BuildContext context) {
-                                                                                  return ConfirmationDialog(content: "Change '${thisMovement.name}' to '${displayList[index].name}'?", callbackFunction: () {
-                                                                                    thisMovement.name = displayList[index].name;
-                                                                                    thisMovement.hasBeenLogged = false;
-                                                                                    thisMovement.resultSets = [];
-                                                                                    refreshPage();
-                                                                                    Navigator.of(context).pop();
-                                                                                  });
-                                                                                },
-                                                                              );
-                                                                            });
-                                                                          },
-                                                                          child: Container(
-                                                                              padding: const EdgeInsets.symmetric(vertical: 8),
-                                                                              decoration: BoxDecoration(
-                                                                                border: index != displayList.length - 1 ? const Border(
-                                                                                    bottom: BorderSide(
-                                                                                        color: Colors.white54,
-                                                                                        width: 1
-                                                                                    )
-                                                                                ) : displayList.length == 1 ? const Border(
-                                                                                    bottom: BorderSide(
-                                                                                        color: Colors.white54,
-                                                                                        width: 2
-                                                                                    )
-                                                                                ) : const Border(),
-                                                                              ),
-                                                                              child: Text(displayList[index].name, style: Styles.smallTextWhite.copyWith(color: Colors.white), textAlign: TextAlign.center)),
-                                                                        );
-                                                                      }
-                                                                  ))
-                                                            ] else...[
-                                                              if (searchController.text.isNotEmpty)... [
-                                                                const Text("No results found", style: Styles.regularText),
-                                                                if(!showAllMuscleGroups && LogPage.movementsLogged.where((log) => log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())).toList().isNotEmpty)Text("'${LogPage.movementsLogged.where((log) => log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())).toList().length}' results found outside of filter", style: Styles.smallTextWhite),
-                                                                if(LogPage.movementsLogged.where((log) => log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase()).toList().isEmpty)... [
-                                                                  Text("Add '${searchController.text}' to you workout log?", style: Styles.smallTextWhite),
-                                                                  const SizedBox(height: 50),
-                                                                  Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                      children: [
-                                                                        InkWell(
-                                                                          onTap: () {
-                                                                            String searchText = searchController.text; // this is because when you open the dialog it deletes the search controllers text
-                                                                            void addMovementLogCallback(String logName, List<String> primaryMuscleGroups, List<String> secondaryMuscleGroups) {
-                                                                              setDialogState(() {
-                                                                                searchController.text = searchText;
-                                                                                LogPage.movementsLogged.add(MovementLog(
-                                                                                    primaryMuscleGroups: primaryMuscleGroups,
-                                                                                    secondaryMuscleGroups: secondaryMuscleGroups,
-                                                                                    date: DateTime.now(),
-                                                                                    favorited: false,
-                                                                                    name: logName,
-                                                                                    notes: "",
-                                                                                    resultSetBlocks: []));
-                                                                                final box = Boxes.getMovementLogs();
-                                                                                box.add(LogPage.movementsLogged.last);
+                                                                  )
+                                                                ]),
+                                                                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                                                                if(displayList.isNotEmpty)...[
+                                                                  Expanded(
+                                                                      child: ListView.builder(
+                                                                          scrollDirection: Axis.vertical,
+                                                                          shrinkWrap: true,
+                                                                          itemCount: displayList.length,
+                                                                          itemBuilder: (context, index) {
+                                                                            return InkWell(
+                                                                              onTap: () {
+                                                                                setDialogState(() {
+                                                                                  showDialog(
+                                                                                    context: context,
+                                                                                    builder: (BuildContext context) {
+                                                                                      return ConfirmationDialog(content: "Change '${thisMovement.name}' to '${displayList[index].name}'?", callbackFunction: () {
+                                                                                        thisMovement.name = displayList[index].name;
+                                                                                        thisMovement.hasBeenLogged = false;
+                                                                                        thisMovement.resultSets = [];
+                                                                                        refreshPage();
+                                                                                        Navigator.of(context).pop();
+                                                                                      });
+                                                                                    },
+                                                                                  );
+                                                                                });
+                                                                              },
+                                                                              child: Container(
+                                                                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                                                                  decoration: BoxDecoration(
+                                                                                    border: index != displayList.length - 1 ? const Border(
+                                                                                        bottom: BorderSide(
+                                                                                            color: Colors.white54,
+                                                                                            width: 1
+                                                                                        )
+                                                                                    ) : displayList.length == 1 ? const Border(
+                                                                                        bottom: BorderSide(
+                                                                                            color: Colors.white54,
+                                                                                            width: 2
+                                                                                        )
+                                                                                    ) : const Border(),
+                                                                                  ),
+                                                                                  child: Text(displayList[index].name, style: Styles.smallTextWhite.copyWith(color: Colors.white), textAlign: TextAlign.center)),
+                                                                            );
+                                                                          }
+                                                                      ))
+                                                                ] else...[
+                                                                  if (searchController.text.isNotEmpty)... [
+                                                                    const Text("No results found", style: Styles.regularText),
+                                                                    if(!showAllMuscleGroups && LogPage.movementsLogged.where((log) => log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())).toList().isNotEmpty)Text("'${LogPage.movementsLogged.where((log) => log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())).toList().length}' results found outside of filter", style: Styles.smallTextWhite),
+                                                                    if(LogPage.movementsLogged.where((log) => log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase()).toList().isEmpty)... [
+                                                                      Text("Add '${searchController.text}' to you workout log?", style: Styles.smallTextWhite),
+                                                                      const SizedBox(height: 50),
+                                                                      Row(
+                                                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                          children: [
+                                                                            InkWell(
+                                                                              onTap: () {
+                                                                                String searchText = searchController.text; // this is because when you open the dialog it deletes the search controllers text
+                                                                                void addMovementLogCallback(String logName, List<String> primaryMuscleGroups, List<String> secondaryMuscleGroups) {
+                                                                                  setDialogState(() {
+                                                                                    searchController.text = searchText;
+                                                                                    LogPage.movementsLogged.add(MovementLog(
+                                                                                        primaryMuscleGroups: primaryMuscleGroups,
+                                                                                        secondaryMuscleGroups: secondaryMuscleGroups,
+                                                                                        date: DateTime.now(),
+                                                                                        favorited: false,
+                                                                                        name: logName,
+                                                                                        notes: "",
+                                                                                        resultSetBlocks: []));
+                                                                                    final box = Boxes.getMovementLogs();
+                                                                                    box.add(LogPage.movementsLogged.last);
 
-                                                                                if (!showAllMuscleGroups) {
-                                                                                  rootList = LogPage.movementsLogged.where((log) {
-                                                                                    if ((log.primaryMuscleGroups == null && log.secondaryMuscleGroups == null) || widget.currentDay.muscleGroups == null) {
-                                                                                      return false;
+                                                                                    if (!showAllMuscleGroups) {
+                                                                                      rootList = LogPage.movementsLogged.where((log) {
+                                                                                        if ((log.primaryMuscleGroups == null && log.secondaryMuscleGroups == null) || widget.currentDay.muscleGroups == null) {
+                                                                                          return false;
+                                                                                        }
+
+                                                                                        bool primaryMatches = log.primaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
+                                                                                        bool secondaryMatches = log.secondaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
+
+                                                                                        return primaryMatches || secondaryMatches;
+                                                                                      }).toList();
+                                                                                    }
+                                                                                    else {
+                                                                                      rootList = LogPage.movementsLogged;
                                                                                     }
 
-                                                                                    bool primaryMatches = log.primaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
-                                                                                    bool secondaryMatches = log.secondaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
-
-                                                                                    return primaryMatches || secondaryMatches;
-                                                                                  }).toList();
-                                                                                }
-                                                                                else {
-                                                                                  rootList = LogPage.movementsLogged;
+                                                                                    displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
+                                                                                  });
                                                                                 }
 
-                                                                                displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
-                                                                              });
-                                                                            }
-
-                                                                            showDialog(
-                                                                              context: context,
-                                                                              builder: (BuildContext context) {
-                                                                                return CreateOrEditMovementLog(addMovementLog: addMovementLogCallback, insertName: searchController.text);
+                                                                                showDialog(
+                                                                                  context: context,
+                                                                                  builder: (BuildContext context) {
+                                                                                    return CreateOrEditMovementLog(addMovementLog: addMovementLogCallback, insertName: searchController.text);
+                                                                                  },
+                                                                                );
                                                                               },
-                                                                            );
-                                                                          },
-                                                                          child: Container(
-                                                                            width: 75,
-                                                                            height: 50,
-                                                                            decoration: const BoxDecoration(
-                                                                                color: Colors.white,
-                                                                                borderRadius: BorderRadius.all(
-                                                                                    Radius.circular(20)
+                                                                              child: Container(
+                                                                                width: 75,
+                                                                                height: 50,
+                                                                                decoration: const BoxDecoration(
+                                                                                    color: Colors.white,
+                                                                                    borderRadius: BorderRadius.all(
+                                                                                        Radius.circular(20)
+                                                                                    ),
+                                                                                    border: Border(
+                                                                                      bottom: BorderSide(
+                                                                                          width: 2,
+                                                                                          color: Colors.black54
+                                                                                      ),
+                                                                                      left: BorderSide(
+                                                                                          width: 1,
+                                                                                          color: Colors.black54
+                                                                                      ),
+                                                                                      right: BorderSide(
+                                                                                          width: 1,
+                                                                                          color: Colors.black54
+                                                                                      ),
+                                                                                      top: BorderSide(
+                                                                                          width: .2,
+                                                                                          color: Colors.black54
+                                                                                      ),
+                                                                                    )
                                                                                 ),
-                                                                                border: Border(
-                                                                                  bottom: BorderSide(
-                                                                                      width: 2,
-                                                                                      color: Colors.black54
-                                                                                  ),
-                                                                                  left: BorderSide(
-                                                                                      width: 1,
-                                                                                      color: Colors.black54
-                                                                                  ),
-                                                                                  right: BorderSide(
-                                                                                      width: 1,
-                                                                                      color: Colors.black54
-                                                                                  ),
-                                                                                  top: BorderSide(
-                                                                                      width: .2,
-                                                                                      color: Colors.black54
-                                                                                  ),
-                                                                                )
+                                                                                child: Center(
+                                                                                    child: Text("Add", style: Styles.regularText.copyWith(color: Styles.primaryColor))
+                                                                                ),
+                                                                              ),
                                                                             ),
-                                                                            child: Center(
-                                                                                child: Text("Add", style: Styles.regularText.copyWith(color: Styles.primaryColor))
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ])
-                                                                ]
-                                                                else ... [
-                                                                  const SizedBox(height: 50),
-                                                                  if(LogPage.movementsLogged.where((log) => log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase()).isNotEmpty)
-                                                                    Text("'${searchController.text}' already exists in your log", style: Styles.paragraph)
-                                                                ]
-                                                              ]
+                                                                          ])
+                                                                    ]
+                                                                    else ... [
+                                                                      const SizedBox(height: 50),
+                                                                      if(LogPage.movementsLogged.where((log) => log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase()).isNotEmpty)
+                                                                        Text("'${searchController.text}' already exists in your log", style: Styles.paragraph)
+                                                                    ]
+                                                                  ]
 
-                                                              else... [
-                                                                const Text("No results found", style: Styles.regularText),
-                                                                const Text("Enter name to add to your workout log", style: Styles.smallTextWhite),
-                                                              ],
-                                                              const Spacer(),
-                                                            ],
+                                                                  else... [
+                                                                    const Text("No results found", style: Styles.regularText),
+                                                                    const Text("Enter name to add to your workout log", style: Styles.smallTextWhite),
+                                                                  ],
+                                                                  const Spacer(),
+                                                                ],
 
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                setDialogState(() {
-                                                                  if (showAllMuscleGroups) {
-                                                                    showAllMuscleGroups = false;
-                                                                    rootList = LogPage.movementsLogged.where((log) {
-                                                                      if ((log.primaryMuscleGroups == null && log.secondaryMuscleGroups == null) || widget.currentDay.muscleGroups == null) {
-                                                                        return false;
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    setDialogState(() {
+                                                                      if (showAllMuscleGroups) {
+                                                                        showAllMuscleGroups = false;
+                                                                        rootList = LogPage.movementsLogged.where((log) {
+                                                                          if ((log.primaryMuscleGroups == null && log.secondaryMuscleGroups == null) || widget.currentDay.muscleGroups == null) {
+                                                                            return false;
+                                                                          }
+
+                                                                          bool primaryMatches = log.primaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
+                                                                          bool secondaryMatches = log.secondaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
+
+                                                                          return primaryMatches || secondaryMatches;
+                                                                        }).toList();
                                                                       }
-
-                                                                      bool primaryMatches = log.primaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
-                                                                      bool secondaryMatches = log.secondaryMuscleGroups?.any((muscle) => widget.currentDay.muscleGroups!.contains(muscle)) ?? false;
-
-                                                                      return primaryMatches || secondaryMatches;
-                                                                    }).toList();
-                                                                  }
-                                                                  else {
-                                                                    showAllMuscleGroups = true;
-                                                                    rootList = LogPage.movementsLogged;
-                                                                  }
-                                                                  displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
-                                                                });
-                                                              },
-                                                              child: Container(
-                                                                  height: 40,
-                                                                  decoration: BoxDecoration(
-                                                                      color: Colors.black12,
-                                                                      border: Border(
-                                                                          top: BorderSide(
-                                                                              color: showAllMuscleGroups ? Colors.black : Colors.black54,
-                                                                              width: 1.5
+                                                                      else {
+                                                                        showAllMuscleGroups = true;
+                                                                        rootList = LogPage.movementsLogged;
+                                                                      }
+                                                                      displayList = List.from(rootList.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
+                                                                    });
+                                                                  },
+                                                                  child: Container(
+                                                                      height: 40,
+                                                                      decoration: BoxDecoration(
+                                                                          color: Colors.black12,
+                                                                          border: Border(
+                                                                              top: BorderSide(
+                                                                                  color: showAllMuscleGroups ? Colors.black : Colors.black54,
+                                                                                  width: 1.5
+                                                                              )
                                                                           )
-                                                                      )
-                                                                  ),
-                                                                  child: Center(
-                                                                  child: Text("Show all muscle groups", style: Styles.paragraph.copyWith(color: showAllMuscleGroups ? Colors.white : Colors.white54)))),
+                                                                      ),
+                                                                      child: Center(
+                                                                      child: Text("Show all muscle groups", style: Styles.paragraph.copyWith(color: showAllMuscleGroups ? Colors.white : Colors.white54)))),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ],
-                                                        ),
-                                                      ],
-                                                    )
-                                                ),
+                                                        )
+                                                    ),
+                                                  );
+                                                }
                                               );
                                             }
-                                          );
+                                        );
+                                      },
+                                      child: ListTile(
+                                        leading: Icon(Icons.edit, color: Styles.primaryColor),
+                                        title: Text('Change', style: TextStyle(color: Styles.primaryColor)),
+                                      ),
+                                    ),
+                                    PopupMenuItem<ListTile>(
+                                      onTap: () {
+                                        remove() {
+                                          widget.removeThisMovement(widget.movementIndex);
                                         }
-                                    );
-                                  },
-                                  child: ListTile(
-                                    leading: Icon(Icons.edit, color: Styles.primaryColor),
-                                    title: Text('Change', style: TextStyle(color: Styles.primaryColor)),
-                                  ),
-                                ),
-                                PopupMenuItem<ListTile>(
-                                  onTap: () {
-                                    remove() {
-                                      widget.removeThisMovement(widget.movementIndex);
-                                    }
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return ConfirmationDialog(content: "Are you sure you want to delete this movement?", callbackFunction: remove);
-                                        }
-                                    );
-                                  },
-                                  child: ListTile(
-                                    leading: Icon(Icons.delete, color: Styles.primaryColor),
-                                    title: Text('Delete', style: TextStyle(color: Styles.primaryColor)),
-                                  ),
-                                ),
-                              ];
-                            },
-                            icon: const Icon(Icons.more_vert, color: Colors.white, size: 30)),
-                      ],
-                    )),
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return ConfirmationDialog(content: "Are you sure you want to delete this movement?", callbackFunction: remove);
+                                            }
+                                        );
+                                      },
+                                      child: ListTile(
+                                        leading: Icon(Icons.delete, color: Styles.primaryColor),
+                                        title: Text('Delete', style: TextStyle(color: Styles.primaryColor)),
+                                      ),
+                                    ),
+                                  ];
+                                },
+                                icon: const Icon(Icons.more_vert, color: Colors.white, size: 30)),
+                          ),
+                        ],
+                      )),
+            ),
           ),
          if(thisMovement.superset == true && thisMovement != widget.currentDay.movements.last) ...[Row(
             children: [
@@ -537,6 +551,8 @@ class _MovementWidgetState extends State<MovementWidget> {
 
 
 
+final GlobalKey movementListKey = GlobalKey();
+final GlobalKey movementOptionsKey = GlobalKey();
 
 
 class OpenMovement extends StatefulWidget {
@@ -956,7 +972,7 @@ void startTimer() {
                                 onPressed: () {showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return EditDialog( //change
+                                      return EditDialog(
                                           dataToEdit: widget.thisMovement.weight, identifier: "LB", editData: editText);
                                     }
                                 );
@@ -1205,12 +1221,11 @@ void startTimer() {
                                             iconSize: 20,
                                             dropdownColor: Styles.primaryColor,
                                             style: Styles.smallTextWhite,
-                                            hint: Text("SET ${index + 1}:", style: Styles.smallTextWhite),
                                             value: thisResultSet.setType,
                                             items: setTypes,
                                             onChanged: (value) {
                                               setState(() {
-                                                value != "default" ? thisResultSet.setType = value : thisResultSet.setType = null;
+                                                thisResultSet.setType = value!;
                                               });
                                             },
                                           ),
@@ -1218,8 +1233,7 @@ void startTimer() {
                                          else ...[
                                            Container(
                                                margin: const EdgeInsets.only(left: 10),
-                                               width: 65,
-                                               child: Text(thisResultSet.setType != null ? thisResultSet.setType! : "SET ${index + 1}:", style: Styles.smallTextWhite))
+                                               child: Text(thisResultSet.setType != "default" ? thisResultSet.setType : "SET ${index + 1}:", style: Styles.smallTextWhite))
                                           ],
                                          ElevatedButton(
                                              style: buttonStyle,
@@ -1285,18 +1299,17 @@ void startTimer() {
                                                        iconSize: 20,
                                                        dropdownColor: Styles.primaryColor,
                                                        style: Styles.smallTextWhite,
-                                                       hint: Text("SET ${index + 1}:", style: Styles.smallTextWhite),
                                                        value: thisResultSet.setType,
                                                        items: setTypes,
                                                        onChanged: (value) {
                                                          setState(() {
-                                                           value != "default" ? thisResultSet.setType = value : thisResultSet.setType = null;
+                                                           thisResultSet.setType = value!;
                                                          });
                                                        },
-                                                     ) : Container(
-                                                         margin: const EdgeInsets.only(left: 10),
-                                                         width: 65,
-                                                         child: Text(thisResultSet.setType != null ? thisResultSet.setType! : "SET ${index + 1}:", style: Styles.smallTextWhite))
+                                                     ) :
+                                                        Container(
+                                                           margin: const EdgeInsets.only(left: 10),
+                                                           child: Text(thisResultSet.setType != "default" ? thisResultSet.setType : "SET ${index + 1}:", style: Styles.smallTextWhite))
                                                  ),
                                              ),
                                              if(!widget.thisMovement.hasBeenLogged)...[
@@ -1431,7 +1444,7 @@ void startTimer() {
                                            Container(
                                                margin: const EdgeInsets.only(left: 10),
                                                width: 65,
-                                               child: Text(pastResultSet.setType != null ? pastResultSet.setType! : "SET ${index + 1}:", style: Styles.smallTextWhite)),
+                                               child: Text(pastResultSet.setType != "default" ? pastResultSet.setType : "SET ${index + 1}:", style: Styles.smallTextWhite)),
                                            const Spacer(),
                                            SizedBox(
                                                width: 120,
@@ -1549,7 +1562,8 @@ void startTimer() {
                                            setNumber: nonZeroResultSets[i].setNumber,
                                            rir: nonZeroResultSets[i].rir,
                                            weight: nonZeroResultSets[i].weight,
-                                           idForKey: nonZeroResultSets[i].idForKey
+                                           idForKey: nonZeroResultSets[i].idForKey,
+                                           setType: nonZeroResultSets[i].setType,
                                        );
                                      }
                                    }
@@ -1563,7 +1577,8 @@ void startTimer() {
                                              setNumber: highestSet.setNumber,
                                              rir: highestSet.rir,
                                              weight: highestSet.weight,
-                                             idForKey: highestSet.idForKey
+                                             idForKey: highestSet.idForKey,
+                                             setType: highestSet.setType,
                                          )]
                                      )
                                      );
@@ -1588,8 +1603,8 @@ void startTimer() {
                                            setNumber: nonZeroResultSets[i].setNumber,
                                            rir: nonZeroResultSets[i].rir,
                                            weight: nonZeroResultSets[i].weight,
+                                           idForKey: nonZeroResultSets[i].idForKey,
                                            setType: nonZeroResultSets[i].setType,
-                                           idForKey: nonZeroResultSets[i].idForKey
                                        )
                                      );
                                    }

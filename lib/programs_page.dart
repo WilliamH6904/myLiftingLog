@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'home_screen.dart';
 import 'main.dart';
 import 'open_program.dart';
@@ -7,6 +8,52 @@ import 'custom_program_screens.dart';
 import 'dialogs.dart';
 import 'preset_programs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final GlobalKey programCreation = GlobalKey();
+final GlobalKey programsList = GlobalKey();
+
+
+class ShowcaseTemplate extends StatefulWidget {
+  final GlobalKey globalKey;
+  final int currentStep;
+  final double radius;
+  final Widget child;
+  final String title;
+  final String content;
+
+  const ShowcaseTemplate({required this.radius, required this.globalKey, required this.currentStep, required this.title, required this.content, required this.child});
+
+  @override
+  ShowcaseTemplateState createState() => ShowcaseTemplateState();
+}
+
+class ShowcaseTemplateState extends State<ShowcaseTemplate> {
+  static Set<int> stepCount = {};
+
+  @override
+  Widget build(BuildContext context) {
+    if (!stepCount.contains(widget.currentStep)) {
+      stepCount.add(widget.currentStep);
+
+      return Showcase(
+        targetBorderRadius: BorderRadius.all(
+           Radius.circular(widget.radius),
+        ),
+        titleTextAlign: TextAlign.center,
+        descTextStyle: TextStyle(color: Styles.primaryColor),
+        titleTextStyle: TextStyle(color: Styles.primaryColor, fontWeight: FontWeight.bold, fontSize: 18),
+        descriptionTextAlign: TextAlign.center,
+        title: widget.title,
+        description: widget.content,
+        key: widget.globalKey,
+        child: widget.child,
+      );
+    } else {
+      return widget.child;
+    }
+  }
+}
+
 
 class ProgramsPage extends StatefulWidget {
   static List<Program> programsList = Boxes.getPrograms().values.toList().cast<Program>();
@@ -33,6 +80,10 @@ void updateProgramList (Program newProgram) {
       if (ProgramsPage.programsList.length == 1) {
         ProgramsPage.programsList[0].isCurrentProgram = true;
       }
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ShowcaseView.get().startShowCase([programsList]);
+      });
     });
   }
 
@@ -46,6 +97,15 @@ void editLabel(editedText, identifier) {
   });
 }
 
+@override
+  void initState() {
+    super.initState();
+    ShowcaseView.register();
+
+    WidgetsBinding.instance.addPostFrameCallback(
+          (_) => ShowcaseView.get().startShowCase([programCreation]),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +145,12 @@ void editLabel(editedText, identifier) {
               Expanded(
                   child: Column(
                     children: [
-                      Row(
+                      ShowcaseTemplate(
+                        radius: 20,
+                          globalKey: programCreation,
+                          currentStep: 0, title: "Creating Programs",
+                          content: "These are your options for making new programs. You can choose from a predefined template, or make your own custom split.",
+                          child: Row(
                         children: [
                           Container(
                             width: 150,
@@ -93,17 +158,17 @@ void editLabel(editedText, identifier) {
                             decoration: BoxDecoration(
                               gradient: Styles.darkGradient(),
                               borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(20.0),
+                                topRight: Radius.circular(20.0),
                                 bottomRight: Radius.circular(20.0),
                               ),
                               border: const Border(
                                 top:  BorderSide(color: Colors.black54, width: 1.0),
-                  
+
                                 right: BorderSide(color: Colors.black54, width: 4),
                                 bottom: BorderSide(color: Colors.black54, width: 5),
                               ),
                             ),
-                  
+
                             child: GestureDetector(
                                 onTap: () {
                                   _scaffoldKey.currentState?.openDrawer();
@@ -111,15 +176,15 @@ void editLabel(editedText, identifier) {
                                 child: const Text("Template", style: Styles.labelText, textAlign: TextAlign.center)
                             ),
                           ),
-                           const Spacer(),
+                          const Spacer(),
                           Container(
                             width: 150,
                             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                             decoration: BoxDecoration(
                               gradient: Styles.darkGradient(),
                               borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                bottomLeft: Radius.circular(20)
+                                  topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20)
                               ),
                               border: const Border(
                                 top:  BorderSide(color: Colors.black54, width: 1.0),
@@ -128,7 +193,7 @@ void editLabel(editedText, identifier) {
                               ),
                               color: Styles.secondaryColor,
                             ),
-                  
+
                             child: GestureDetector(
                                 onTap: () {
                                   _scaffoldKey.currentState?.openEndDrawer();
@@ -137,12 +202,11 @@ void editLabel(editedText, identifier) {
                             ),
                           ),
                         ],
-                      ),
+                      ))
                     ],
                   ),
               ),
             ],
-
         ),
        drawer:  Drawer(width: MediaQuery.of(context).size.width * 0.85,
            child: PresetPrograms(updateProgramList: updateProgramList)),
@@ -156,127 +220,134 @@ void editLabel(editedText, identifier) {
           ),
           child: Column(
             children: [
-              Expanded(
-                child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: ProgramsPage.programsList.length,
-                              itemBuilder: (context, index) {
-                                final label = ProgramsPage.programsList[index].name;
+               Expanded(
+                  child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: ProgramsPage.programsList.length,
+                                itemBuilder: (context, index) {
+                                  final label = ProgramsPage.programsList[index].name;
 
-                                return InkWell(
-                                  onTap: () {
-                                    ProgramsPage.activeProgramIndex = index; // this is so when you click this button the index of this item in the listView is passed to the currentProgramIndex
-                                    Navigator.of(context).push(          // so that the rest of the app knows which program inside of the Programs list to open
-                                      MaterialPageRoute(
-                                        builder: (context) => OpenProgram(),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    color: ProgramsPage.programsList[index].isCurrentProgram ? Colors.black26 : Colors.black12,
-                                    height: 100,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                          Row(
-                                            children: [
-                                                   Expanded(child: Text(label, style: Styles.labelText)),
-                                                  PopupMenuButton<ListTile>(
-                                                         itemBuilder: (context) {
-                                                           return [
-                                                             PopupMenuItem<ListTile>(
-                                                               onTap: () {
-                                                                 setState(() {
-                                                                   for (Program program in ProgramsPage.programsList) {
-                                                                     if(program != ProgramsPage.programsList[index] && program.isCurrentProgram == true) {
-                                                                       program.isCurrentProgram = false;
-                                                                       program.save();
-                                                                     }
-                                                                   }
-
-                                                                   ProgramsPage.programsList[index].isCurrentProgram = !ProgramsPage.programsList[index].isCurrentProgram;
-                                                                   ProgramsPage.programsList[index].save();
-                                                                 });
-                                                               },
-                                                               child: ListTile(
-                                                                 leading: Icon(ProgramsPage.programsList[index].isCurrentProgram == true ? Icons.check_box : Icons.check_box_outlined, color: Styles.primaryColor),
-                                                                 title: Text('Current program', style: TextStyle(color: Styles.primaryColor)),
-                                                               ),
-                                                             ),
-                                                             PopupMenuItem<ListTile>(
-                                                               onTap: () {
-                                                                 ProgramsPage.activeProgramIndex = index;
-                                                                 Navigator.of(context).push(
-                                                                   MaterialPageRoute(
-                                                                     builder: (context) =>  ProgramNotes(),
-                                                                   ),
-                                                                 );
-                                                               },
-                                                               child: ListTile(
-                                                                 leading: Icon(Icons.assignment, color: Styles.primaryColor),
-                                                                 title: Text('Program notes', style: TextStyle(color: Styles.primaryColor)),
-                                                               ),
-                                                             ),
-                                                             PopupMenuItem<ListTile>(
-                                                               onTap: () {
-                                                                 ProgramsPage.activeProgramIndex = index;
-                                                                 showDialog(
-                                                                     context: context,
-                                                                     builder: (BuildContext context) {
-                                                                       return EditDialog(dataToEdit: label, identifier: "Name", editData: editLabel);
-                                                                     }
-                                                                 );
-                                                               },
-                                                               child: ListTile(
-                                                                 leading: Icon(Icons.edit, color: Styles.primaryColor),
-                                                                 title: Text('Rename', style: TextStyle(color: Styles.primaryColor)),
-                                                               ),
-                                                             ),
-                                                             PopupMenuItem<ListTile>(
-                                                               onTap: () {
-                                                                 remove() {
-                                                                   setState(() {
-                                                                     box.delete(ProgramsPage.programsList[index].key);
-                                                                     ProgramsPage.programsList.removeAt(index);
-                                                                   });
-                                                                 }
-                                                                 showDialog(
-                                                                     context: context,
-                                                                     builder: (BuildContext context) {
-                                                                       return ConfirmationDialog(content: "Are you sure you want to delete this program?", callbackFunction: remove);
-                                                                     }
-                                                                 );
-                                                               },
-                                                               child: ListTile(
-                                                                 leading: Icon(Icons.delete, color: Styles.primaryColor),
-                                                                 title: Text('Delete', style: TextStyle(color: Styles.primaryColor)),
-                                                               ),
-                                                             ),
-                                                           ];
-                                                         },
-                                                         icon: const Icon(Icons.more_vert, color: Colors.white, size: 30))
-                                             ]
-                                          ),
-                                        const Spacer(),
-                                        Row(
-                                          children: [
-                                           if(ProgramsPage.programsList[index].isCurrentProgram) const Text("Current Program", style: Styles.smallTextWhite),
-                                           const Spacer(),
-                                            Text(
-                                              DateFormat(AppSettings.dateFormat + "yy").format(DateUtils.dateOnly(ProgramsPage.programsList[index].date)).toString(),
-                                              style: Styles.smallTextWhite,
-                                            ),
-                                          ],
+                                  return InkWell(
+                                    onTap: () {
+                                      ProgramsPage.activeProgramIndex = index; // this is so when you click this button the index of this item in the listView is passed to the currentProgramIndex
+                                      Navigator.of(context).push(          // so that the rest of the app knows which program inside of the Programs list to open
+                                        MaterialPageRoute(
+                                          builder: (context) => OpenProgram(),
                                         ),
-                                         Divider(height: 0, color: ProgramsPage.programsList[index].isCurrentProgram ? Colors.white : Colors.white54),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                            ),
-              ),
+                                      );
+                                    },
+                                      child: ShowcaseTemplate(
+                                        radius: 0,
+                                        globalKey: programsList,
+                                        currentStep: 1,
+                                        title: "Programs List",
+                                        content: "Your programs will be listed here, where you can tap to open them.",
+                                       child: Container(
+                                          color: ProgramsPage.programsList[index].isCurrentProgram ? Colors.black26 : Colors.black12,
+                                          height: 100,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                                Row(
+                                                  children: [
+                                                         Expanded(child: Text(label, style: Styles.labelText)),
+                                                        PopupMenuButton<ListTile>(
+                                                               itemBuilder: (context) {
+                                                                 return [
+                                                                   PopupMenuItem<ListTile>(
+                                                                     onTap: () {
+                                                                       setState(() {
+                                                                         for (Program program in ProgramsPage.programsList) {
+                                                                           if(program != ProgramsPage.programsList[index] && program.isCurrentProgram == true) {
+                                                                             program.isCurrentProgram = false;
+                                                                             program.save();
+                                                                           }
+                                                                         }
+
+                                                                         ProgramsPage.programsList[index].isCurrentProgram = !ProgramsPage.programsList[index].isCurrentProgram;
+                                                                         ProgramsPage.programsList[index].save();
+                                                                       });
+                                                                     },
+                                                                     child: ListTile(
+                                                                       leading: Icon(ProgramsPage.programsList[index].isCurrentProgram == true ? Icons.check_box : Icons.check_box_outlined, color: Styles.primaryColor),
+                                                                       title: Text('Current program', style: TextStyle(color: Styles.primaryColor)),
+                                                                     ),
+                                                                   ),
+                                                                   PopupMenuItem<ListTile>(
+                                                                     onTap: () {
+                                                                       ProgramsPage.activeProgramIndex = index;
+                                                                       Navigator.of(context).push(
+                                                                         MaterialPageRoute(
+                                                                           builder: (context) =>  ProgramNotes(),
+                                                                         ),
+                                                                       );
+                                                                     },
+                                                                     child: ListTile(
+                                                                       leading: Icon(Icons.assignment, color: Styles.primaryColor),
+                                                                       title: Text('Program notes', style: TextStyle(color: Styles.primaryColor)),
+                                                                     ),
+                                                                   ),
+                                                                   PopupMenuItem<ListTile>(
+                                                                     onTap: () {
+                                                                       ProgramsPage.activeProgramIndex = index;
+                                                                       showDialog(
+                                                                           context: context,
+                                                                           builder: (BuildContext context) {
+                                                                             return EditDialog(dataToEdit: label, identifier: "Name", editData: editLabel);
+                                                                           }
+                                                                       );
+                                                                     },
+                                                                     child: ListTile(
+                                                                       leading: Icon(Icons.edit, color: Styles.primaryColor),
+                                                                       title: Text('Rename', style: TextStyle(color: Styles.primaryColor)),
+                                                                     ),
+                                                                   ),
+                                                                   PopupMenuItem<ListTile>(
+                                                                     onTap: () {
+                                                                       remove() {
+                                                                         setState(() {
+                                                                           box.delete(ProgramsPage.programsList[index].key);
+                                                                           ProgramsPage.programsList.removeAt(index);
+                                                                         });
+                                                                       }
+                                                                       showDialog(
+                                                                           context: context,
+                                                                           builder: (BuildContext context) {
+                                                                             return ConfirmationDialog(content: "Are you sure you want to delete this program?", callbackFunction: remove);
+                                                                           }
+                                                                       );
+                                                                     },
+                                                                     child: ListTile(
+                                                                       leading: Icon(Icons.delete, color: Styles.primaryColor),
+                                                                       title: Text('Delete', style: TextStyle(color: Styles.primaryColor)),
+                                                                     ),
+                                                                   ),
+                                                                 ];
+                                                               },
+                                                               icon: const Icon(Icons.more_vert, color: Colors.white, size: 30))
+                                                   ]
+                                                ),
+                                              const Spacer(),
+                                                Row(
+                                                children: [
+                                                 if(ProgramsPage.programsList[index].isCurrentProgram) const Text("Current Program", style: Styles.smallTextWhite),
+                                                 const Spacer(),
+                                                  Text(
+                                                    DateFormat(AppSettings.dateFormat + "yy").format(DateUtils.dateOnly(ProgramsPage.programsList[index].date)).toString(),
+                                                    style: Styles.smallTextWhite,
+                                                  ),
+                                                ],
+                                              ),
+                                               Divider(height: 0, color: ProgramsPage.programsList[index].isCurrentProgram ? Colors.white : Colors.white54),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                  );
+                                }
+                              ),
+                ),
             ],
           ),
         )

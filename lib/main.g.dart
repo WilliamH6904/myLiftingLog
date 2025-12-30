@@ -203,7 +203,7 @@ class ResultSetAdapter extends TypeAdapter<ResultSet> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ResultSet(
-      setType: fields[5] as String?,
+      setType: fields[5] as String,
       reps: fields[1] as int,
       setNumber: fields[3] as int,
       rir: fields[2] as int,

@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gym_app/preset_programs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
 import 'movements.dart';
 import 'programs_page.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'workout_log.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'notification.dart';
 part 'main.g.dart';
 
+final GlobalKey templateKey = GlobalKey();
+
 
 Future main() async {
   await Hive.deleteFromDisk();
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
   NotificationServices().initNotification();
 
   Future<void> getPrefs() async {
@@ -107,6 +112,8 @@ class PageManager extends StatefulWidget {
 }
 
 class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
   DateTime? start;
   Duration? difference;
  static int selectedIndex = 1;
@@ -156,14 +163,18 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
 
  @override
  void didChangeAppLifecycleState(AppLifecycleState state) {
+
    super.didChangeAppLifecycleState(state);
 
    if (GlobalTimerWidgetState.localTimerActive || GlobalTimerWidgetState.backgroundTimerActive || OpenMovement.inMovementTimerActive) {
      if (state == AppLifecycleState.paused) {
        start = DateTime.now();
+       NotificationServices().scheduleNotification(id: 0, title: "Timer Done", body: "Your rest time for '${GlobalTimerWidgetState.movementOfTimer.name}' is done", scheduledDate: DateTime.now().add(GlobalTimerWidgetState.movementOfTimer.remainingRestTime));
      }
 
      if (state == AppLifecycleState.resumed) {
+       flutterLocalNotificationsPlugin.cancel(0);
+
        if (start != null) {
          difference = DateTime.now().difference(start!);
          if (GlobalTimerWidgetState.movementOfTimer.remainingRestTime - difference! > Duration(seconds: 0)) {
@@ -193,40 +204,40 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
     data: Theme.of(context).copyWith(
 canvasColor: Colors.transparent
     ),
-    child: Container(
-        decoration: BoxDecoration(
-          boxShadow: const [
-            BoxShadow(
-             color: Colors.black87,
-             spreadRadius: 5,
-             blurRadius: 6,
-            offset: Offset(0, 3),
+      child: Container(
+          decoration: BoxDecoration(
+            boxShadow: const [
+              BoxShadow(
+               color: Colors.black87,
+               spreadRadius: 5,
+               blurRadius: 6,
+              offset: Offset(0, 3),
+              ),
+            ],
+            gradient: Styles.darkGradient()
+          ),
+      child: BottomNavigationBar(
+        elevation: 0,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.format_list_bulleted_outlined),
+              label: 'Programs',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_filled),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.note_alt_rounded),
+              label: 'Workout Log',
             ),
           ],
-          gradient: Styles.darkGradient()
+          currentIndex: selectedIndex,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white54,
+          onTap: onItemTapped,
         ),
-    child: BottomNavigationBar(
-      elevation: 0,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.format_list_bulleted_outlined),
-            label: 'Programs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.note_alt_rounded),
-            label: 'Workout Log',
-          ),
-        ],
-        currentIndex: selectedIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white54,
-        onTap: onItemTapped,
       ),
-    )
       )
    );
   }
@@ -330,10 +341,10 @@ class ResultSet {
   @HiveField(4)
   double weight;
   @HiveField(5)
-  String? setType;
+  String setType;
 
   ResultSet({
-    this.setType,
+    this.setType = "default",
     required this.reps,
     required this.setNumber,
     required this.rir,
@@ -342,12 +353,12 @@ class ResultSet {
   });
 }
 
-List<DropdownMenuItem> setTypes = [
+List<DropdownMenuItem<String>> setTypes = [
   DropdownMenuItem(value: "default", child: Text("Default")),
-  DropdownMenuItem(value: "Dropset:", child: Text("Dropset:")),
-  DropdownMenuItem(value: "Partials:", child: Text("Partials:")),
-  DropdownMenuItem(value: "Left side:", child: Text("Left side:")),
-  DropdownMenuItem(value: "Right side:", child: Text("Right side:")),
+  DropdownMenuItem(value: "Dropset:", child: Text("Dropset")),
+  DropdownMenuItem(value: "Partials:", child: Text("Partials")),
+  DropdownMenuItem(value: "Left side:", child: Text("Left side")),
+  DropdownMenuItem(value: "Right side:", child: Text("Right side")),
 ];
 
 
