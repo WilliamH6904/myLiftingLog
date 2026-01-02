@@ -477,17 +477,13 @@ class GlobalTimerWidgetState extends State<GlobalTimerWidget> {
   void navigate(BuildContext context) {
      if(localTimerActive == true) {
        stopLocalTimer(); backgroundTimerActive = true;
-       // this is because dispose isn't called when you navigator.push,
-       // so it stops the local timer and starts the global one again
      }
 
     ProgramsPage.activeProgramIndex = programIndexOfTimer;
     //Navigator.push(context, MaterialPageRoute(builder: (context) => openProgram()));
 
-    bool dayFound = false; /* this is because I ran into a bug where the for loop would
-                              continue to run even after the day was found and it would
-                              open a bunch of copies of the same page
-                           */
+    bool dayFound = false;
+
     for (int programIndex = 0; programIndex < ProgramsPage.programsList.length; programIndex++) {
       Program currentProgram = ProgramsPage.programsList[programIndex];
 

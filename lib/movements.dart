@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gym_app/programs_page.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'main.dart';
 import 'dart:async';
 import 'dialogs.dart';
@@ -189,8 +190,6 @@ class _MovementWidgetState extends State<MovementWidget> {
                                     ),
                                     PopupMenuItem<ListTile>(
                                       onTap: () {
-                                        // not necessary after change - LogPage.currentMovementLogIndex = LogPage.movementsLogged.indexWhere((log) =>log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == thisMovement.name.replaceAll(RegExp(r'\s+'), '').toLowerCase());
-
                                         final FocusNode focusNode = FocusNode();
                                         TextEditingController dialogController = TextEditingController();
 
@@ -205,7 +204,7 @@ class _MovementWidgetState extends State<MovementWidget> {
 
 
                                           if(widget.currentDay.muscleGroups != null && widget.currentDay.muscleGroups!.isNotEmpty) {
-                                            //get all the muscle movements that match the muscle groups in this day
+                                            //get all the movements with muscle groups that match the muscle groups in this day
                                             rootList = LogPage.movementsLogged.where((log) {
                                               if ((log.primaryMuscleGroups == null && log.secondaryMuscleGroups == null) || widget.currentDay.muscleGroups == null) {
                                                 return false;
@@ -553,6 +552,7 @@ class _MovementWidgetState extends State<MovementWidget> {
 
 final GlobalKey movementListKey = GlobalKey();
 final GlobalKey movementOptionsKey = GlobalKey();
+final GlobalKey movementEditButtonsKey = GlobalKey();
 
 
 class OpenMovement extends StatefulWidget {
@@ -581,14 +581,21 @@ class _OpenMovementState extends State<OpenMovement> {
   @override
   void initState() {
     super.initState();
+
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        ShowcaseView.get().startShowCase([movementEditButtonsKey]);
+      });
+    });
+
     if (GlobalTimerWidgetState.backgroundTimerActive == true && GlobalTimerWidgetState.movementOfTimer == widget.thisMovement) {
       startTimer();
      GlobalTimerWidgetState.stopTimer();
     }
   }
 
-  // do NOT confuse this method with widget.refreshPage. That is passed from the parent.
-  // This method is simply to allow the workout log to refresh the page when you open and close it from the "Last Session" button
+  // This method is to allow the workout log to refresh the page when you open and close it from the "Last Session" button
   void refreshPage() {
     setState(() {
       if (GlobalTimerWidgetState.backgroundTimerActive == true && GlobalTimerWidgetState.movementOfTimer == widget.thisMovement) {
@@ -756,405 +763,412 @@ void startTimer() {
 
               child: Column(
                 children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(20),
-                          bottomLeft: Radius.circular(20)
-                        ),
-                        border: Border(
-                        bottom: BorderSide(
-                          color: Colors.white54,
+                  ShowcaseTemplate(
+                    globalKey: movementEditButtonsKey,
+                    content: "dick",
+                    title: "asd",
+                    currentStep: 22,
+                    radius: 15.0,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(20),
+                            bottomLeft: Radius.circular(20)
+                          ),
+                          border: Border(
+                          bottom: BorderSide(
+                            color: Colors.white54,
+                          )
                         )
-                      )
-                    ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                          style: buttonStyle,
-                          onPressed: () {
-                            int sets = widget.thisMovement.sets;
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return PopScope(
-                                  onPopInvokedWithResult: (bool didPop, dynamic result) {
-                                    setState(() {
-                                      widget.thisMovement.sets = sets;
-                                    });
-                                  },
-                                  child: Dialog(
-                                    child: Container(
-                                      height: 60,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        gradient: Styles.horizontal(),
-                                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                      ),
-                                      child: StatefulBuilder(
-                                        builder: (BuildContext context, StateSetter setDialogState) {
-                                          return Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              IconButton(
-                                                onPressed: () {
-                                                  setDialogState(() {
-                                                    if (sets > 0) {
-                                                      sets--;
-                                                    }
-                                                  });
-                                                },
-                                                icon: const Icon(Icons.indeterminate_check_box, size: 30, color: Colors.white),
-                                              ),
-                                              Text(sets.toString(), style: Styles.regularText),
-                                              IconButton(
-                                                onPressed: () {
-                                                  setDialogState(() {
-                                                    if (sets < 9) {
-                                                      sets++;
-                                                    }
-                                                  });
-                                                },
-                                                icon: const Icon(Icons.add_box, size: 30, color: Colors.white),
-                                              ),
-                                            ],
-                                          );
-                                        },
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton(
+                            style: buttonStyle,
+                            onPressed: () {
+                              int sets = widget.thisMovement.sets;
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return PopScope(
+                                    onPopInvokedWithResult: (bool didPop, dynamic result) {
+                                      setState(() {
+                                        widget.thisMovement.sets = sets;
+                                      });
+                                    },
+                                    child: Dialog(
+                                      child: Container(
+                                        height: 60,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                          gradient: Styles.horizontal(),
+                                          borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                        ),
+                                        child: StatefulBuilder(
+                                          builder: (BuildContext context, StateSetter setDialogState) {
+                                            return Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                IconButton(
+                                                  onPressed: () {
+                                                    setDialogState(() {
+                                                      if (sets > 0) {
+                                                        sets--;
+                                                      }
+                                                    });
+                                                  },
+                                                  icon: const Icon(Icons.indeterminate_check_box, size: 30, color: Colors.white),
+                                                ),
+                                                Text(sets.toString(), style: Styles.regularText),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    setDialogState(() {
+                                                      if (sets < 9) {
+                                                        sets++;
+                                                      }
+                                                    });
+                                                  },
+                                                  icon: const Icon(Icons.add_box, size: 30, color: Colors.white),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Text(widget.thisMovement.sets.toString(), style: Styles.regularText),
-                              const Text(" SETS ", style: Styles.smallTextWhite),
-                            ],
-                          ),
-                        ),
-
-                            ElevatedButton(
-                      style: buttonStyle,
-                      onPressed: () {
-                        int repsLowerValue = 0;
-                        int repsUpperValue = 0;
-
-                        if (widget.thisMovement.reps.contains('-')) {
-                          repsLowerValue = int.parse(widget.thisMovement.reps.split('-')[0]);
-                          repsUpperValue = int.parse(widget.thisMovement.reps.split('-')[1]);
-                        }
-
-                        else {
-                          repsLowerValue = int.parse(widget.thisMovement.reps);
-                          repsUpperValue = int.parse(widget.thisMovement.reps);
-                        }
-
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return PopScope(
-                              onPopInvokedWithResult: (bool didPop, dynamic result) {
-                                setState(() {
-                                  if (repsLowerValue == repsUpperValue) {
-                                    widget.thisMovement.reps = repsLowerValue.toString();
-                                  }
-
-                                  else {
-                                    widget.thisMovement.reps = "$repsLowerValue-$repsUpperValue";
-                                  }
-                                });
-                              },
-                              child: Dialog(
-                                child: Container(
-                                  height: 60,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                    gradient: Styles.horizontal(),
-                                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                  ),
-                                  child: StatefulBuilder(
-                                    builder: (BuildContext context, StateSetter setDialogState) {
-                                      return Row(
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              setDialogState(() {
-                                                if (repsLowerValue > 0) {
-                                                  repsLowerValue--;
-                                                }
-                                              });
-                                            },
-                                            icon: const Icon(Icons.indeterminate_check_box, size: 25, color: Colors.white),
-                                          ),
-                                          Text(
-                                            "$repsLowerValue",
-                                            style: Styles.paragraph.copyWith(color: Colors.white),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              setDialogState(() {
-                                                if (repsLowerValue < repsUpperValue) {
-                                                  repsLowerValue++;
-                                                } else {
-                                                  if (repsUpperValue < 50) {
-                                                    repsLowerValue++;
-                                                    repsUpperValue++;
-                                                  }
-                                                }
-                                              });
-                                            },
-                                            icon: const Icon(Icons.add_box, size: 25, color: Colors.white),
-                                          ),
-                                          const Expanded(
-                                            child: Text(
-                                              "-",
-                                              style: Styles.labelText,
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              setDialogState(() {
-                                                if (repsUpperValue > repsLowerValue) {
-                                                  repsUpperValue--;
-                                                } else {
-                                                  if (repsLowerValue > 0) {
-                                                    repsUpperValue--;
-                                                    repsLowerValue--;
-                                                  }
-                                                }
-                                              });
-                                            },
-                                            icon: const Icon(Icons.indeterminate_check_box, size: 25, color: Colors.white),
-                                          ),
-                                          Text(
-                                            "$repsUpperValue",
-                                            style: Styles.paragraph.copyWith(color: Colors.white),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              setDialogState(() {
-                                                if (repsUpperValue < 69) {
-                                                  repsUpperValue++;
-                                                }
-                                              });
-                                            },
-                                            icon: const Icon(Icons.add_box, size: 25, color: Colors.white),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          Text(widget.thisMovement.reps, style: Styles.regularText),
-                          const Text(" REPS ", style: Styles.smallTextWhite),
-                        ],
-                      ),
-                    ),
-
-
-                            ElevatedButton(
-                                style: buttonStyle,
-                                onPressed: () {showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return EditDialog(
-                                          dataToEdit: widget.thisMovement.weight, identifier: "LB", editData: editText);
-                                    }
-                                );
+                                  );
                                 },
-                                child: Row(children:[Text(widget.thisMovement.weight.toStringAsFixed(widget.thisMovement.weight.truncateToDouble() == widget.thisMovement.weight ? 0 : 1), style: Styles.regularText),  Text(" ${AppSettings.selectedUnit}", style: Styles. smallTextWhite)]))
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                            mainAxisAlignment: AppSettings.rirActive ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.start,
-                            children: [
-                              if (!AppSettings.rirActive) const SizedBox(width: 120),
-                              ElevatedButton(
-                                  style: buttonStyle,
-                                  onPressed: () {
-                                    setState(() {
-                                      if (widget.thisMovement.timerActive == false) {
-                                        if (widget.thisMovement.remainingRestTime.inSeconds > 0) {
-                                          startTimer();
-                                        }
-                                        else {
-                                          widget.thisMovement.remainingRestTime = widget.thisMovement.rest;
-                                          if (widget.thisMovement.rest.inSeconds == 0) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                backgroundColor: Colors.white,
-                                                content: Text("Timer's base value is set to 0:00", style: TextStyle(color: Styles.primaryColor)),
-                                                duration: const Duration(milliseconds: 1500),
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      }
-                                      else {
-                                        stopTimer();
-                                      }
-                                    });
-                                  }, child: timerIcon
-                              ),
-                              if (!AppSettings.rirActive) const SizedBox(width: 40),
-                              ElevatedButton(
-                                  style: buttonStyle,
-                                  onPressed: () {
-                                    setState(() {
-                                      stopTimer();
-                                    });
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return EditRestDialog(editRest: editRest,
-                                              minutes: widget.thisMovement.remainingRestTime.inMinutes,
-                                              seconds: int.parse(restSeconds));
-                                        }
-                                    );
-                                  },
-                                  child: Row(
-                                      children: [
-                                        SizedBox( width: 50, child: Text("${widget.thisMovement.remainingRestTime.inMinutes.toString()}:$restSeconds", style: Styles.regularText)), const Text(" REST  ", style: Styles. smallTextWhite)])),
-                              if (AppSettings.rirActive == true) ...[ ElevatedButton(
-                                  style: buttonStyle,
-                                  onPressed: () {
-                                    int rirLowerValue = 0;
-                                    int rirUpperValue = 0;
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Text(widget.thisMovement.sets.toString(), style: Styles.regularText),
+                                const Text(" SETS ", style: Styles.smallTextWhite),
+                              ],
+                            ),
+                          ),
 
-                                    if (widget.thisMovement.rir.contains('-')) {
-                                      rirLowerValue = int.parse(widget.thisMovement.rir.split('-')[0]);
-                                      rirUpperValue = int.parse(widget.thisMovement.rir.split('-')[1]);
+                              ElevatedButton(
+                        style: buttonStyle,
+                        onPressed: () {
+                          int repsLowerValue = 0;
+                          int repsUpperValue = 0;
+
+                          if (widget.thisMovement.reps.contains('-')) {
+                            repsLowerValue = int.parse(widget.thisMovement.reps.split('-')[0]);
+                            repsUpperValue = int.parse(widget.thisMovement.reps.split('-')[1]);
+                          }
+
+                          else {
+                            repsLowerValue = int.parse(widget.thisMovement.reps);
+                            repsUpperValue = int.parse(widget.thisMovement.reps);
+                          }
+
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return PopScope(
+                                onPopInvokedWithResult: (bool didPop, dynamic result) {
+                                  setState(() {
+                                    if (repsLowerValue == repsUpperValue) {
+                                      widget.thisMovement.reps = repsLowerValue.toString();
                                     }
 
                                     else {
-                                      rirLowerValue = int.parse(widget.thisMovement.rir);
-                                      rirUpperValue = int.parse(widget.thisMovement.rir);
+                                      widget.thisMovement.reps = "$repsLowerValue-$repsUpperValue";
                                     }
-
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return PopScope(
-                                          onPopInvokedWithResult: (bool didPop, dynamic result) {
-                                            setState(() {
-                                              if (rirLowerValue == rirUpperValue) {
-                                                widget.thisMovement.rir = rirLowerValue.toString();
-                                              }
-
-                                              else {
-                                                widget.thisMovement.rir = "$rirLowerValue-$rirUpperValue";
-                                              }
-                                            });
-                                          },
-                                          child: Dialog(
-                                            child: Container(
-                                              height: 60,
-                                              width: 100,
-                                              decoration: BoxDecoration(
-                                                gradient: Styles.horizontal(),
-                                                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                              ),
-                                              child: StatefulBuilder(
-                                                builder: (BuildContext context, StateSetter setDialogState) {
-                                                  return Row(
-                                                    children: [
-                                                      IconButton(
-                                                        onPressed: () {
-                                                          setDialogState(() {
-                                                            if (rirLowerValue > 0) {
-                                                              rirLowerValue--;
-                                                            }
-                                                          });
-                                                        },
-                                                        icon: const Icon(Icons.indeterminate_check_box, size: 25, color: Colors.white),
-                                                      ),
-                                                      Text(
-                                                        "$rirLowerValue",
-                                                        style: Styles.paragraph.copyWith(color: Colors.white),
-                                                      ),
-                                                      IconButton(
-                                                        onPressed: () {
-                                                          setDialogState(() {
-                                                            if (rirLowerValue < rirUpperValue) {
-                                                              rirLowerValue++;
-                                                            } else {
-                                                              if (rirUpperValue < 50) {
-                                                                rirLowerValue++;
-                                                                rirUpperValue++;
-                                                              }
-                                                            }
-                                                          });
-                                                        },
-                                                        icon: const Icon(Icons.add_box, size: 25, color: Colors.white),
-                                                      ),
-                                                      const Expanded(
-                                                        child: Text(
-                                                          "-",
-                                                          style: Styles.labelText,
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                      ),
-                                                      IconButton(
-                                                        onPressed: () {
-                                                          setDialogState(() {
-                                                            if (rirUpperValue > rirLowerValue) {
-                                                              rirUpperValue--;
-                                                            } else {
-                                                              if (rirLowerValue > 0) {
-                                                                rirUpperValue--;
-                                                                rirLowerValue--;
-                                                              }
-                                                            }
-                                                          });
-                                                        },
-                                                        icon: const Icon(Icons.indeterminate_check_box, size: 25, color: Colors.white),
-                                                      ),
-                                                      Text(
-                                                        "$rirUpperValue",
-                                                        style: Styles.paragraph.copyWith(color: Colors.white),
-                                                      ),
-                                                      IconButton(
-                                                        onPressed: () {
-                                                          setDialogState(() {
-                                                            if (rirUpperValue < 69) {
-                                                              rirUpperValue++;
-                                                            }
-                                                          });
-                                                        },
-                                                        icon: const Icon(Icons.add_box, size: 25, color: Colors.white),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
+                                  });
+                                },
+                                child: Dialog(
+                                  child: Container(
+                                    height: 60,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      gradient: Styles.horizontal(),
+                                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                    ),
+                                    child: StatefulBuilder(
+                                      builder: (BuildContext context, StateSetter setDialogState) {
+                                        return Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                setDialogState(() {
+                                                  if (repsLowerValue > 0) {
+                                                    repsLowerValue--;
+                                                  }
+                                                });
+                                              },
+                                              icon: const Icon(Icons.indeterminate_check_box, size: 25, color: Colors.white),
+                                            ),
+                                            Text(
+                                              "$repsLowerValue",
+                                              style: Styles.paragraph.copyWith(color: Colors.white),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                setDialogState(() {
+                                                  if (repsLowerValue < repsUpperValue) {
+                                                    repsLowerValue++;
+                                                  } else {
+                                                    if (repsUpperValue < 50) {
+                                                      repsLowerValue++;
+                                                      repsUpperValue++;
+                                                    }
+                                                  }
+                                                });
+                                              },
+                                              icon: const Icon(Icons.add_box, size: 25, color: Colors.white),
+                                            ),
+                                            const Expanded(
+                                              child: Text(
+                                                "-",
+                                                style: Styles.labelText,
+                                                textAlign: TextAlign.center,
                                               ),
                                             ),
-                                          ),
+                                            IconButton(
+                                              onPressed: () {
+                                                setDialogState(() {
+                                                  if (repsUpperValue > repsLowerValue) {
+                                                    repsUpperValue--;
+                                                  } else {
+                                                    if (repsLowerValue > 0) {
+                                                      repsUpperValue--;
+                                                      repsLowerValue--;
+                                                    }
+                                                  }
+                                                });
+                                              },
+                                              icon: const Icon(Icons.indeterminate_check_box, size: 25, color: Colors.white),
+                                            ),
+                                            Text(
+                                              "$repsUpperValue",
+                                              style: Styles.paragraph.copyWith(color: Colors.white),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                setDialogState(() {
+                                                  if (repsUpperValue < 69) {
+                                                    repsUpperValue++;
+                                                  }
+                                                });
+                                              },
+                                              icon: const Icon(Icons.add_box, size: 25, color: Colors.white),
+                                            ),
+                                          ],
                                         );
                                       },
-                                    );
-                                  },
-                                  child: Row(children:[Text(widget.thisMovement.rir, style: Styles.regularText), const Text("  RIR ", style: Styles. smallTextWhite)])),
-                              ]
-                            ]
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Text(widget.thisMovement.reps, style: Styles.regularText),
+                            const Text(" REPS ", style: Styles.smallTextWhite),
+                          ],
                         ),
-                        const SizedBox(height: 15),
-                      ],
+                      ),
+
+
+                              ElevatedButton(
+                                  style: buttonStyle,
+                                  onPressed: () {showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return EditDialog(
+                                            dataToEdit: widget.thisMovement.weight, identifier: "LB", editData: editText);
+                                      }
+                                  );
+                                  },
+                                  child: Row(children:[Text(widget.thisMovement.weight.toStringAsFixed(widget.thisMovement.weight.truncateToDouble() == widget.thisMovement.weight ? 0 : 1), style: Styles.regularText),  Text(" ${AppSettings.selectedUnit}", style: Styles. smallTextWhite)]))
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                              mainAxisAlignment: AppSettings.rirActive ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.start,
+                              children: [
+                                if (!AppSettings.rirActive) const SizedBox(width: 120),
+                                ElevatedButton(
+                                    style: buttonStyle,
+                                    onPressed: () {
+                                      setState(() {
+                                        if (widget.thisMovement.timerActive == false) {
+                                          if (widget.thisMovement.remainingRestTime.inSeconds > 0) {
+                                            startTimer();
+                                          }
+                                          else {
+                                            widget.thisMovement.remainingRestTime = widget.thisMovement.rest;
+                                            if (widget.thisMovement.rest.inSeconds == 0) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  backgroundColor: Colors.white,
+                                                  content: Text("Timer's base value is set to 0:00", style: TextStyle(color: Styles.primaryColor)),
+                                                  duration: const Duration(milliseconds: 1500),
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        }
+                                        else {
+                                          stopTimer();
+                                        }
+                                      });
+                                    }, child: timerIcon
+                                ),
+                                if (!AppSettings.rirActive) const SizedBox(width: 40),
+                                ElevatedButton(
+                                    style: buttonStyle,
+                                    onPressed: () {
+                                      setState(() {
+                                        stopTimer();
+                                      });
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return EditRestDialog(editRest: editRest,
+                                                minutes: widget.thisMovement.remainingRestTime.inMinutes,
+                                                seconds: int.parse(restSeconds));
+                                          }
+                                      );
+                                    },
+                                    child: Row(
+                                        children: [
+                                          SizedBox( width: 50, child: Text("${widget.thisMovement.remainingRestTime.inMinutes.toString()}:$restSeconds", style: Styles.regularText)), const Text(" REST  ", style: Styles. smallTextWhite)])),
+                                if (AppSettings.rirActive == true) ...[ ElevatedButton(
+                                    style: buttonStyle,
+                                    onPressed: () {
+                                      int rirLowerValue = 0;
+                                      int rirUpperValue = 0;
+
+                                      if (widget.thisMovement.rir.contains('-')) {
+                                        rirLowerValue = int.parse(widget.thisMovement.rir.split('-')[0]);
+                                        rirUpperValue = int.parse(widget.thisMovement.rir.split('-')[1]);
+                                      }
+
+                                      else {
+                                        rirLowerValue = int.parse(widget.thisMovement.rir);
+                                        rirUpperValue = int.parse(widget.thisMovement.rir);
+                                      }
+
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return PopScope(
+                                            onPopInvokedWithResult: (bool didPop, dynamic result) {
+                                              setState(() {
+                                                if (rirLowerValue == rirUpperValue) {
+                                                  widget.thisMovement.rir = rirLowerValue.toString();
+                                                }
+
+                                                else {
+                                                  widget.thisMovement.rir = "$rirLowerValue-$rirUpperValue";
+                                                }
+                                              });
+                                            },
+                                            child: Dialog(
+                                              child: Container(
+                                                height: 60,
+                                                width: 100,
+                                                decoration: BoxDecoration(
+                                                  gradient: Styles.horizontal(),
+                                                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                                ),
+                                                child: StatefulBuilder(
+                                                  builder: (BuildContext context, StateSetter setDialogState) {
+                                                    return Row(
+                                                      children: [
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            setDialogState(() {
+                                                              if (rirLowerValue > 0) {
+                                                                rirLowerValue--;
+                                                              }
+                                                            });
+                                                          },
+                                                          icon: const Icon(Icons.indeterminate_check_box, size: 25, color: Colors.white),
+                                                        ),
+                                                        Text(
+                                                          "$rirLowerValue",
+                                                          style: Styles.paragraph.copyWith(color: Colors.white),
+                                                        ),
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            setDialogState(() {
+                                                              if (rirLowerValue < rirUpperValue) {
+                                                                rirLowerValue++;
+                                                              } else {
+                                                                if (rirUpperValue < 50) {
+                                                                  rirLowerValue++;
+                                                                  rirUpperValue++;
+                                                                }
+                                                              }
+                                                            });
+                                                          },
+                                                          icon: const Icon(Icons.add_box, size: 25, color: Colors.white),
+                                                        ),
+                                                        const Expanded(
+                                                          child: Text(
+                                                            "-",
+                                                            style: Styles.labelText,
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            setDialogState(() {
+                                                              if (rirUpperValue > rirLowerValue) {
+                                                                rirUpperValue--;
+                                                              } else {
+                                                                if (rirLowerValue > 0) {
+                                                                  rirUpperValue--;
+                                                                  rirLowerValue--;
+                                                                }
+                                                              }
+                                                            });
+                                                          },
+                                                          icon: const Icon(Icons.indeterminate_check_box, size: 25, color: Colors.white),
+                                                        ),
+                                                        Text(
+                                                          "$rirUpperValue",
+                                                          style: Styles.paragraph.copyWith(color: Colors.white),
+                                                        ),
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            setDialogState(() {
+                                                              if (rirUpperValue < 69) {
+                                                                rirUpperValue++;
+                                                              }
+                                                            });
+                                                          },
+                                                          icon: const Icon(Icons.add_box, size: 25, color: Colors.white),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Row(children:[Text(widget.thisMovement.rir, style: Styles.regularText), const Text("  RIR ", style: Styles. smallTextWhite)])),
+                                ]
+                              ]
+                          ),
+                          const SizedBox(height: 15),
+                        ],
+                      ),
                     ),
                   ),
                  Expanded(
@@ -1287,12 +1301,6 @@ void startTimer() {
                                            children: [
                                              Container(
                                                  margin: const EdgeInsets.only(left: 10),
-                                                 child: InkWell(
-                                                     onTap: (){
-                                                     setState(() {
-                                                         // change set type button
-                                                       });
-                                                     },
                                                      child: !widget.thisMovement.hasBeenLogged ? DropdownButton(
                                                        isDense: true,
                                                        borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -1310,7 +1318,7 @@ void startTimer() {
                                                         Container(
                                                            margin: const EdgeInsets.only(left: 10),
                                                            child: Text(thisResultSet.setType != "default" ? thisResultSet.setType : "SET ${index + 1}:", style: Styles.smallTextWhite))
-                                                 ),
+
                                              ),
                                              if(!widget.thisMovement.hasBeenLogged)...[
 
@@ -1443,7 +1451,6 @@ void startTimer() {
                                          children: [
                                            Container(
                                                margin: const EdgeInsets.only(left: 10),
-                                               width: 65,
                                                child: Text(pastResultSet.setType != "default" ? pastResultSet.setType : "SET ${index + 1}:", style: Styles.smallTextWhite)),
                                            const Spacer(),
                                            SizedBox(
@@ -1545,7 +1552,6 @@ void startTimer() {
                                 });
                                  if (existingLogIndex > -1){
                                    double currentHighestWeight = 0;
-                                   // find the result set with the highest weight
                                    for (int b = 0; b < LogPage.movementsLogged[existingLogIndex].resultSetBlocks.length; b ++) {
                                      if (LogPage.movementsLogged[existingLogIndex].resultSetBlocks[b].resultSets.any((set) => set.weight > currentHighestWeight)) {
                                        currentHighestWeight = LogPage.movementsLogged[existingLogIndex].resultSetBlocks[b].resultSets.where((set) => set.weight > currentHighestWeight).reduce((a, b) => a.weight > b.weight ? a : b).weight;
@@ -1626,7 +1632,7 @@ void startTimer() {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop(); // Close the dialog.
+                                  Navigator.of(context).pop();
                                 },
                                 child: Text('No', style: Styles.regularText),
                               ),

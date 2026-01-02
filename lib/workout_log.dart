@@ -1273,7 +1273,6 @@ class _MovementGoalScreenState extends State<MovementGoalScreen> {
                         child: CarouselSlider.builder(
                           itemCount: projectionValues?.length,
                           itemBuilder: (context, index, realIndex) {
-                            // you have to return a column, otherwise the container expands as tall as possible
                             return Column(
                               children: [
                                 const SizedBox(height: 20),

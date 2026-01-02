@@ -1876,8 +1876,6 @@ class PresetProgramsState extends State<PresetPrograms> {
 
     addProgram(8, "Upper/Lower", <String> ["Upper", "Lower", "Rest", "Upper", "Lower", "Filler", "Rest"], upperlowerMovements());
     programsList.last.experienceLevel = "Intermediate";
-  //  programsList.last.notes = "This is a minimalist strength training program. This means minimal weightlifting to allow more time for functional training. "
-  //       "Functional training is done on any of the rest days, which could be training core strength, athleticism, mobility, flexibility, calisthenics etc.";
   }
 
   static void addProgram(numberOfWeeksInProgram, programName, trainingSplit, List<List<Movement>> movementsLists) {
@@ -1890,7 +1888,7 @@ class PresetProgramsState extends State<PresetPrograms> {
         List<Movement> thisDaysMovements = [];
         for (int x = 0; x < movementsLists[j].length; x++) {
           thisDaysMovements.add(
-              Movement( resultSets: [], //movements list is a 2d list, hence the [j][x]. [j] is accessing a list from the list, while [x] is the element of that list
+              Movement( resultSets: [], //movements list is a 2d list, hence the [j][x]
                   notes: movementsLists[j][x].notes,
                   name: movementsLists[j][x].name,
                   sets: movementsLists[j][x].sets,
@@ -1909,7 +1907,7 @@ class PresetProgramsState extends State<PresetPrograms> {
         days.add(day(id: -1, name: trainingSplit[j], movements: thisDaysMovements, muscleGroups: calcMuscleGroups(trainingSplit[j])));
       }
 
-      List<day> weekDays = days.sublist((7 * weekMultiplier)); // this is so that you don't add the entire days array to each week in "Weeks.add"
+      List<day> weekDays = days.sublist((7 * weekMultiplier));
       weeks.add(Week(name: "Week ${i + 1}", days: weekDays));
       weekMultiplier++;
     }

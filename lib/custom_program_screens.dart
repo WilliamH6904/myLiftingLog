@@ -22,10 +22,10 @@ class _CustomProgramScreensState extends State<CustomProgramScreens> {
   final FocusNode _focusNode2 = FocusNode();
 
 
-  int currentValueWeeksWheel = 0; // for the wheel slider
+  int currentValueWeeksWheel = 0;
   List <String> dayNames = [];
   List <List<String>> daysMuscleGroups = [[], [], [], [], [], [], []];
-  int num = 1; // this is for when the user is choosing the day names so you can keep track of the day they're picking
+  int num = 1;
   int activePage = 1;
 
   TextEditingController myController = TextEditingController();
@@ -50,7 +50,7 @@ class _CustomProgramScreensState extends State<CustomProgramScreens> {
         days.add(day(name: dayNames[j], movements: [], id: ProgramsPage.globalDayID ++, muscleGroups: daysMuscleGroups[j]));
       }
 
-      List<day> weekDays = days.sublist((7 * weekMultiplier)); // this is so that you don't add the entire days array to each week in "Weeks.add"
+      List<day> weekDays = days.sublist((7 * weekMultiplier));
       weeks.add(Week(name: "Week ${i + 1}", days: weekDays));
       weekMultiplier++;
     }
@@ -302,8 +302,6 @@ double borderWidth1 = 4;
                           onTapDown: (b) {
                             setState(() {
                               borderWidth3 = 2 ;
-                              //_focusNode.requestFocus();
-                              //_focusNode2.requestFocus();
                               num --;
                               myController.text = dayNames.last;
                               dayNames.removeLast();
@@ -342,8 +340,6 @@ double borderWidth1 = 4;
                            onTapDown: (b) {
                             setState(() {
                               borderWidth1 = 2;
-                              //_focusNode.requestFocus();
-                              //_focusNode2.requestFocus();
 
                                   if(num <= 7) {
                                     if (myController.text != "") {

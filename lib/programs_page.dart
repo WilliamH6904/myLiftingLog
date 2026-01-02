@@ -230,8 +230,8 @@ void editLabel(editedText, identifier) {
 
                                   return InkWell(
                                     onTap: () {
-                                      ProgramsPage.activeProgramIndex = index; // this is so when you click this button the index of this item in the listView is passed to the currentProgramIndex
-                                      Navigator.of(context).push(          // so that the rest of the app knows which program inside of the Programs list to open
+                                      ProgramsPage.activeProgramIndex = index; // this is so when you click this button the index of this item in the listView is passed to the activeProgramIndex
+                                      Navigator.of(context).push(              // so that the rest of the app knows which program inside of the Programs list to open
                                         MaterialPageRoute(
                                           builder: (context) => OpenProgram(),
                                         ),

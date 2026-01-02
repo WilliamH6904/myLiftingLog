@@ -87,7 +87,6 @@ class _OpenProgramState extends State<OpenProgram> {
 
 
 
-    // Add values to map
     for (var day in currentDaysInWeek) {
       for (int i = 0; i < day.movements.length; i++) {
         MovementLog thisMovementsLog = LogPage.movementsLogged.where((log) => log.name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == day.movements[i].name.replaceAll(RegExp(r'\s+'), '').toLowerCase()).first;
@@ -149,7 +148,6 @@ class _OpenProgramState extends State<OpenProgram> {
     repRangeMap = {};
 
 
-    // add values to map
     for (var day in currentDaysInWeek) {
       for (int i = 0; i < day.movements.length; i++) {
         int reps;
@@ -533,7 +531,6 @@ class _OpenProgramState extends State<OpenProgram> {
                                                 activeProgram.weeks[sliderIndex].days = [];
 
                                                 for (int i = 0; i < copiedWeeksDays!.length; i++) {
-                                                  //copy day data
                                                   activeProgram.weeks[sliderIndex].days.add(
                                                       day(id: ProgramsPage.globalDayID++,
                                                           name: copiedWeeksDays![i].name,
@@ -726,7 +723,7 @@ class _OpenProgramState extends State<OpenProgram> {
                                                               Flexible(
                                                                 child: Text("sets primarily target ${sortedEntries[mapIndex].key}", style: Styles.smallTextWhite,
                                                                   softWrap: true,
-                                                                  overflow: TextOverflow.visible, // or TextOverflow.clip
+                                                                  overflow: TextOverflow.visible,
                                                                 ),
                                                               ),
                                                               const SizedBox(width: 10),
@@ -742,7 +739,7 @@ class _OpenProgramState extends State<OpenProgram> {
                                                               Flexible(
                                                                 child: Text("sets secondarily target ${sortedEntries[mapIndex].key}", style: Styles.smallTextWhite,
                                                                   softWrap: true,
-                                                                  overflow: TextOverflow.visible, // or TextOverflow.clip
+                                                                  overflow: TextOverflow.visible,
                                                                 ),
                                                               ),
                                                               const SizedBox(width: 10),
@@ -760,7 +757,7 @@ class _OpenProgramState extends State<OpenProgram> {
                                                               child: Text(sortedEntries[mapIndex].key != "Unspecified" ? "of your training targets ${sortedEntries[mapIndex].key}" : "have no specified muscle group",
                                                                 style: Styles.smallTextWhite,
                                                                 softWrap: true,
-                                                                overflow: TextOverflow.visible, // or TextOverflow.clip
+                                                                overflow: TextOverflow.visible,
                                                               ),
                                                             ),
                                                             const SizedBox(width: 10),
@@ -821,7 +818,7 @@ class _OpenProgramState extends State<OpenProgram> {
                                                             const Flexible(
                                                               child: Text("sets in the 6-12 rep range", style: Styles.smallTextWhite,
                                                                 softWrap: true,
-                                                                overflow: TextOverflow.visible, // or TextOverflow.clip
+                                                                overflow: TextOverflow.visible,
                                                               ),
                                                             ),
                                                             const SizedBox(width: 10),
@@ -837,7 +834,7 @@ class _OpenProgramState extends State<OpenProgram> {
                                                             const Flexible(
                                                               child: Text("sets in the 1-5 rep range", style: Styles.smallTextWhite,
                                                                 softWrap: true,
-                                                                overflow: TextOverflow.visible, // or TextOverflow.clip
+                                                                overflow: TextOverflow.visible,
                                                               ),
                                                             ),
                                                             const SizedBox(width: 10),
@@ -853,7 +850,7 @@ class _OpenProgramState extends State<OpenProgram> {
                                                             const Flexible(
                                                               child: Text("sets in the 12+ rep range", style: Styles.smallTextWhite,
                                                                 softWrap: true,
-                                                                overflow: TextOverflow.visible, // or TextOverflow.clip
+                                                                overflow: TextOverflow.visible,
                                                               ),
                                                             ),
                                                             const SizedBox(width: 10),
@@ -921,7 +918,6 @@ class _SliderPageState extends State<SliderPage> {
                 widget.currentProgram.save();
               },
               proxyDecorator: (widget, _, __) {
-                // the underscores are placeholder parameters
                 return Material(
                   color: Colors.black26,
                   child: widget,
@@ -1585,7 +1581,6 @@ class DayWidgetState extends State<DayWidget> {
                 widget.currentProgram.save();
               },
               proxyDecorator: (widget, _, __) {
-                // the underscores are placeholder parameters
                 return Material(
                   color: Colors.black26,
                   child: widget,
