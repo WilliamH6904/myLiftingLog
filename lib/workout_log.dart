@@ -1102,7 +1102,7 @@ class _MovementStatsScreenState extends State<MovementStatsScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(10)
                       ),
                     ),
-                    child: Center(child: Text(timesDoneThisWeek > 0 || thisMovementLog.resultSetBlocks.isEmpty ? "Times done this week: $timesDoneThisWeek" : "Last done: ${thisMovementLog.resultSetBlocks.last.date}", style: Styles.regularText.copyWith(fontSize: 16)))),
+                    child: Center(child: Text(timesDoneThisWeek > 0 || thisMovementLog.resultSetBlocks.isEmpty ? "Times done this week: $timesDoneThisWeek" : "Last done: ${DateUtils.dateOnly(thisMovementLog.resultSetBlocks.last.date).toString().substring(0, 10)}", style: Styles.regularText.copyWith(fontSize: 16)))),
                 const SizedBox(height: 75)
               ],
             ),

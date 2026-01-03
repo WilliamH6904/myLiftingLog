@@ -398,3 +398,4 @@ class GoalAdapter extends TypeAdapter<Goal> {
               runtimeType == other.runtimeType &&
               typeId == other.typeId;
 }
+

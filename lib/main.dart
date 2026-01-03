@@ -166,6 +166,14 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
 
    super.didChangeAppLifecycleState(state);
 
+   () async {
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+     print("a");
+
+    // prefs.setStringList('showcaseList', ShowcaseTemplate.previousSteps.map((e) => e.toString()).toList());
+   }();
+
    if (GlobalTimerWidgetState.localTimerActive || GlobalTimerWidgetState.backgroundTimerActive || OpenMovement.inMovementTimerActive) {
      if (state == AppLifecycleState.paused) {
        start = DateTime.now();
@@ -201,8 +209,8 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
       body: _pages[selectedIndex],
 
       bottomNavigationBar: Theme(
-    data: Theme.of(context).copyWith(
-canvasColor: Colors.transparent
+       data: Theme.of(context).copyWith(
+       canvasColor: Colors.transparent
     ),
       child: Container(
           decoration: BoxDecoration(
@@ -272,8 +280,6 @@ class Program extends HiveObject {
 
   Program({this.notes, required this.weeks, required this.date, required this.name});
 }
-
-
 
 
 @HiveType(typeId: 1)
@@ -360,7 +366,6 @@ List<DropdownMenuItem<String>> setTypes = [
   DropdownMenuItem(value: "Left side:", child: Text("Left side")),
   DropdownMenuItem(value: "Right side:", child: Text("Right side")),
 ];
-
 
 @HiveType(typeId: 5)
 class ResultSetBlock {

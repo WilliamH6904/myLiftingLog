@@ -60,7 +60,7 @@ class _MovementWidgetState extends State<MovementWidget> {
           ),
             child: ShowcaseTemplate(
               radius: 20,
-              currentStep: 9,
+              stepID: 9,
               globalKey: movementListKey,
               title: "Movements List",
               content: "This is where the movements of the day are listed. You can rearrange the list by holding down on a movement and then dragging up or down. Tap the movement to open it and make changes to it or add sets to its log.",
@@ -141,7 +141,7 @@ class _MovementWidgetState extends State<MovementWidget> {
                           ShowcaseTemplate(
                             radius: 5,
                             globalKey: movementOptionsKey,
-                            currentStep: 10,
+                            stepID: 10,
                             title: "Making Changes To The Movements List",
                             content: "Tap this button to make changes to the days list, such as copying, deleting, or changing movements, as well as adding supersets.",
                             child: PopupMenuButton<ListTile>(
@@ -765,9 +765,9 @@ void startTimer() {
                 children: [
                   ShowcaseTemplate(
                     globalKey: movementEditButtonsKey,
-                    content: "dick",
+                    content: "test",
                     title: "asd",
-                    currentStep: 22,
+                    stepID: 11,
                     radius: 15.0,
                     child: Container(
                       decoration: const BoxDecoration(

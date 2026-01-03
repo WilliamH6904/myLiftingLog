@@ -8,6 +8,7 @@ import 'custom_program_screens.dart';
 import 'dialogs.dart';
 import 'preset_programs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive/hive.dart';
 
 final GlobalKey programCreation = GlobalKey();
 final GlobalKey programsList = GlobalKey();
@@ -15,25 +16,46 @@ final GlobalKey programsList = GlobalKey();
 
 class ShowcaseTemplate extends StatefulWidget {
   final GlobalKey globalKey;
-  final int currentStep;
+  final int stepID;
   final double radius;
   final Widget child;
   final String title;
   final String content;
 
-  const ShowcaseTemplate({required this.radius, required this.globalKey, required this.currentStep, required this.title, required this.content, required this.child});
+  static Set<int> previousSteps = {};
+
+
+  const ShowcaseTemplate({required this.radius, required this.globalKey, required this.stepID, required this.title, required this.content, required this.child});
 
   @override
   ShowcaseTemplateState createState() => ShowcaseTemplateState();
 }
 
 class ShowcaseTemplateState extends State<ShowcaseTemplate> {
-  static Set<int> stepCount = {};
 
+
+ @override
+  initState() {
+    super.initState();
+
+   () async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (prefs.getStringList('showcaseList') != null) {
+        List<String> stringList = prefs.getStringList('showcaseList')!.toList();
+        for (int i = 0; i < stringList.length; i ++) {
+          print("item is ${stringList[i]}");
+          ShowcaseTemplate.previousSteps.add(int.parse(stringList[i]));
+        }
+      }
+
+      prefs.setStringList('showcaseList', ShowcaseTemplate.previousSteps.map((e) => e.toString()).toList());
+     }();
+    }
   @override
   Widget build(BuildContext context) {
-    if (!stepCount.contains(widget.currentStep)) {
-      stepCount.add(widget.currentStep);
+   print('condition ran');
+    if (!ShowcaseTemplate.previousSteps.contains(widget.stepID) && !(widget.stepID == 0 && ProgramsPage.programsList.isNotEmpty)) {
+      ShowcaseTemplate.previousSteps.add(widget.stepID);
 
       return Showcase(
         targetBorderRadius: BorderRadius.all(
@@ -148,7 +170,7 @@ void editLabel(editedText, identifier) {
                       ShowcaseTemplate(
                         radius: 20,
                           globalKey: programCreation,
-                          currentStep: 0, title: "Creating Programs",
+                          stepID: 0, title: "Creating Programs",
                           content: "These are your options for making new programs. You can choose from a predefined template, or make your own custom split.",
                           child: Row(
                         children: [
@@ -226,7 +248,10 @@ void editLabel(editedText, identifier) {
                                 shrinkWrap: true,
                                 itemCount: ProgramsPage.programsList.length,
                                 itemBuilder: (context, index) {
-                                  final label = ProgramsPage.programsList[index].name;
+                                  String label = "";
+                                  for (var x in ShowcaseTemplate.previousSteps) {
+                                    label += x.toString();
+                                  }
 
                                   return InkWell(
                                     onTap: () {
@@ -240,7 +265,7 @@ void editLabel(editedText, identifier) {
                                       child: ShowcaseTemplate(
                                         radius: 0,
                                         globalKey: programsList,
-                                        currentStep: 1,
+                                        stepID: 1,
                                         title: "Programs List",
                                         content: "Your programs will be listed here, where you can tap to open them.",
                                        child: Container(

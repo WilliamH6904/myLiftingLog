@@ -278,7 +278,7 @@ class _OpenProgramState extends State<OpenProgram> {
                        ShowcaseTemplate(
                          radius: 5,
                             globalKey: currentWeekKey,
-                            currentStep: 2,
+                            stepID: 2,
                             title: "Current Week",
                             content: "This is where the current week of your program is listed. You can swipe left and right to cycle through the weeks.",
                             child: Text(activeProgram.weeks[sliderIndex].name, style: Styles.labelText.copyWith(fontSize: 27))),
@@ -288,7 +288,7 @@ class _OpenProgramState extends State<OpenProgram> {
                         ShowcaseTemplate(
                           radius: 5,
                          globalKey: weekOptionsKey,
-                          currentStep: 3,
+                          stepID: 3,
                            title: "Making Changes To A Week",
                            content: "Open this menu if you would like to make changes to the current week or view metrics on its training content. \n\n (hint: use the duplication button to make quick changes to the rest of your program)",
                            child: IconButton(onPressed: () {
@@ -933,7 +933,7 @@ class _SliderPageState extends State<SliderPage> {
                   child: index == 0 ? ShowcaseTemplate(
                     radius: 0,
                      globalKey: daysListKey,
-                    currentStep:  4,
+                    stepID:  4,
                      title: "Days List",
                      content: "This is where the days of your program's current week are listed. Tap to open any of the days.",
                      child: Container(
@@ -967,7 +967,7 @@ class _SliderPageState extends State<SliderPage> {
                             ShowcaseTemplate(
                               radius: 10,
                              globalKey: checkButtonKey,
-                               currentStep: 5,
+                               stepID: 5,
                               title: "Checking Off Days",
                               content: "Check off each day here as you go. This keeps your streak going, and sets the current day for quick navigation on the home page. \n\n (a day will be automatically checked off if all of its movements are)",
                               child: InkWell(
@@ -1013,7 +1013,7 @@ class _SliderPageState extends State<SliderPage> {
                             ShowcaseTemplate(
                               radius: 5,
                               globalKey: dayOptionsKey,
-                              currentStep: 6,
+                              stepID: 6,
                               title: "Making Changes To The Days List",
                               content: "Open this menu if you would like to make changes to your day. You may also change your day's muscle groups here.",
                               child: PopupMenuButton<ListTile>(
@@ -1636,7 +1636,7 @@ class DayWidgetState extends State<DayWidget> {
                         ShowcaseTemplate(
                           radius: 5,
                             globalKey: addMovementKey,
-                            currentStep: 7,
+                            stepID: 7,
                             title: "Adding Movements",
                             content: "Tap this button to add a movement to this day. You can search through the movements in your movement log, or create a new one here.",
                             child: const Icon(Icons.add_box, color: Colors.white, size: 35)),
@@ -1666,7 +1666,7 @@ class DayWidgetState extends State<DayWidget> {
                         ShowcaseTemplate(
                           radius: 5,
                             globalKey: pasteMovementKey,
-                            currentStep: 8,
+                            stepID: 8,
                             title: "Pasting Movements",
                             content: "Tap this button to paste a copied movement to this day.",
                             child: const Icon(Icons.content_paste_go, color: Colors.white, size: 35)),
