@@ -166,14 +166,6 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
 
    super.didChangeAppLifecycleState(state);
 
-   () async {
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-     print("a");
-
-    // prefs.setStringList('showcaseList', ShowcaseTemplate.previousSteps.map((e) => e.toString()).toList());
-   }();
-
    if (GlobalTimerWidgetState.localTimerActive || GlobalTimerWidgetState.backgroundTimerActive || OpenMovement.inMovementTimerActive) {
      if (state == AppLifecycleState.paused) {
        start = DateTime.now();
@@ -445,6 +437,7 @@ class Goal extends HiveObject {
 
   Goal({required this.startDate, required this.endDate, required this.startWeight, required this.targetWeight});
 }
+
 
 
 String? stripDecimals(double? data) {
