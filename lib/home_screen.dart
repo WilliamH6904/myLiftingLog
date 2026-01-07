@@ -3,12 +3,18 @@ import 'package:gym_app/dialogs.dart';
 import 'package:gym_app/open_program.dart';
 import 'package:gym_app/programs_page.dart';
 import 'package:gym_app/workout_log.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'main.dart';
 import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'movements.dart';
 import 'notification.dart';
+
+
+final GlobalKey streakKey = GlobalKey();
+final GlobalKey preferencesKey = GlobalKey();
+
 
 class HomeScreen extends StatefulWidget {
 final Function(int) selectedPageCallback;
@@ -51,6 +57,8 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    super.initState();
+
     if (HomeScreen.lastStreakDay != null) {
       DateTime twoDaysAgo = DateUtils.dateOnly(DateTime.now()).subtract(const Duration(days: 2));
 
@@ -62,7 +70,18 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
 
     favoriteMovements = LogPage.movementsLogged.where((log) => log.favorited == true).toList();
-    super.initState();
+
+    ShowcaseView.register(onComplete: (index, key) {
+     // ShowcaseView.get().startShowCase([logPageKey, streakKey, preferencesKey]);
+    });
+
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+
+        ShowcaseView.get().startShowCase([programPageKey, logPageKey, streakKey, preferencesKey]);
+      });
+    });
   }
 
 
@@ -111,17 +130,31 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       ),
       shadowColor: Colors.black54,
       iconTheme: const IconThemeData(color: Colors.white),
-      title:  Row(
-        children: [
-          Icon(Icons.local_fire_department_sharp, size: 40, color: HomeScreen.lastStreakDay == DateUtils.dateOnly(DateTime.now()) ?  Colors.white : Colors.white54),
-          Text(HomeScreen.streakLength.toString(), style: Styles.labelText.copyWith(color: HomeScreen.lastStreakDay == DateUtils.dateOnly(DateTime.now()) ? Colors.white : Colors.white54)),
-         const Spacer(),
-        ]
-      ),
+      title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.local_fire_department_sharp, size: 40, color: HomeScreen.lastStreakDay == DateUtils.dateOnly(DateTime.now()) ?  Colors.white : Colors.white54),
+            ShowcaseTemplate(
+                globalKey: streakKey,
+                radius: 20,
+                stepID: 32,
+                title: "Streak",
+                content: "This is where your streak is displayed. The streak is based on the number of subsequent days you have checked off a day in your programs.",
+                child: Text(HomeScreen.streakLength.toString(), style: Styles.labelText.copyWith(color: HomeScreen.lastStreakDay == DateUtils.dateOnly(DateTime.now()) ? Colors.white : Colors.white54))),
+           const Spacer(),
+          ]
+        ),
       actions: [
-        IconButton(onPressed: () {
-        _scaffoldKey.currentState?.openEndDrawer();
-        }, icon: const Icon(Icons.menu, color: Colors.white, size: 35))
+        ShowcaseTemplate(
+          radius: 5,
+          globalKey: preferencesKey,
+          stepID: 33,
+          title: "App Customization",
+          content: "Click here for various app-wide customization options.",
+          child: IconButton(onPressed: () {
+          _scaffoldKey.currentState?.openEndDrawer();
+          }, icon: const Icon(Icons.menu, color: Colors.white, size: 35)),
+        )
       ],
     ),
         body: Container(
@@ -377,16 +410,12 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     const SizedBox(height: 60),
                     MuscleGroups(),
 
-                    /*
                     const SizedBox(height: 60),
-                    const ListTile(
-                    horizontalTitleGap: 5,
-                    leading: Icon(Icons.help_center, color: Colors.white, size: 35),
-                    title: Text("Help center", style: Styles.regularText)),
-                    const Divider(height: 0),
-                     */
+                    HelpSection(refreshHomePageCallback: widget.refreshPageCallback),
+                    const SizedBox(height: 60),
 
-                    ],
+
+                  ],
                 ),
               ),
             )
@@ -1028,8 +1057,8 @@ class _AppSettingsState extends State<AppSettings> {
 
 
 class MuscleGroups extends StatefulWidget {
-  static List <String> muscleGroupsList = ["Chest", "Back", "Biceps", "Triceps", "Shoulders", "Forearms", "Legs", "Abs"];
-  final List <String> defaultMuscleGroups = ["Chest", "Back", "Biceps", "Triceps", "Shoulders", "Forearms", "Legs", "Abs"];
+  static List <String> muscleGroupsList = ["Chest", "Back", "Biceps", "Triceps", "Shoulders", "Forearms", "Quads", "Hamstrings", "Glutes", "Calves", "Abs"];
+  final List <String> defaultMuscleGroups = ["Chest", "Back", "Biceps", "Triceps", "Shoulders", "Forearms", "Quads", "Hamstrings", "Glutes", "Calves", "Abs"];
 
 
 
@@ -1047,12 +1076,13 @@ class _MuscleGroupsState extends State<MuscleGroups> {
         const ListTile(
             horizontalTitleGap: 5,
             leading: Icon(Icons.fitness_center, color: Colors.white, size: 35),
-            title: Text("Muscle groups", style: Styles.regularText)),
+            title: Text("Muscle Groups", style: Styles.regularText)),
         const Divider(height: 0),
 
         Container(
           height: 275,
-            width: double.infinity,
+          padding: EdgeInsets.symmetric(vertical: 0),
+          width: double.infinity,
         decoration: const BoxDecoration(
         color: Colors.black12,
         borderRadius: BorderRadius.only(
@@ -1064,12 +1094,14 @@ class _MuscleGroupsState extends State<MuscleGroups> {
             children: [
               Expanded(
                 child: GridView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  shrinkWrap: true,
+
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 35),
 
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     mainAxisExtent: 55,
                     crossAxisCount: 2,
-                    crossAxisSpacing: 10,
+                    crossAxisSpacing: 30,
                     mainAxisSpacing: 20,
                   ),
                   itemCount: MuscleGroups.muscleGroupsList.length,
@@ -1242,6 +1274,117 @@ class _MuscleGroupsState extends State<MuscleGroups> {
     );
   }
 }
+
+class HelpSection extends StatefulWidget {
+  final Function() refreshHomePageCallback;
+
+  const HelpSection ({required this.refreshHomePageCallback});
+
+  @override
+  State<HelpSection> createState() => _HelpSectionState();
+}
+
+class _HelpSectionState extends State<HelpSection> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const ListTile(
+          horizontalTitleGap: 5,
+          leading: Icon(Icons.help_center, color: Colors.white, size: 35),
+          title: Text("Help Center", style: Styles.regularText),
+        ),
+
+        const Divider(height: 0),
+        Container(
+          height: 275,
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(vertical: 9),
+          decoration: const BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20)
+              )
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      showDialog(context: context, builder: (BuildContext context) {
+                        return ConfirmationDialog(
+                            content: "Are you sure you would like to reset the tooltips? All help pop-ups will be displayed until viewed again.",
+                            callbackFunction: () async {
+                              final navigator = Navigator.of(context);
+
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              prefs.setStringList('showcaseList', []);
+                              ShowcaseTemplate.previousSteps = {};
+
+                              navigator.pop();
+                              widget.refreshHomePageCallback();
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                Future.delayed(const Duration(milliseconds: 0), () {
+                                  ShowcaseView.get().startShowCase([programPageKey, logPageKey, streakKey, preferencesKey]);
+                                });
+                              });
+                            });
+                      });
+                    },
+                    child: Container(
+                      height: 49,
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(
+                          color: Colors.white54,
+                          width: 2.0,
+                        ),
+                      ),
+                      child: Center(child: Text("Reset tooltips", style: Styles.paragraph, )),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDialog(context: context, builder: (BuildContext context) {
+                        return  ConfirmationDialog(
+                            content: "Are you sure you would like to turn off tooltips? It is recommended that you view all of them for helpful information.",
+                            callbackFunction: () async {
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              prefs.setStringList('showcaseList', ["-1"]);
+                              ShowcaseTemplate.previousSteps = {-1};
+                            });
+                      });
+
+                    },
+                    child: Container(
+                      height: 49,
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(
+                          color: Colors.white54,
+                          width: 2.0,
+                        ),
+                      ),
+                      child: Center(child: Text("Tooltips off", style: Styles.paragraph, )),
+                    ),
+                  ),
+                ],
+              ),
+              Spacer(),
+              Text("Please send questions and concerns to the following email: \n\n myLiftingLog.support@gmail.com", style: Styles.paragraph, textAlign: TextAlign.center)
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 
 
 String _getDayOfWeek(int weekday) {

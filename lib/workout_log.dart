@@ -3,6 +3,7 @@ import 'package:gym_app/home_screen.dart';
 import 'package:gym_app/programs_page.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'main.dart';
 import 'dialogs.dart';
 import 'open_program.dart';
@@ -10,6 +11,33 @@ import 'package:fl_chart/fl_chart.dart';
 import 'dart:math' as math;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+
+
+final GlobalKey addingMovementLogsKey = GlobalKey();
+final GlobalKey movementLogKey = GlobalKey();
+final GlobalKey editingMovementLogKey = GlobalKey();
+
+final GlobalKey movementScreensKey = GlobalKey();
+final GlobalKey navigatingScreensKey = GlobalKey();
+
+final GlobalKey progressChartKey = GlobalKey();
+final GlobalKey settingMonthKey = GlobalKey();
+final GlobalKey chartSettingKey = GlobalKey();
+final GlobalKey addingEntriesKey = GlobalKey();
+
+final GlobalKey prHistoryKey = GlobalKey();
+final GlobalKey movementStatsKey = GlobalKey();
+
+final GlobalKey endGoalKey = GlobalKey();
+final GlobalKey goalDateKey = GlobalKey();
+final GlobalKey startGoalKey = GlobalKey();
+
+
+
+
+
+
+
 
 
 class LogPage extends StatefulWidget {
@@ -49,8 +77,22 @@ class _LogPageState extends State<LogPage> {
 
   @override
   void initState() {
-    sortLog();
     super.initState();
+
+    sortLog();
+
+    ShowcaseView.register();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (LogPage.movementsLogged.isNotEmpty) {
+          ShowcaseView.get().startShowCase([addingMovementLogsKey, movementLogKey, editingMovementLogKey]);
+        }
+          else {
+        ShowcaseView.get().startShowCase([addingMovementLogsKey]);
+        }
+      });
+    });
   }
 
   @override
@@ -98,21 +140,28 @@ class _LogPageState extends State<LogPage> {
               children: [
                 const Text("Workout Log", style: Styles.labelText),
                 const Spacer(),
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CreateOrEditMovementLog(addMovementLog: addMovementLog);
-                      },
-                    );
-                  },
-                  style: IconButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ShowcaseTemplate(
+                  globalKey: addingMovementLogsKey,
+                  radius: 20,
+                  stepID: 18,
+                  title: "Adding Movements",
+                  content: "Click here to add a new custom movement to your workout log.",
+                  child: IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CreateOrEditMovementLog(addMovementLog: addMovementLog);
+                        },
+                      );
+                    },
+                    style: IconButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                     icon: const Icon(Icons.add_circle, color: Colors.white, size: 35),
                   ),
-                   icon: const Icon(Icons.add_circle, color: Colors.white, size: 35),
                 )
               ],
             ),
@@ -197,159 +246,173 @@ class _LogPageState extends State<LogPage> {
                         itemBuilder: (context, index) {
                           final label = displayList[index].name;
                           final resultIndex = LogPage.movementsLogged.indexOf(displayList[index]);
-                          return InkWell(
-                            onTap: () {
-                              LogPage.currentMovementLogIndex = resultIndex;
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => ScreenManager(updateLogOrder: updateLogOrder, sortLog: sortLog),
-                                ),
-                              );
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 60,
-                                  color: Colors.black12,
-                                  child: Row(
-                                      children: [
-                                        if(LogPage.movementsLogged[resultIndex].favorited == true)
-                                          ShaderMask(
-                                            shaderCallback: (Rect bounds) {
-                                              return const RadialGradient(
-                                                center: Alignment.center,
-                                                radius: 0.5,
-                                                colors: [
-                                                  Color(0xFFFFFACD),
-                                                  Color(0xFFFFD700),
-                                                  Color(0xFFFFA500),
-                                                  Color(0xFFFF8C00),
-                                                ],
-                                              ).createShader(bounds);
-                                            },
-                                            child: const Icon(Icons.star, color: Colors.white, size: 30),
-                                          ),
-                                        const SizedBox(width: 10),
-                                        Expanded(child: Text(label, style: Styles.regularText)),
-                                        PopupMenuButton<ListTile>(
-                                            itemBuilder: (context) {
-                                              return [
-                                                PopupMenuItem<ListTile>(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      displayList[index].favorited = !displayList[index].favorited;
-                                                      sortLog();
-                                                      LogPage.movementsLogged[resultIndex].save();
-                                                    });
-                                                  },
-                                                  child: ListTile(
-                                                    leading: Icon(LogPage.movementsLogged[resultIndex].favorited == false ? Icons.star_border : Icons.star, color: Styles.primaryColor),
-                                                    title: Text("Favorite", style: TextStyle(color: Styles.primaryColor)),
-                                                  ),
-                                                ),
-                                                PopupMenuItem<ListTile>(
-                                                  onTap: () {
-                                                    LogPage.currentMovementLogIndex = resultIndex;
+                          return ShowcaseTemplate(
+                            radius: 0,
+                            globalKey: movementLogKey,
+                            title: "Movement Logs",
+                            content: "This is where your movements are stored. Each movement has its own log for storing workout data for that movement. Tap the movement to open.",
+                            stepID: 19,
+                            child: InkWell(
+                              onTap: () {
+                                LogPage.currentMovementLogIndex = resultIndex;
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ScreenManager(updateLogOrder: updateLogOrder, sortLog: sortLog),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 60,
+                                    color: Colors.black12,
+                                    child: Row(
+                                        children: [
+                                          if(LogPage.movementsLogged[resultIndex].favorited == true)
+                                            ShaderMask(
+                                              shaderCallback: (Rect bounds) {
+                                                return const RadialGradient(
+                                                  center: Alignment.center,
+                                                  radius: 0.5,
+                                                  colors: [
+                                                    Color(0xFFFFFACD),
+                                                    Color(0xFFFFD700),
+                                                    Color(0xFFFFA500),
+                                                    Color(0xFFFF8C00),
+                                                  ],
+                                                ).createShader(bounds);
+                                              },
+                                              child: const Icon(Icons.star, color: Colors.white, size: 30),
+                                            ),
+                                          const SizedBox(width: 10),
+                                          Expanded(child: Text(label, style: Styles.regularText)),
+                                          ShowcaseTemplate(
+                                            globalKey: editingMovementLogKey,
+                                            radius: 10,
+                                            stepID: 20,
+                                            title: "Editing Movements",
+                                            content: "Click here to make changes to a movement. You can also favorite movements here so that they appear on your home screen and are sorted to the top of the workout log.",
+                                            child: PopupMenuButton<ListTile>(
+                                                itemBuilder: (context) {
+                                                  return [
+                                                    PopupMenuItem<ListTile>(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          displayList[index].favorited = !displayList[index].favorited;
+                                                          sortLog();
+                                                          LogPage.movementsLogged[resultIndex].save();
+                                                        });
+                                                      },
+                                                      child: ListTile(
+                                                        leading: Icon(LogPage.movementsLogged[resultIndex].favorited == false ? Icons.star_border : Icons.star, color: Styles.primaryColor),
+                                                        title: Text("Favorite", style: TextStyle(color: Styles.primaryColor)),
+                                                      ),
+                                                    ),
+                                                    PopupMenuItem<ListTile>(
+                                                      onTap: () {
+                                                        LogPage.currentMovementLogIndex = resultIndex;
 
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext context) {
-                                                          return CreateOrEditMovementLog(
-                                                            refreshParent: () {setState(() {});},
-                                                            logToEdit: LogPage.movementsLogged[LogPage.currentMovementLogIndex],
-                                                            insertName: LogPage.movementsLogged[LogPage.currentMovementLogIndex].name,
-                                                          );
-                                                        }
-                                                    );
-                                                  },
-
-                                                  child: ListTile(
-                                                    leading: Icon(Icons.edit, color: Styles.primaryColor),
-                                                    title: Text('Edit', style: TextStyle(color: Styles.primaryColor)),
-                                                  ),
-                                                ),
-                                                PopupMenuItem<ListTile>(
-                                                  onTap: () {
-                                                    List<void Function()> deleteFunctions = [];
-                                                    int occurrences = 0;
-
-                                                    for(int programIndex = 0; programIndex < ProgramsPage.programsList.length; programIndex ++) {
-
-                                                      for (int weekIndex = 0; weekIndex < ProgramsPage.programsList[programIndex].weeks.length; weekIndex++) {
-
-                                                        for (int dayIndex = 0; dayIndex < ProgramsPage.programsList[programIndex].weeks[weekIndex].days.length; dayIndex++) {
-
-                                                          for (int movementIndex = 0; movementIndex < ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements.length; movementIndex++) {
-                                                            if (ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements[movementIndex].name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == displayList[index].name.replaceAll(RegExp(r'\s+'), '').toLowerCase()) {
-
-                                                              occurrences ++;
-                                                              deleteFunctions.add(() {
-                                                                ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements.remove(ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements[movementIndex]);
-
-                                                                ProgramsPage.programsList[programIndex].save();
-                                                              });
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext context) {
+                                                              return CreateOrEditMovementLog(
+                                                                refreshParent: () {setState(() {});},
+                                                                logToEdit: LogPage.movementsLogged[LogPage.currentMovementLogIndex],
+                                                                insertName: LogPage.movementsLogged[LogPage.currentMovementLogIndex].name,
+                                                              );
                                                             }
-                                                          }
-                                                        }
-                                                      }
-                                                    }
+                                                        );
+                                                      },
 
-                                                    remove() {
-                                                      setState(() {
-                                                        for (VoidCallback function in deleteFunctions) {
-                                                          function();
-                                                        }
+                                                      child: ListTile(
+                                                        leading: Icon(Icons.edit, color: Styles.primaryColor),
+                                                        title: Text('Edit', style: TextStyle(color: Styles.primaryColor)),
+                                                      ),
+                                                    ),
+                                                    PopupMenuItem<ListTile>(
+                                                      onTap: () {
+                                                        List<void Function()> deleteFunctions = [];
+                                                        int occurrences = 0;
 
-                                                        if (copiedWeeksDays != null) {
-                                                          for (int dayIndex = 0; dayIndex < copiedWeeksDays!.length; dayIndex++) {
-                                                            for (int movementIndex = copiedWeeksDays![dayIndex].movements.length - 1; movementIndex >= 0; movementIndex--) {
-                                                              if (copiedWeeksDays![dayIndex].movements[movementIndex].name == displayList[index].name) {
-                                                                copiedWeeksDays![dayIndex].movements.removeAt(movementIndex);
+                                                        for(int programIndex = 0; programIndex < ProgramsPage.programsList.length; programIndex ++) {
+
+                                                          for (int weekIndex = 0; weekIndex < ProgramsPage.programsList[programIndex].weeks.length; weekIndex++) {
+
+                                                            for (int dayIndex = 0; dayIndex < ProgramsPage.programsList[programIndex].weeks[weekIndex].days.length; dayIndex++) {
+
+                                                              for (int movementIndex = 0; movementIndex < ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements.length; movementIndex++) {
+                                                                if (ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements[movementIndex].name.replaceAll(RegExp(r'\s+'), '').toLowerCase() == displayList[index].name.replaceAll(RegExp(r'\s+'), '').toLowerCase()) {
+
+                                                                  occurrences ++;
+                                                                  deleteFunctions.add(() {
+                                                                    ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements.remove(ProgramsPage.programsList[programIndex].weeks[weekIndex].days[dayIndex].movements[movementIndex]);
+
+                                                                    ProgramsPage.programsList[programIndex].save();
+                                                                  });
+                                                                }
                                                               }
                                                             }
                                                           }
                                                         }
 
-                                                        if (copiedDay != null) {
-                                                          for (int i = copiedDay!.movements.length - 1; i >= 0; i--) {
-                                                            if (copiedDay!.movements[i].name == displayList[index].name) {
-                                                              copiedDay!.movements.removeAt(i);
+                                                        remove() {
+                                                          setState(() {
+                                                            for (VoidCallback function in deleteFunctions) {
+                                                              function();
                                                             }
-                                                          }
-                                                        }
 
-                                                        if (copiedMovement != null && copiedMovement?.name == displayList[index].name) {
-                                                          copiedMovement = null;
-                                                        }
+                                                            if (copiedWeeksDays != null) {
+                                                              for (int dayIndex = 0; dayIndex < copiedWeeksDays!.length; dayIndex++) {
+                                                                for (int movementIndex = copiedWeeksDays![dayIndex].movements.length - 1; movementIndex >= 0; movementIndex--) {
+                                                                  if (copiedWeeksDays![dayIndex].movements[movementIndex].name == displayList[index].name) {
+                                                                    copiedWeeksDays![dayIndex].movements.removeAt(movementIndex);
+                                                                  }
+                                                                }
+                                                              }
+                                                            }
+
+                                                            if (copiedDay != null) {
+                                                              for (int i = copiedDay!.movements.length - 1; i >= 0; i--) {
+                                                                if (copiedDay!.movements[i].name == displayList[index].name) {
+                                                                  copiedDay!.movements.removeAt(i);
+                                                                }
+                                                              }
+                                                            }
+
+                                                            if (copiedMovement != null && copiedMovement?.name == displayList[index].name) {
+                                                              copiedMovement = null;
+                                                            }
 
 
-                                                        box.delete(LogPage.movementsLogged[resultIndex].key);
-                                                        LogPage.movementsLogged.removeAt(resultIndex);
-                                                      });
-                                                    }
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext context) {
-                                                          return ConfirmationDialog(content: occurrences > 0 ?
-                                                          "Are you sure you want to delete this movement? This will also delete all '$occurrences' occurrences of it within your programs."
-                                                              : "Are you sure you want to delete this movement?",
-                                                              callbackFunction: remove);
+                                                            box.delete(LogPage.movementsLogged[resultIndex].key);
+                                                            LogPage.movementsLogged.removeAt(resultIndex);
+                                                          });
                                                         }
-                                                    );
-                                                  },
-                                                  child: ListTile(
-                                                    leading: Icon(Icons.delete, color: Styles.primaryColor),
-                                                    title: Text('Delete', style: TextStyle(color: Styles.primaryColor)),
-                                                  ),
-                                                ),
-                                              ];
-                                            },
-                                            icon: const Icon(Icons.more_vert, color: Colors.white))
-                                      ]
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext context) {
+                                                              return ConfirmationDialog(content: occurrences > 0 ?
+                                                              "Are you sure you want to delete this movement? This will also delete all '$occurrences' occurrences of it within your programs."
+                                                                  : "Are you sure you want to delete this movement?",
+                                                                  callbackFunction: remove);
+                                                            }
+                                                        );
+                                                      },
+                                                      child: ListTile(
+                                                        leading: Icon(Icons.delete, color: Styles.primaryColor),
+                                                        title: Text('Delete', style: TextStyle(color: Styles.primaryColor)),
+                                                      ),
+                                                    ),
+                                                  ];
+                                                },
+                                                icon: const Icon(Icons.more_vert, color: Colors.white)),
+                                          )
+                                        ]
+                                    ),
                                   ),
-                                ),
-                                const Divider(height: 0)
-                              ],
+                                  const Divider(height: 0)
+                                ],
+                              ),
                             ),
                           );
                         }
@@ -381,6 +444,8 @@ class ScreenManager extends StatefulWidget {
 class _ScreenManagerState extends State<ScreenManager> {
   MovementLog thisMovementLog = LogPage.movementsLogged[LogPage.currentMovementLogIndex];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List <Widget> screens = [];
+  String currentScreenTitle = "";
 
   void addResultSetBlock (ResultSetBlock newResultSetBlock) {
     setState(() {
@@ -431,15 +496,28 @@ class _ScreenManagerState extends State<ScreenManager> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    ShowcaseView.register();
+
+    screens = [MovementLogScreen(addResultSetBlock: addResultSetBlock, updateLogOrder: widget.updateLogOrder, sortLog: widget.sortLog),
+    MovementStatsScreen(updateLogOrder: widget.updateLogOrder),
+    MovementGoalScreen(updateLogOrder: widget.updateLogOrder),
+    MovementNotesScreen(updateLogOrder: widget.updateLogOrder)];
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        ShowcaseView.get().startShowCase([movementScreensKey, navigatingScreensKey, progressChartKey, settingMonthKey, chartSettingKey, addingEntriesKey]);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    List <Widget> screens = [
-      MovementLogScreen(addResultSetBlock: addResultSetBlock, updateLogOrder: widget.updateLogOrder, sortLog: widget.sortLog),
-      MovementStatsScreen(updateLogOrder: widget.updateLogOrder),
-      MovementGoalScreen(updateLogOrder: widget.updateLogOrder),
-      MovementNotesScreen(updateLogOrder: widget.updateLogOrder)
-    ];
+    currentScreenTitle = ScreenManager.screenIndex == 0 ? "Log" : ScreenManager.screenIndex == 1 ? "Stats" : ScreenManager.screenIndex == 2 ? "Goal" : "Notes";
+
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -459,18 +537,31 @@ class _ScreenManagerState extends State<ScreenManager> {
         shadowColor: Colors.black54,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: <Widget>[
-          IconButton(onPressed: () {
-            _scaffoldKey.currentState?.openEndDrawer();
-          }, icon: const Icon(Icons.menu, color: Colors.white, size: 33))
+          ShowcaseTemplate(
+           globalKey: navigatingScreensKey,
+           stepID: 22,
+           radius: 10,
+           title: "Navigating Screens",
+            content: "Click here to navigate to the other screens of this movement.",
+             child: IconButton(onPressed: () {
+              _scaffoldKey.currentState?.openEndDrawer();
+            }, icon: const Icon(Icons.menu, color: Colors.white, size: 33)),
+          )
         ],
-        title: Text(ScreenManager.screenIndex == 0 ? "Log" : ScreenManager.screenIndex == 1 ? "Stats" : ScreenManager.screenIndex == 2 ? "Goal" : "Notes", style: Styles.labelText),
-        automaticallyImplyLeading: false,
+        title: ShowcaseTemplate(
+          globalKey: movementScreensKey,
+          radius: 10,
+          stepID: 21,
+          title: "$currentScreenTitle Screen",
+            content: "You are currently in the $currentScreenTitle screen of this movement.",
+            child: Text(currentScreenTitle, style: Styles.labelText)),
+    automaticallyImplyLeading: false,
         leading: BackButton(
-          onPressed: () {
-            widget.refreshScreen?.call();
-            Navigator.of(context).pop();
-          },
-        ),
+            onPressed: () {
+              widget.refreshScreen?.call();
+              Navigator.of(context).pop();
+            },
+          ),
       ),
       body: screens[ScreenManager.screenIndex],
       endDrawer: Drawer(width: MediaQuery.of(context).size.width * 0.85,
@@ -633,7 +724,7 @@ class _ScreenManagerState extends State<ScreenManager> {
                       const Divider(),
                       ListTile(
                         leading: const Icon(Icons.calculate, color: Colors.white),
-                        title: const Text('1RM calculator', style: TextStyle(color: Colors.white)),
+                        title: const Text('1RM calculator', style: Styles.regularText),
                         onTap: () {
                           showDialog(
                               context: context,
@@ -736,17 +827,24 @@ class MovementLogScreenState extends State<MovementLogScreen> {
                                   return CreateEntry(addResultSetBlock: widget.addResultSetBlock);
                                 }
                             );
-                          }, child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.black12,
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(
-                                    color: Colors.white54,
-                                  width: 2
-                              )
-                            ),
-                              child: const Icon(Icons.add, color: Colors.white))),
+                          }, child: ShowcaseTemplate(
+                            globalKey: addingEntriesKey,
+                            radius: 10,
+                            stepID: 26,
+                            title: "Manual Entries",
+                            content: "Here you can manually add entries to your workout log rather than logging sets from within your programs. Entries will be listed above here.",
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.black12,
+                                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                border: Border.all(
+                                      color: Colors.white54,
+                                    width: 2
+                                )
+                              ),
+                                child: const Icon(Icons.add, color: Colors.white)),
+                          )),
                                  ListView.builder(
                                         scrollDirection: Axis.vertical,
                                         physics: const NeverScrollableScrollPhysics(),
@@ -867,6 +965,15 @@ class _MovementStatsScreenState extends State<MovementStatsScreen> {
    }
 
     super.initState();
+
+  ShowcaseView.register();
+
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      ShowcaseView.get().startShowCase([prHistoryKey, movementStatsKey]);
+    });
+  });
   }
 
   @override
@@ -883,62 +990,69 @@ class _MovementStatsScreenState extends State<MovementStatsScreen> {
           const SizedBox(height: 50),
           const Text("PR History", style: Styles.regularText),
           const SizedBox(height: 5),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.75,
-            height: 80,
-            decoration: const BoxDecoration(
-              color: Colors.black12,
-              border: Border(
-                  bottom: BorderSide(
-                      color: Colors.white54,
-                      width: 2
-                  ),
-                  left: BorderSide(
-                      color: Colors.white54,
-                      width: 2
-                  ),
-                  right: BorderSide(
-                      color: Colors.white54,
-                      width: 2
-                  ),
-                  top: BorderSide(
-                      color: Colors.white54,
-                      width: 1
-                  )
+          ShowcaseTemplate(
+            globalKey: prHistoryKey,
+            radius: 10,
+            stepID: 27,
+            title: "PR History",
+            content: "Anytime you perform a PR, it will appear here. You can swipe through and view your PR history anytime.",
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.75,
+              height: 80,
+              decoration: const BoxDecoration(
+                color: Colors.black12,
+                border: Border(
+                    bottom: BorderSide(
+                        color: Colors.white54,
+                        width: 2
+                    ),
+                    left: BorderSide(
+                        color: Colors.white54,
+                        width: 2
+                    ),
+                    right: BorderSide(
+                        color: Colors.white54,
+                        width: 2
+                    ),
+                    top: BorderSide(
+                        color: Colors.white54,
+                        width: 1
+                    )
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(10)
+                ),
               ),
-              borderRadius: BorderRadius.all(Radius.circular(10)
+              child: Stack(
+                children: [
+              if (prSliderItems.isNotEmpty) ...[
+               if (prSliderItems.length > 1) const Positioned(left: 0, right: 0, top: 20,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.keyboard_double_arrow_left, color: Colors.white54),
+                      Icon(Icons.keyboard_double_arrow_right, color: Colors.white54)
+                    ]),
+                ),
+               CarouselSlider(
+              carouselController: _carouselController,
+                options: CarouselOptions(
+                  onPageChanged: (int index, CarouselPageChangedReason reason) {
+                    setState(() {
+                      sliderIndex = index;
+                    });
+                  },
+                  height: 130,
+                  viewportFraction: 1,
+                  enableInfiniteScroll: false,
+                  initialPage: prSliderItems.length - 1,
+                ),
+                items: prSliderItems,
               ),
+              ]
+              else...[ const Center(child: Text("No sets found", style: Styles.smallTextWhite))],
+                ],
+              )
             ),
-            child: Stack(
-              children: [
-            if (prSliderItems.isNotEmpty) ...[
-             if (prSliderItems.length > 1) const Positioned(left: 0, right: 0, top: 20,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(Icons.keyboard_double_arrow_left, color: Colors.white54),
-                    Icon(Icons.keyboard_double_arrow_right, color: Colors.white54)
-                  ]),
-              ),
-             CarouselSlider(
-            carouselController: _carouselController,
-              options: CarouselOptions(
-                onPageChanged: (int index, CarouselPageChangedReason reason) {
-                  setState(() {
-                    sliderIndex = index;
-                  });
-                },
-                height: 130,
-                viewportFraction: 1,
-                enableInfiniteScroll: false,
-                initialPage: prSliderItems.length - 1,
-              ),
-              items: prSliderItems,
-            ),
-            ]
-            else...[ const Center(child: Text("No sets found", style: Styles.smallTextWhite))],
-              ],
-            )
           ),
             const SizedBox(height: 30),
             InkWell(
@@ -973,140 +1087,147 @@ class _MovementStatsScreenState extends State<MovementStatsScreen> {
               ),
             ),
           const Spacer(),
-          Container(
-            width: double.infinity,
-            height: 400,
-            padding: const EdgeInsets.only(top: 20),
-            decoration: const BoxDecoration(
-              color: Colors.black12,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),
-                topLeft: Radius.circular(20)
-              ),
-              border: Border(
-                top: BorderSide(
-                  color: Colors.white54,
-                  width: 2
+          ShowcaseTemplate(
+            globalKey: movementStatsKey,
+            stepID: 28,
+            radius: 10,
+            title: "Movement Statistics",
+            content: "Various statistics on this movement's history are also listed here.",
+            child: Container(
+              width: double.infinity,
+              height: 400,
+              padding: const EdgeInsets.only(top: 20),
+              decoration: const BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20),
+                  topLeft: Radius.circular(20)
+                ),
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.white54,
+                    width: 2
+                  )
                 )
-              )
-            ),
-            child: Column(
-              children: [
-                Container(
-                    width: MediaQuery.of(context).size.width * 0.85,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.black12,
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          left: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          right: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          top: BorderSide(
-                              color: Colors.white54,
-                              width: 1
-                          )
+              ),
+              child: Column(
+                children: [
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.black12,
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            left: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            right: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            top: BorderSide(
+                                color: Colors.white54,
+                                width: 1
+                            )
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)
+                        ),
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)
+                      child: Center(child: Text("Total reps performed: $repsPerformed", style: Styles.regularText.copyWith(fontSize: 16)))),
+                  const SizedBox(height: 30),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.black12,
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            left: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            right: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            top: BorderSide(
+                                color: Colors.white54,
+                                width: 1
+                            )
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)
+                        ),
                       ),
-                    ),
-                    child: Center(child: Text("Total reps performed: $repsPerformed", style: Styles.regularText.copyWith(fontSize: 16)))),
-                const SizedBox(height: 30),
-                Container(
-                    width: MediaQuery.of(context).size.width * 0.85,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.black12,
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          left: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          right: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          top: BorderSide(
-                              color: Colors.white54,
-                              width: 1
-                          )
+                      child: Center(child: Text("Total ${AppSettings.selectedUnit}s lifted: ${totalWeightLifted.toStringAsFixed(totalWeightLifted.truncateToDouble() == totalWeightLifted ? 0 : 1)}", style: Styles.regularText.copyWith(fontSize: 16)))),
+                  const SizedBox(height: 30),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.black12,
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            left: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            right: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            top: BorderSide(
+                                color: Colors.white54,
+                                width: 1
+                            )
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)
+                        ),
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)
+                      child: Center(child: Text("Total times done: ${thisMovementLog.resultSetBlocks.length}", style: Styles.regularText.copyWith(fontSize: 16)))),
+                  const SizedBox(height: 30),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.black12,
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            left: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            right: BorderSide(
+                                color: Colors.white54,
+                                width: 2
+                            ),
+                            top: BorderSide(
+                                color: Colors.white54,
+                                width: 1
+                            )
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)
+                        ),
                       ),
-                    ),
-                    child: Center(child: Text("Total ${AppSettings.selectedUnit}s lifted: ${totalWeightLifted.toStringAsFixed(totalWeightLifted.truncateToDouble() == totalWeightLifted ? 0 : 1)}", style: Styles.regularText.copyWith(fontSize: 16)))),
-                const SizedBox(height: 30),
-                Container(
-                    width: MediaQuery.of(context).size.width * 0.85,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.black12,
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          left: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          right: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          top: BorderSide(
-                              color: Colors.white54,
-                              width: 1
-                          )
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)
-                      ),
-                    ),
-                    child: Center(child: Text("Total times done: ${thisMovementLog.resultSetBlocks.length}", style: Styles.regularText.copyWith(fontSize: 16)))),
-                const SizedBox(height: 30),
-                Container(
-                    width: MediaQuery.of(context).size.width * 0.85,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.black12,
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          left: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          right: BorderSide(
-                              color: Colors.white54,
-                              width: 2
-                          ),
-                          top: BorderSide(
-                              color: Colors.white54,
-                              width: 1
-                          )
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)
-                      ),
-                    ),
-                    child: Center(child: Text(timesDoneThisWeek > 0 || thisMovementLog.resultSetBlocks.isEmpty ? "Times done this week: $timesDoneThisWeek" : "Last done: ${DateUtils.dateOnly(thisMovementLog.resultSetBlocks.last.date).toString().substring(0, 10)}", style: Styles.regularText.copyWith(fontSize: 16)))),
-                const SizedBox(height: 75)
-              ],
-            ),
-           ),
+                      child: Center(child: Text(timesDoneThisWeek > 0 || thisMovementLog.resultSetBlocks.isEmpty ? "Times done this week: $timesDoneThisWeek" : "Last done: ${DateUtils.dateOnly(thisMovementLog.resultSetBlocks.last.date).toString().substring(0, 10)}", style: Styles.regularText.copyWith(fontSize: 16)))),
+                  const SizedBox(height: 75)
+                ],
+              ),
+             ),
+          ),
         ]
       ),
     );
@@ -1232,6 +1353,15 @@ class _MovementGoalScreenState extends State<MovementGoalScreen> {
   void initState() {
     projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
     super.initState();
+
+    ShowcaseView.register();
+
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        ShowcaseView.get().startShowCase([endGoalKey, goalDateKey]);
+      });
+    });
   }
 
   @override
@@ -1346,165 +1476,179 @@ class _MovementGoalScreenState extends State<MovementGoalScreen> {
                      const SizedBox(height: 10),
                      Row(
                          children: [
-                       InkWell(
-                         onTap: () {
-                           editWeight (editedText, identifier) {
-                             setState(() {
-                               if (editedText != "") {
-                                 if (thisMovementLog.goal.startWeight == null) {
-                                   thisMovementLog.goal.targetWeight = double.parse(editedText);
-                                   projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
-                                   widget.updateLogOrder(thisMovementLog);
-                                 }
-                                 else {
-                                   if (double.parse(editedText) > 0) {
-                                     if(double.parse(editedText) > thisMovementLog.goal.startWeight!) {
-                                       thisMovementLog.goal.targetWeight = double.parse(editedText);
-                                     }
-                                     else {
-                                       thisMovementLog.goal.targetWeight = double.parse(editedText);
-                                       thisMovementLog.goal.startWeight = null;
-                                     }
-
-
-                                       projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
-                                       widget.updateLogOrder(thisMovementLog);
+                       ShowcaseTemplate(
+                         globalKey: endGoalKey,
+                         radius: 20,
+                         stepID: 29,
+                         title: "Goal Weight",
+                         content: "This is where you set your goal weight for this movement.",
+                         child: InkWell(
+                           onTap: () {
+                             editWeight (editedText, identifier) {
+                               setState(() {
+                                 if (editedText != "") {
+                                   if (thisMovementLog.goal.startWeight == null) {
+                                     thisMovementLog.goal.targetWeight = double.parse(editedText);
+                                     projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
+                                     widget.updateLogOrder(thisMovementLog);
                                    }
                                    else {
-                                     ScaffoldMessenger.of(context).showSnackBar(
-                                       SnackBar(
-                                         backgroundColor: Colors.white,
-                                         content: Text(
-                                             'End weight must be greater than 0',
-                                             style: TextStyle(color: Styles
-                                                 .primaryColor)),
-                                         duration: const Duration(
-                                             milliseconds: 1500),
-                                       ),
-                                     );
+                                     if (double.parse(editedText) > 0) {
+                                       if(double.parse(editedText) > thisMovementLog.goal.startWeight!) {
+                                         thisMovementLog.goal.targetWeight = double.parse(editedText);
+                                       }
+                                       else {
+                                         thisMovementLog.goal.targetWeight = double.parse(editedText);
+                                         thisMovementLog.goal.startWeight = null;
+                                       }
+
+
+                                         projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
+                                         widget.updateLogOrder(thisMovementLog);
+                                     }
+                                     else {
+                                       ScaffoldMessenger.of(context).showSnackBar(
+                                         SnackBar(
+                                           backgroundColor: Colors.white,
+                                           content: Text(
+                                               'End weight must be greater than 0',
+                                               style: TextStyle(color: Styles
+                                                   .primaryColor)),
+                                           duration: const Duration(
+                                               milliseconds: 1500),
+                                         ),
+                                       );
+                                     }
                                    }
                                  }
-                               }
-                             });
-                           }
-                           showDialog(
-                               context: context,
-                               builder: (BuildContext context) {
-                                 return EditDialog(
-                                     dataToEdit: "", identifier: "LB", editData: editWeight);
-                               }
-                           );
-                         },
-                         child: Container(
-                             width: 110,
-                             height: 45,
-                             decoration: BoxDecoration(
-                                 color: Colors.black12,
-                                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                               border: Border.all(
-                                 color: Colors.white
-                               )
-                             ),
-                               child: Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                 children: [
-                                   Text(thisMovementLog.goal.targetWeight != null ? "${stripDecimals(thisMovementLog.goal.targetWeight)}" : "Enter", style: Styles.smallTextWhite.copyWith(color: Colors.white)),
-                                   if (thisMovementLog.goal.targetWeight != null) Text(AppSettings.selectedUnit,style: Styles.smallTextWhite.copyWith(fontSize: 12))
-                                 ],
-                               )),
+                               });
+                             }
+                             showDialog(
+                                 context: context,
+                                 builder: (BuildContext context) {
+                                   return EditDialog(
+                                       dataToEdit: "", identifier: "LB", editData: editWeight);
+                                 }
+                             );
+                           },
+                           child: Container(
+                               width: 110,
+                               height: 45,
+                               decoration: BoxDecoration(
+                                   color: Colors.black12,
+                                   borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                 border: Border.all(
+                                   color: Colors.white
+                                 )
+                               ),
+                                 child: Row(
+                                   mainAxisAlignment: MainAxisAlignment.center,
+                                   children: [
+                                     Text(thisMovementLog.goal.targetWeight != null ? "${stripDecimals(thisMovementLog.goal.targetWeight)}" : "Enter", style: Styles.smallTextWhite.copyWith(color: Colors.white)),
+                                     if (thisMovementLog.goal.targetWeight != null) Text(AppSettings.selectedUnit,style: Styles.smallTextWhite.copyWith(fontSize: 12))
+                                   ],
+                                 )),
+                         ),
                        ),
                        const Spacer(),
-                       InkWell(
-                         onTap: () async {
-                           DateTime? pickedDate = await showDatePicker(
-                             context: context,
-                             firstDate: DateTime(DateTime.now().year, DateTime.now().month + 1, DateTime.now().day),
-                             lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
-                             builder: (BuildContext context, Widget? child) {
-                               return Theme(
-                                 data: ThemeData.light().copyWith(
-                                   colorScheme: ColorScheme.light(
-                                     surface: Styles.primaryColor,
-                                     primary: Colors.white,
-                                     onPrimary: Styles.primaryColor,
-                                     onSurface: Colors.white,
-                                     error: Colors.white
+                       ShowcaseTemplate(
+                         globalKey: goalDateKey,
+                         radius: 20,
+                         stepID: 30,
+                         title: "Goal Date",
+                         content: "This is where you set the date you would like to hit this goal by.",
+                         child: InkWell(
+                           onTap: () async {
+                             DateTime? pickedDate = await showDatePicker(
+                               context: context,
+                               firstDate: DateTime(DateTime.now().year, DateTime.now().month + 1, DateTime.now().day),
+                               lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                               builder: (BuildContext context, Widget? child) {
+                                 return Theme(
+                                   data: ThemeData.light().copyWith(
+                                     colorScheme: ColorScheme.light(
+                                       surface: Styles.primaryColor,
+                                       primary: Colors.white,
+                                       onPrimary: Styles.primaryColor,
+                                       onSurface: Colors.white,
+                                       error: Colors.white
+                                     ),
+                                     textSelectionTheme: const TextSelectionThemeData(
+                                       cursorColor: Colors.white,
+                                     ),
+                                     inputDecorationTheme: const InputDecorationTheme(
+                                       hintStyle: TextStyle(color: Colors.white54),
+                                       labelStyle: TextStyle(color: Colors.white),
+                                     ),
+                                     textTheme: const TextTheme(
+                                       displaySmall: TextStyle(
+                                         color: Colors.white
+                                       )
+                                     ),
+                                     dividerTheme: const DividerThemeData(
+                                       color: Colors.white,
+                                     ),
                                    ),
-                                   textSelectionTheme: const TextSelectionThemeData(
-                                     cursorColor: Colors.white,
-                                   ),
-                                   inputDecorationTheme: const InputDecorationTheme(
-                                     hintStyle: TextStyle(color: Colors.white54),
-                                     labelStyle: TextStyle(color: Colors.white),
-                                   ),
-                                   textTheme: const TextTheme(
-                                     displaySmall: TextStyle(
-                                       color: Colors.white
-                                     )
-                                   ),
-                                   dividerTheme: const DividerThemeData(
-                                     color: Colors.white,
-                                   ),
-                                 ),
-                                 child: child!,
-                               );
-                             },
-                           );
-
-                           if(pickedDate != null) {
-                             setState(() {
-                               int remainder = DateUtils.dateOnly(DateTime.now()).difference(DateUtils.dateOnly(pickedDate)).inDays % 7;
-                               if (remainder != 0) {
-                                 bool round = false;
-                                 showDialog(
-                                     context: context,
-                                     builder: (BuildContext context) {
-                                       return ConfirmationDialog(
-                                           content: "Would you like to round to the nearest whole week?",
-                                           callbackFunction: () {
-                                             setState(() {
-                                               if (remainder > 3) {
-                                                 thisMovementLog.goal.endDate = DateUtils.dateOnly(pickedDate.subtract(Duration(days: 7 - remainder)));
-                                                 projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
-                                                 widget.updateLogOrder(thisMovementLog);
-                                               }
-                                               else {
-                                                 thisMovementLog.goal.endDate = DateUtils.dateOnly(pickedDate.add(Duration(days: remainder)));
-                                                 projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
-                                                 widget.updateLogOrder(thisMovementLog);
-                                               }
-
-                                               round = true;
-                                             });
-                                           });
-                                     }
+                                   child: child!,
                                  );
-                                 if (round == false) {
+                               },
+                             );
+
+                             if(pickedDate != null) {
+                               setState(() {
+                                 int remainder = DateUtils.dateOnly(DateTime.now()).difference(DateUtils.dateOnly(pickedDate)).inDays % 7;
+                                 if (remainder != 0) {
+                                   bool round = false;
+                                   showDialog(
+                                       context: context,
+                                       builder: (BuildContext context) {
+                                         return ConfirmationDialog(
+                                             content: "Would you like to round to the nearest whole week?",
+                                             callbackFunction: () {
+                                               setState(() {
+                                                 if (remainder > 3) {
+                                                   thisMovementLog.goal.endDate = DateUtils.dateOnly(pickedDate.subtract(Duration(days: 7 - remainder)));
+                                                   projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
+                                                   widget.updateLogOrder(thisMovementLog);
+                                                 }
+                                                 else {
+                                                   thisMovementLog.goal.endDate = DateUtils.dateOnly(pickedDate.add(Duration(days: remainder)));
+                                                   projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
+                                                   widget.updateLogOrder(thisMovementLog);
+                                                 }
+
+                                                 round = true;
+                                               });
+                                             });
+                                       }
+                                   );
+                                   if (round == false) {
+                                     thisMovementLog.goal.endDate = DateUtils.dateOnly(pickedDate);
+                                     projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
+                                     widget.updateLogOrder(thisMovementLog);
+                                   }
+                                 }
+                                 else {
                                    thisMovementLog.goal.endDate = DateUtils.dateOnly(pickedDate);
                                    projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
                                    widget.updateLogOrder(thisMovementLog);
                                  }
-                               }
-                               else {
-                                 thisMovementLog.goal.endDate = DateUtils.dateOnly(pickedDate);
-                                 projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
-                                 widget.updateLogOrder(thisMovementLog);
-                               }
-                             });
-                           }
-                         },
-                         child: Container(
-                            width: 110,
-                             height: 45,
-                             decoration: BoxDecoration(
-                                 color: Colors.black12,
-                                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                 border: Border.all(
-                                     color: Colors.white
-                                 )
-                             ),
-                             child: Center(
-                                 child: Text(thisMovementLog.goal.endDate != null ? DateFormat(AppSettings.dateFormat + "yy").format(thisMovementLog.goal.endDate!) : "Enter", style: Styles.smallTextWhite.copyWith(color: Colors.white)))),
+                               });
+                             }
+                           },
+                           child: Container(
+                              width: 110,
+                               height: 45,
+                               decoration: BoxDecoration(
+                                   color: Colors.black12,
+                                   borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                   border: Border.all(
+                                       color: Colors.white
+                                   )
+                               ),
+                               child: Center(
+                                   child: Text(thisMovementLog.goal.endDate != null ? DateFormat(AppSettings.dateFormat + "yy").format(thisMovementLog.goal.endDate!) : "Enter", style: Styles.smallTextWhite.copyWith(color: Colors.white)))),
+                         ),
                        ),
                      ]),
                      const Spacer(),
@@ -1676,16 +1820,23 @@ class _MovementGoalScreenState extends State<MovementGoalScreen> {
                              );
                            }
                          },
-                         child: Container(
-                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                             decoration: BoxDecoration(
-                                 color: Colors.black12,
-                                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                 border: Border.all(
-                                     color: Colors.white
-                                 )
-                             ),
-                             child: const Text("Start goal", style: Styles.regularText))
+                         child: ShowcaseTemplate(
+                           globalKey: startGoalKey,
+                           radius: 20,
+                           stepID: 31,
+                           title: "Starting Goal",
+                           content: "Once you input the goal's data, you click here to display a roadmap of how to achieve that weight. This is to help give you an idea of how much you would need to increase your weight per week to reach this goal.",
+                           child: Container(
+                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                               decoration: BoxDecoration(
+                                   color: Colors.black12,
+                                   borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                   border: Border.all(
+                                       color: Colors.white
+                                   )
+                               ),
+                               child: const Text("Start goal", style: Styles.regularText)),
+                         )
                      ),
                      const SizedBox(height: 50)
                    ],
@@ -1754,7 +1905,7 @@ class _SetBlockWidgetState extends State<SetBlockWidget> {
                   const Spacer(),
                   IconButton(onPressed: ()  {
                     bool dayFound = false;  /* this is because I ran into a bug where the for loop would
-                                          continue to run even after the day was found and it would
+                                          continue to run even after it navigated to the day and it would
                                           open a bunch of copies of the same page
                                        */
                     if (widget.thisBlock.dayIdForNavigation != -1) {
@@ -1857,6 +2008,7 @@ class ProgressChartSettings extends State<ProgressChart> {
 
     });
   }
+
 
   refreshFormula(formula) {
     if(ProgressChart.yearViewActive == true) {
@@ -2059,30 +2211,37 @@ class ProgressChartSettings extends State<ProgressChart> {
                     ),
                   ],
                 )
-                :  Container(
-                  decoration: BoxDecoration(
-                    borderRadius: widget.displaySmall
-                        ? const BorderRadius.all(Radius.circular(20))
-                        : BorderRadius.zero,
-                    gradient: !widget.displaySmall
-                        ? Styles.darkGradient()
-                        : null,
-                    color: widget.displaySmall
-                        ? Styles.chartColor
-                        : null,
-                    border: Border(
-                      bottom: !widget.displaySmall
-                          ? const BorderSide(
-                        color: Colors.black54,
-                        width: 2,
-                      )
-                          : BorderSide.none,
+                :  ShowcaseTemplate(
+                  globalKey: progressChartKey,
+                  stepID: 23,
+                  radius: 0,
+                  title: "Progress Chart",
+                  content: "Your progress chart will appear here when you have two or more entries on at least two separate days.",
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: widget.displaySmall
+                          ? const BorderRadius.all(Radius.circular(20))
+                          : BorderRadius.zero,
+                      gradient: !widget.displaySmall
+                          ? Styles.darkGradient()
+                          : null,
+                      color: widget.displaySmall
+                          ? Styles.chartColor
+                          : null,
+                      border: Border(
+                        bottom: !widget.displaySmall
+                            ? const BorderSide(
+                          color: Colors.black54,
+                          width: 2,
+                        )
+                            : BorderSide.none,
+                      ),
                     ),
-                  ),
 
-                  width: double.infinity,
-                  height: widget.displaySmall ? MediaQuery.of(context).size.height / 5 : 45,
-                  child: const Center(child: Text("(Not enough entries for progress chart)", style: Styles.smallTextWhite)),
+                    width: double.infinity,
+                    height: widget.displaySmall ? MediaQuery.of(context).size.height / 5 : 45,
+                    child: const Center(child: Text("(Not enough entries for progress chart)", style: Styles.smallTextWhite)),
+                  ),
                 ),
 
 
@@ -2108,34 +2267,51 @@ class ProgressChartSettings extends State<ProgressChart> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      IconButton(onPressed: () {
-                        widget.refreshListLength(31);
-                        if (MovementLogScreenState.monthNumber > 1) {
-                           widget.refreshMonthNumber(MovementLogScreenState.monthNumber - 1);
-                          }
-                          else {
-                            widget.refreshMonthNumber(MovementLogScreenState.monthNumber = 12);
-                          }
-                      }, icon: const Icon(Icons.keyboard_double_arrow_left, color: Colors.white54, size: 35)),
-                      Text(DateFormat('MMMM').format(DateTime(0, MovementLogScreenState.monthNumber)).toUpperCase(), style: Styles.regularText.copyWith(color: Colors.white54)),
-                      IconButton(onPressed: () {
-                        widget.refreshListLength(31);
-                          if (MovementLogScreenState.monthNumber < 12) {
-                            widget.refreshMonthNumber(MovementLogScreenState.monthNumber + 1);
-                          } else {
-                            widget.refreshMonthNumber(MovementLogScreenState.monthNumber = 1);
-                          }
-                      }, icon: const Icon(Icons.keyboard_double_arrow_right, color: Colors.white54, size: 35)),
+                      ShowcaseTemplate(
+                        globalKey: settingMonthKey,
+                        stepID: 24,
+                        radius: 10,
+                        title: "Setting Display Month",
+                        content: "This is where you set the month to display. This is used to determine the progress chart's dataset and the log entries to display below.",
+                        child: Row(
+                            children: [
+                          IconButton(onPressed: () {
+                            widget.refreshListLength(31);
+                            if (MovementLogScreenState.monthNumber > 1) {
+                              widget.refreshMonthNumber(MovementLogScreenState.monthNumber - 1);
+                            }
+                            else {
+                              widget.refreshMonthNumber(MovementLogScreenState.monthNumber = 12);
+                            }
+                          }, icon: const Icon(Icons.keyboard_double_arrow_left, color: Colors.white54, size: 35)),
+                          Text(DateFormat('MMMM').format(DateTime(0, MovementLogScreenState.monthNumber)).toUpperCase(), style: Styles.regularText.copyWith(color: Colors.white54)),
+                          IconButton(onPressed: () {
+                            widget.refreshListLength(31);
+                            if (MovementLogScreenState.monthNumber < 12) {
+                              widget.refreshMonthNumber(MovementLogScreenState.monthNumber + 1);
+                            } else {
+                              widget.refreshMonthNumber(MovementLogScreenState.monthNumber = 1);
+                            }
+                          }, icon: const Icon(Icons.keyboard_double_arrow_right, color: Colors.white54, size: 35)),
+                        ]),
+                      ),
 
                       const Spacer(),
-                      IconButton(onPressed: () {
-                       showDialog(
-                         context: context,
-                         builder: (BuildContext context) {
-                           return ChartSettings(refreshFormula: refreshFormula, refreshListLength: widget.refreshListLength, refreshYearNumber: widget.refreshYearNumber, refreshChartSettings: refreshChartSettings);
-                         },
-                       );
-                     }, icon: const Icon(Icons.settings, color: Colors.white, size: 30))
+                      ShowcaseTemplate(
+                        globalKey: chartSettingKey,
+                        stepID: 25,
+                        radius: 20,
+                        title: "Chart Settings",
+                        content: "This is where you can change various settings in your chart. This includes an option to set the current year to display, the 1RM formula used to determine your progress, and a year view toggle to see the entire year's data in the progress chart.",
+                        child: IconButton(onPressed: () {
+                         showDialog(
+                           context: context,
+                           builder: (BuildContext context) {
+                             return ChartSettings(refreshFormula: refreshFormula, refreshListLength: widget.refreshListLength, refreshYearNumber: widget.refreshYearNumber, refreshChartSettings: refreshChartSettings);
+                           },
+                         );
+                                             }, icon: const Icon(Icons.settings, color: Colors.white, size: 30)),
+                      )
                     ],
                   ),
                 ),

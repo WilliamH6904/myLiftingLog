@@ -47,7 +47,6 @@ class _OpenProgramState extends State<OpenProgram> {
   @override
   void initState() {
     super.initState();
-
     ShowcaseView.register();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -969,7 +968,7 @@ class _SliderPageState extends State<SliderPage> {
                              globalKey: checkButtonKey,
                                stepID: 5,
                               title: "Checking Off Days",
-                              content: "Check off each day here as you go. This keeps your streak going, and sets the current day for quick navigation on the home page. \n\n (a day will be automatically checked off if all of its movements are)",
+                              content: "Check off each day here as you go. This keeps your streak going and also determines the current day for quick navigation on the home page. \n\n (a day will be automatically checked off if all of its movements are.)",
                               child: InkWell(
                                 onTap: () {
                                   setState(() {
@@ -1015,7 +1014,7 @@ class _SliderPageState extends State<SliderPage> {
                               globalKey: dayOptionsKey,
                               stepID: 6,
                               title: "Making Changes To The Days List",
-                              content: "Open this menu if you would like to make changes to your day. You may also change your day's muscle groups here.",
+                              content: "Open this menu if you would like to make changes to a day. You may also change a day's muscle groups here.",
                               child: PopupMenuButton<ListTile>(
                                   itemBuilder: (context) {
                                     return [
@@ -1441,9 +1440,8 @@ class DayWidgetState extends State<DayWidget> {
   void initState() {
     super.initState();
     currentDay = widget.currentProgram.weeks[widget.weekIndex].days[widget.dayIndex];
-    super.initState();
-
     ShowcaseView.register();
+
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 300), () {

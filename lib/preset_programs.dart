@@ -235,7 +235,7 @@ class PresetProgramsState extends State<PresetPrograms> {
 
         Movement( resultSets: [],
             notes: "",
-            name: "Cable tricep extensions",
+            name: "Cable Tricep pushdowns",
             sets: 3,
             reps: "10",
             rir: "0-1", weight: 0,
@@ -253,7 +253,7 @@ class PresetProgramsState extends State<PresetPrograms> {
 
         Movement( resultSets: [],
             notes: "",
-            name: "Dumbbell lat raise",
+            name: "Dumbbell lateral raise",
             sets: 3,
             reps: "12",
             rir: "0", weight: 0,
@@ -487,7 +487,7 @@ class PresetProgramsState extends State<PresetPrograms> {
 
           Movement( resultSets: [],
               notes: "",
-              name: "Cable tricep extensions",
+              name: "Cable Tricep pushdowns",
               sets: 3,
               reps: "10",
               rir: "0-1", weight: 0,
@@ -505,7 +505,7 @@ class PresetProgramsState extends State<PresetPrograms> {
 
           Movement( resultSets: [],
               notes: "",
-              name: "Dumbbell lat raise",
+              name: "Dumbbell lateral raise",
               sets: 3,
               reps: "12",
               rir: "0", weight: 0,
@@ -664,11 +664,12 @@ class PresetProgramsState extends State<PresetPrograms> {
       programsList.last.experienceLevel = "Beginner";
     }
 
-    List<List<Movement>> starterMovements(){
+    List<List<Movement>> starterMovements() {
       List<Movement> day1 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Lat-pulldown",
+            name: "Lat pulldown",
             sets: 3,
             reps: "10",
             rir: "1-2",
@@ -677,8 +678,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Biceps", "Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Low row",
             sets: 3,
@@ -689,10 +690,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Chest press machine",
+            name: "Machine chest press",
             sets: 3,
             reps: "10",
             rir: "1-2",
@@ -701,10 +702,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps", "Shoulders"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Shoulder press machine",
+            name: "Machine shoulder press",
             sets: 3,
             reps: "10",
             rir: "1-2",
@@ -713,8 +714,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell bicep curls",
             sets: 2,
@@ -726,157 +727,68 @@ class PresetProgramsState extends State<PresetPrograms> {
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
       ];
+
       List<Movement> day2 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Leg press",
             sets: 4,
             reps: "10",
             rir: "1-2",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Quads"],
+            secondaryMuscleGroups: ["Glutes", "Hamstrings"],
             rest: const Duration(minutes: 2, seconds: 30),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Hamstring curls",
             sets: 3,
             reps: "12",
-            rir: "1-2", weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            rir: "1-2",
+            weight: 0,
+            primaryMuscleGroups: ["Hamstrings"],
+            secondaryMuscleGroups: [],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Leg extensions",
             sets: 3,
             reps: "12",
-            rir: "1-2", weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            rir: "1-2",
+            weight: 0,
+            primaryMuscleGroups: ["Quads"],
+            secondaryMuscleGroups: [],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "This could be with a calf raise machine, or you could use a leg press machine for calf raises",
+        Movement(
+            resultSets: [],
+            notes: "",
             name: "Smith calf raises",
             sets: 3,
             reps: "15",
-            rir: "0-1", weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 1),
-            remainingRestTime: const Duration(minutes: 1)),
-      ];
-      List<Movement> day3 = [
-        Movement( resultSets: [],
-            notes: "",
-            name: "Lat-pulldown",
-            sets: 3,
-            reps: "10",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Back"],
-            secondaryMuscleGroups: ["Biceps", "Forearms"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Low row",
-            sets: 3,
-            reps: "10",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Back"],
-            secondaryMuscleGroups: ["Forearms"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Chest press machine",
-            sets: 3,
-            reps: "10",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Chest"],
-            secondaryMuscleGroups: ["Triceps", "Shoulders"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Shoulder press machine",
-            sets: 3,
-            reps: "10",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Shoulders"],
-            secondaryMuscleGroups: ["Triceps"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Dumbbell bicep curls",
-            sets: 2,
-            reps: "12",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Biceps"],
-            secondaryMuscleGroups: ["Forearms"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-      ];
-      List<Movement> day4 = [
-        Movement( resultSets: [],
-            notes: "",
-            name: "Leg press",
-            sets: 4,
-            reps: "10",
-            rir: "1-2", weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 2, seconds: 30),
-            remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Hamstring curls",
-            sets: 3,
-            reps: "12",
-            rir: "1-2", weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Leg extensions",
-            sets: 3,
-            reps: "12",
-            rir: "1-2", weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "This could be with a calf raise machine, or you could use a leg press machine for calf raises",
-            name: "Smith calf raises",
-            sets: 3,
-            reps: "15",
-            rir: "0-1", weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Calves"],
+            secondaryMuscleGroups: [],
             rest: const Duration(minutes: 1),
             remainingRestTime: const Duration(minutes: 1)),
       ];
+
+      List<Movement> day3 = day1; // Upper body repeat
+      List<Movement> day4 = day2; // Lower body repeat
       List<Movement> rest = [];
 
       return [day1, day2, rest, day3, day4, rest, rest];
     }
-    List<List<Movement>> pplMovements(){
+    List<List<Movement>> pplMovements() {
       List<Movement> day1 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell bench press",
             sets: 4,
@@ -887,8 +799,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps", "Shoulders"],
             rest: const Duration(minutes: 3),
             remainingRestTime: const Duration(minutes: 3)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell shoulder press",
             sets: 3,
@@ -899,8 +811,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps"],
             rest: const Duration(minutes: 2, seconds: 30),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Low-to-high chest flies",
             sets: 2,
@@ -910,8 +822,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             primaryMuscleGroups: ["Chest"],
             rest: const Duration(minutes: 1),
             remainingRestTime: const Duration(minutes: 1)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Smith close-grip bench",
             sets: 2,
@@ -922,10 +834,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Chest"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "dropset last set",
-            name: "Dumbbell lat raise",
+        Movement(
+            resultSets: [],
+            notes: "",
+            name: "Dumbbell lateral raise",
             sets: 2,
             reps: "12",
             rir: "0",
@@ -934,8 +846,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             rest: const Duration(minutes: 1),
             remainingRestTime: const Duration(minutes: 1)),
       ];
+
       List<Movement> day2 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Weighted pull-ups",
             sets: 4,
@@ -946,9 +860,9 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Biceps", "Forearms"],
             rest: const Duration(minutes: 2, seconds: 30),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "Strict form",
+        Movement(
+            resultSets: [],
+            notes: "",
             name: "Barbell rows",
             sets: 3,
             reps: "10-12",
@@ -958,8 +872,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell pullovers",
             sets: 3,
@@ -969,8 +883,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             primaryMuscleGroups: ["Back"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Face pulls",
             sets: 2,
@@ -980,8 +894,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             primaryMuscleGroups: ["Back", "Shoulders"],
             rest: const Duration(minutes: 1),
             remainingRestTime: const Duration(minutes: 1)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell hammer curls",
             sets: 3,
@@ -992,8 +906,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Bayesian curl",
             sets: 2,
@@ -1005,215 +919,58 @@ class PresetProgramsState extends State<PresetPrograms> {
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
       ];
+
       List<Movement> day3 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell back squats",
             sets: 3,
             reps: "4-6",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Quads"],
+            secondaryMuscleGroups: ["Glutes", "Hamstrings"],
             rest: const Duration(minutes: 3, seconds: 30),
             remainingRestTime: const Duration(minutes: 3, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Weighted back extensions",
             sets: 2,
             reps: "12",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Legs", "Back"],
+            primaryMuscleGroups: ["Hamstrings", "Glutes"],
+            secondaryMuscleGroups: ["Back"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Smith calf raises",
             sets: 3,
             reps: "15-20",
             rir: "0",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Calves"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
       ];
-      List<Movement> day4 = [
-        Movement( resultSets: [],
-            notes: "",
-            name: "Dumbbell shoulder press",
-            sets: 4,
-            reps: "4-6",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Shoulders"],
-            secondaryMuscleGroups: ["Triceps"],
-            rest: const Duration(minutes: 3),
-            remainingRestTime: const Duration(minutes: 3)),
 
-        Movement( resultSets: [],
-            notes: "",
-            name: "Barbell bench press",
-            sets: 3,
-            reps: "10-12",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Chest"],
-            secondaryMuscleGroups: ["Shoulders", "Triceps"],
-            rest: const Duration(minutes: 2, seconds: 30),
-            remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Low-to-high chest flies",
-            sets: 2,
-            reps: "12",
-            rir: "0",
-            weight: 0,
-            primaryMuscleGroups: ["Chest"],
-            rest: const Duration(minutes: 1),
-            remainingRestTime: const Duration(minutes: 1)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Smith close-grip bench",
-            sets: 2,
-            reps: "12",
-            rir: "0",
-            weight: 0,
-            primaryMuscleGroups: ["Triceps"],
-            secondaryMuscleGroups: ["Chest"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "dropset last set",
-            name: "Dumbbell lat raise",
-            sets: 2,
-            reps: "12",
-            rir: "0",
-            weight: 0,
-            primaryMuscleGroups: ["Shoulders"],
-            rest: const Duration(minutes: 1),
-            remainingRestTime: const Duration(minutes: 1)),
-      ];
-      List<Movement> day5 = [
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Barbell rows",
-            sets: 4,
-            reps: "6-8",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Back"],
-            secondaryMuscleGroups: ["Forearms"],
-            rest: const Duration(minutes: 2, seconds: 30),
-            remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Weighted pull-ups",
-            sets: 3,
-            reps: "10-12",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Back"],
-            secondaryMuscleGroups: ["Biceps", "Forearms"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Dumbbell pullovers",
-            sets: 3,
-            reps: "12",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Back"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Face pulls",
-            sets: 2,
-            reps: "12",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Back", "Shoulders"],
-            rest: const Duration(minutes: 1),
-            remainingRestTime: const Duration(minutes: 1)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Dumbbell hammer curls",
-            sets: 3,
-            reps: "8-10",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Biceps"],
-            secondaryMuscleGroups: ["Forearms"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Bayesian curl",
-            sets: 2,
-            reps: "12",
-            rir: "0",
-            weight: 0,
-            primaryMuscleGroups: ["Biceps"],
-            secondaryMuscleGroups: ["Forearms"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-      ];
-      List<Movement> day6 = [
-        Movement( resultSets: [],
-            notes: "",
-            name: "Barbell back squats",
-            sets: 3,
-            reps: "10-12",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 3),
-            remainingRestTime: const Duration(minutes: 3)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Weighted back extensions",
-            sets: 2,
-            reps: "12",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Legs", "Back"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Smith calf raises",
-            sets: 3,
-            reps: "15-20",
-            rir: "0",
-            weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-      ];
+      List<Movement> day4 = day1; // Upper body repeat
+      List<Movement> day5 = day2; // Back + biceps repeat
+      List<Movement> day6 = day3; // Lower body repeat
       List<Movement> rest = [];
 
       return [day1, day2, day3, day4, day5, day6, rest];
     }
-    List<List<Movement>> arnoldMovements(){
+    List<List<Movement>> arnoldMovements() {
       List<Movement> day1 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Lat-pulldown",
+            name: "Lat pulldown",
             sets: 4,
             reps: "10",
             rir: "1-2",
@@ -1222,8 +979,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Biceps", "Forearms"],
             rest: const Duration(minutes: 2, seconds: 30),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Chest supported row",
             sets: 3,
@@ -1234,8 +991,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell pullovers",
             sets: 3,
@@ -1245,8 +1002,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             primaryMuscleGroups: ["Back"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell bench press",
             sets: 3,
@@ -1257,7 +1014,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Shoulders", "Triceps"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Low-to-high chest flies",
             sets: 3,
@@ -1268,8 +1026,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
       ];
+
       List<Movement> day2 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Preacher curls",
             sets: 3,
@@ -1280,8 +1040,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Cable hammer curls",
             sets: 2,
@@ -1292,8 +1052,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell shoulder press",
             sets: 3,
@@ -1304,10 +1064,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps"],
             rest: const Duration(minutes: 2, seconds: 30),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Egyptian lat raise",
+            name: "Egyptian lateral raise",
             sets: 2,
             reps: "12",
             rir: "1-2",
@@ -1315,8 +1075,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             primaryMuscleGroups: ["Shoulders"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Face pulls",
             sets: 3,
@@ -1326,10 +1086,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             primaryMuscleGroups: ["Back", "Shoulders"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Tricep extensions",
+            name: "Tricep pushdowns",
             sets: 2,
             reps: "12",
             rir: "1-2",
@@ -1337,11 +1097,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             primaryMuscleGroups: ["Triceps"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Overhead tricep extensions",
+            name: "Overhead Tricep pushdowns",
             sets: 2,
             reps: "12",
             rir: "1-2",
@@ -1351,266 +1110,78 @@ class PresetProgramsState extends State<PresetPrograms> {
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
       ];
       day2[5].superset = true;
+
       List<Movement> day3 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Hamstring curls",
             sets: 2,
             reps: "12",
             rir: "1-2",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Hamstrings"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell back squats",
             sets: 3,
             reps: "10",
             rir: "1-2",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Quads"],
+            secondaryMuscleGroups: ["Glutes", "Hamstrings"],
             rest: const Duration(minutes: 2, seconds: 30),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell RDLs",
             sets: 3,
             reps: "10",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Hamstrings"],
+            secondaryMuscleGroups: ["Glutes"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Leg extensions",
             sets: 2,
             reps: "12",
             rir: "0",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Quads"],
             rest: const Duration(minutes: 1),
             remainingRestTime: const Duration(minutes: 1)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Smith calf raises",
             sets: 4,
             reps: "15",
             rir: "0",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Calves"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
       ];
-      List<Movement> day4 = [
-        Movement( resultSets: [],
-            notes: "",
-            name: "Lat-pulldown",
-            sets: 4,
-            reps: "10",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Back"],
-            secondaryMuscleGroups: ["Biceps", "Forearms"],
-            rest: const Duration(minutes: 2, seconds: 30),
-            remainingRestTime: const Duration(minutes: 2, seconds: 30)),
 
-        Movement( resultSets: [],
-            notes: "",
-            name: "Chest supported row",
-            sets: 3,
-            reps: "10",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Back"],
-            secondaryMuscleGroups: ["Forearms"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Dumbbell pullovers",
-            sets: 3,
-            reps: "12",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Back"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Incline bench press",
-            sets: 3,
-            reps: "10",
-            rir: "0",
-            weight: 0,
-            primaryMuscleGroups: ["Chest"],
-            secondaryMuscleGroups: ["Shoulders", "Triceps"],
-            rest: const Duration(minutes: 2, seconds: 30),
-            remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-        Movement( resultSets: [],
-            notes: "",
-            name: "Pec deck",
-            sets: 3,
-            reps: "10",
-            rir: "0",
-            weight: 0,
-            primaryMuscleGroups: ["Chest"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-      ];
-      List<Movement> day5 = [
-        Movement( resultSets: [],
-            notes: "",
-            name: "Preacher curls",
-            sets: 3,
-            reps: "10",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Biceps"],
-            secondaryMuscleGroups: ["Forearms"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Cable hammer curls",
-            sets: 2,
-            reps: "12",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Biceps"],
-            secondaryMuscleGroups: ["Forearms"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Dumbbell shoulder press",
-            sets: 3,
-            reps: "10",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Shoulders"],
-            secondaryMuscleGroups: ["Triceps"],
-            rest: const Duration(minutes: 2, seconds: 30),
-            remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Egyptian lat raise",
-            sets: 2,
-            reps: "12",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Shoulders"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Face pulls",
-            sets: 3,
-            reps: "12",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Back", "Shoulders"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Tricep extensions",
-            sets: 2,
-            reps: "12",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Triceps"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Overhead tricep extensions",
-            sets: 2,
-            reps: "12",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Triceps"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-      ];
-      day5[5].superset = true;
-      List<Movement> day6 = [
-        Movement( resultSets: [],
-            notes: "",
-            name: "Hamstring curls",
-            sets: 2,
-            reps: "12",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 1, seconds: 30),
-            remainingRestTime: const Duration(minutes: 1, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Barbell back squats",
-            sets: 3,
-            reps: "10",
-            rir: "1-2",
-            weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 2, seconds: 30),
-            remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Dumbbell RDLs",
-            sets: 3,
-            reps: "10",
-            rir: "0-1",
-            weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Leg extensions",
-            sets: 2,
-            reps: "12",
-            rir: "0",
-            weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 1),
-            remainingRestTime: const Duration(minutes: 1)),
-
-        Movement( resultSets: [],
-            notes: "",
-            name: "Smith calf raises",
-            sets: 4,
-            reps: "15",
-            rir: "0",
-            weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            rest: const Duration(minutes: 2),
-            remainingRestTime: const Duration(minutes: 2)),
-      ];
+      List<Movement> day4 = day1; // Upper body repeat
+      List<Movement> day5 = day2; // Arms + shoulders repeat
+      List<Movement> day6 = day3; // Lower body repeat
       List<Movement> rest = [];
 
       return [day1, day2, day3, day4, day5, day6, rest];
     }
-    List<List<Movement>> upperlowerMovements(){
+    List<List<Movement>> upperlowerMovements() {
       List<Movement> day1 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell bench press",
             sets: 4,
@@ -1621,8 +1192,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps", "Shoulders"],
             rest: const Duration(minutes: 3),
             remainingRestTime: const Duration(minutes: 3)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell shoulder press",
             sets: 3,
@@ -1633,8 +1204,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Weighted pull-ups",
             sets: 3,
@@ -1645,8 +1216,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Biceps", "Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell rows",
             sets: 3,
@@ -1657,8 +1228,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell hammer curls",
             sets: 3,
@@ -1669,10 +1240,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Tricep extensions",
+            name: "Tricep pushdowns",
             sets: 3,
             reps: "10-12",
             rir: "0",
@@ -1683,41 +1254,46 @@ class PresetProgramsState extends State<PresetPrograms> {
       ];
 
       List<Movement> day2 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell back squats",
             sets: 4,
             reps: "4-6",
             rir: "0",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Quads"],
+            secondaryMuscleGroups: ["Glutes", "Hamstrings"],
             rest: const Duration(minutes: 3, seconds: 30),
             remainingRestTime: const Duration(minutes: 3, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Weighted back extensions",
             sets: 2,
             reps: "12",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Back", "Legs"],
+            primaryMuscleGroups: ["Hamstrings", "Glutes"],
+            secondaryMuscleGroups: ["Back"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Smith calf raises",
             sets: 3,
             reps: "15-20",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Calves"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
       ];
+
       List<Movement> day3 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell shoulder press",
             sets: 4,
@@ -1728,8 +1304,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps"],
             rest: const Duration(minutes: 2, seconds: 30),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell bench press",
             sets: 3,
@@ -1740,8 +1316,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps", "Shoulders"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement(resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell rows",
             sets: 3,
@@ -1752,8 +1328,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Weighted pull-ups",
             sets: 3,
@@ -1764,8 +1340,8 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell hammer curls",
             sets: 3,
@@ -1776,10 +1352,10 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Forearms"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Tricep extensions",
+            name: "Tricep pushdowns",
             sets: 3,
             reps: "10-12",
             rir: "0",
@@ -1790,42 +1366,46 @@ class PresetProgramsState extends State<PresetPrograms> {
       ];
 
       List<Movement> day4 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell back squats",
             sets: 3,
             reps: "10-12",
             rir: "0",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Quads"],
+            secondaryMuscleGroups: ["Glutes", "Hamstrings"],
             rest: const Duration(minutes: 2, seconds: 30),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Weighted back extensions",
             sets: 2,
             reps: "12",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Back", "Legs"],
+            primaryMuscleGroups: ["Hamstrings", "Glutes"],
+            secondaryMuscleGroups: ["Back"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
-
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Smith calf raises",
             sets: 3,
             reps: "15-20",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Calves"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
       ];
+
       List<Movement> day5 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "Form focused light benching",
             name: "Barbell bench press",
             sets: 3,
@@ -1836,18 +1416,19 @@ class PresetProgramsState extends State<PresetPrograms> {
             secondaryMuscleGroups: ["Triceps", "Shoulders"],
             rest: const Duration(minutes: 2, seconds: 30),
             remainingRestTime: const Duration(minutes: 2, seconds: 30)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
-            name: "Dumbbell lat raise",
+            name: "Dumbbell lateral raise",
             sets: 3,
             reps: "15",
-            rir: "0", weight: 0,
+            rir: "0",
+            weight: 0,
             primaryMuscleGroups: ["Shoulders"],
             rest: const Duration(minutes: 1),
             remainingRestTime: const Duration(minutes: 1)),
-
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Bayesian curl",
             sets: 3,

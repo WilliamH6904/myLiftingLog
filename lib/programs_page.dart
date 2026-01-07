@@ -8,10 +8,10 @@ import 'custom_program_screens.dart';
 import 'dialogs.dart';
 import 'preset_programs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hive/hive.dart';
 
-final GlobalKey programCreation = GlobalKey();
-final GlobalKey programsList = GlobalKey();
+final GlobalKey programCreationKey = GlobalKey();
+final GlobalKey programsListKey = GlobalKey();
+final GlobalKey editingProgramsKey = GlobalKey();
 
 
 class ShowcaseTemplate extends StatefulWidget {
@@ -43,7 +43,6 @@ class ShowcaseTemplateState extends State<ShowcaseTemplate> {
       if (prefs.getStringList('showcaseList') != null) {
         List<String> stringList = prefs.getStringList('showcaseList')!.toList();
         for (int i = 0; i < stringList.length; i ++) {
-          print("item is ${stringList[i]}");
           ShowcaseTemplate.previousSteps.add(int.parse(stringList[i]));
         }
       }
@@ -51,10 +50,10 @@ class ShowcaseTemplateState extends State<ShowcaseTemplate> {
       prefs.setStringList('showcaseList', ShowcaseTemplate.previousSteps.map((e) => e.toString()).toList());
      }();
     }
+
   @override
   Widget build(BuildContext context) {
-   print('condition ran');
-    if (!ShowcaseTemplate.previousSteps.contains(widget.stepID) && !(widget.stepID == 0 && ProgramsPage.programsList.isNotEmpty)) {
+    if (!ShowcaseTemplate.previousSteps.contains(widget.stepID) && !ShowcaseTemplate.previousSteps.contains(-1)) {
       ShowcaseTemplate.previousSteps.add(widget.stepID);
 
       return Showcase(
@@ -104,7 +103,7 @@ void updateProgramList (Program newProgram) {
       }
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ShowcaseView.get().startShowCase([programsList]);
+        ShowcaseView.get().startShowCase([programsListKey, editingProgramsKey]);
       });
     });
   }
@@ -122,10 +121,18 @@ void editLabel(editedText, identifier) {
 @override
   void initState() {
     super.initState();
+
     ShowcaseView.register();
 
     WidgetsBinding.instance.addPostFrameCallback(
-          (_) => ShowcaseView.get().startShowCase([programCreation]),
+          (_) {
+            if (ProgramsPage.programsList.isNotEmpty) {
+              ShowcaseView.get().startShowCase([programCreationKey, programsListKey, editingProgramsKey]);
+            }
+            else {
+              ShowcaseView.get().startShowCase([programCreationKey]);
+            }
+          }
     );
   }
 
@@ -169,7 +176,7 @@ void editLabel(editedText, identifier) {
                     children: [
                       ShowcaseTemplate(
                         radius: 20,
-                          globalKey: programCreation,
+                          globalKey: programCreationKey,
                           stepID: 0, title: "Creating Programs",
                           content: "These are your options for making new programs. You can choose from a predefined template, or make your own custom split.",
                           child: Row(
@@ -248,10 +255,8 @@ void editLabel(editedText, identifier) {
                                 shrinkWrap: true,
                                 itemCount: ProgramsPage.programsList.length,
                                 itemBuilder: (context, index) {
-                                  String label = "";
-                                  for (var x in ShowcaseTemplate.previousSteps) {
-                                    label += x.toString();
-                                  }
+                                  String label = ProgramsPage.programsList[index].name;
+
 
                                   return InkWell(
                                     onTap: () {
@@ -264,7 +269,7 @@ void editLabel(editedText, identifier) {
                                     },
                                       child: ShowcaseTemplate(
                                         radius: 0,
-                                        globalKey: programsList,
+                                        globalKey: programsListKey,
                                         stepID: 1,
                                         title: "Programs List",
                                         content: "Your programs will be listed here, where you can tap to open them.",
@@ -277,80 +282,87 @@ void editLabel(editedText, identifier) {
                                                 Row(
                                                   children: [
                                                          Expanded(child: Text(label, style: Styles.labelText)),
-                                                        PopupMenuButton<ListTile>(
-                                                               itemBuilder: (context) {
-                                                                 return [
-                                                                   PopupMenuItem<ListTile>(
-                                                                     onTap: () {
-                                                                       setState(() {
-                                                                         for (Program program in ProgramsPage.programsList) {
-                                                                           if(program != ProgramsPage.programsList[index] && program.isCurrentProgram == true) {
-                                                                             program.isCurrentProgram = false;
-                                                                             program.save();
-                                                                           }
-                                                                         }
-
-                                                                         ProgramsPage.programsList[index].isCurrentProgram = !ProgramsPage.programsList[index].isCurrentProgram;
-                                                                         ProgramsPage.programsList[index].save();
-                                                                       });
-                                                                     },
-                                                                     child: ListTile(
-                                                                       leading: Icon(ProgramsPage.programsList[index].isCurrentProgram == true ? Icons.check_box : Icons.check_box_outlined, color: Styles.primaryColor),
-                                                                       title: Text('Current program', style: TextStyle(color: Styles.primaryColor)),
-                                                                     ),
-                                                                   ),
-                                                                   PopupMenuItem<ListTile>(
-                                                                     onTap: () {
-                                                                       ProgramsPage.activeProgramIndex = index;
-                                                                       Navigator.of(context).push(
-                                                                         MaterialPageRoute(
-                                                                           builder: (context) =>  ProgramNotes(),
-                                                                         ),
-                                                                       );
-                                                                     },
-                                                                     child: ListTile(
-                                                                       leading: Icon(Icons.assignment, color: Styles.primaryColor),
-                                                                       title: Text('Program notes', style: TextStyle(color: Styles.primaryColor)),
-                                                                     ),
-                                                                   ),
-                                                                   PopupMenuItem<ListTile>(
-                                                                     onTap: () {
-                                                                       ProgramsPage.activeProgramIndex = index;
-                                                                       showDialog(
-                                                                           context: context,
-                                                                           builder: (BuildContext context) {
-                                                                             return EditDialog(dataToEdit: label, identifier: "Name", editData: editLabel);
-                                                                           }
-                                                                       );
-                                                                     },
-                                                                     child: ListTile(
-                                                                       leading: Icon(Icons.edit, color: Styles.primaryColor),
-                                                                       title: Text('Rename', style: TextStyle(color: Styles.primaryColor)),
-                                                                     ),
-                                                                   ),
-                                                                   PopupMenuItem<ListTile>(
-                                                                     onTap: () {
-                                                                       remove() {
+                                                        ShowcaseTemplate(
+                                                          globalKey: editingProgramsKey,
+                                                          radius: 10,
+                                                          stepID: 34,
+                                                          title: "Editing Programs",
+                                                          content: "This is where you can edit program properties and set your current program.",
+                                                          child: PopupMenuButton<ListTile>(
+                                                                 itemBuilder: (context) {
+                                                                   return [
+                                                                     PopupMenuItem<ListTile>(
+                                                                       onTap: () {
                                                                          setState(() {
-                                                                           box.delete(ProgramsPage.programsList[index].key);
-                                                                           ProgramsPage.programsList.removeAt(index);
-                                                                         });
-                                                                       }
-                                                                       showDialog(
-                                                                           context: context,
-                                                                           builder: (BuildContext context) {
-                                                                             return ConfirmationDialog(content: "Are you sure you want to delete this program?", callbackFunction: remove);
+                                                                           for (Program program in ProgramsPage.programsList) {
+                                                                             if(program != ProgramsPage.programsList[index] && program.isCurrentProgram == true) {
+                                                                               program.isCurrentProgram = false;
+                                                                               program.save();
+                                                                             }
                                                                            }
-                                                                       );
-                                                                     },
-                                                                     child: ListTile(
-                                                                       leading: Icon(Icons.delete, color: Styles.primaryColor),
-                                                                       title: Text('Delete', style: TextStyle(color: Styles.primaryColor)),
+
+                                                                           ProgramsPage.programsList[index].isCurrentProgram = !ProgramsPage.programsList[index].isCurrentProgram;
+                                                                           ProgramsPage.programsList[index].save();
+                                                                         });
+                                                                       },
+                                                                       child: ListTile(
+                                                                         leading: Icon(ProgramsPage.programsList[index].isCurrentProgram == true ? Icons.check_box : Icons.check_box_outlined, color: Styles.primaryColor),
+                                                                         title: Text('Current program', style: TextStyle(color: Styles.primaryColor)),
+                                                                       ),
                                                                      ),
-                                                                   ),
-                                                                 ];
-                                                               },
-                                                               icon: const Icon(Icons.more_vert, color: Colors.white, size: 30))
+                                                                     PopupMenuItem<ListTile>(
+                                                                       onTap: () {
+                                                                         ProgramsPage.activeProgramIndex = index;
+                                                                         Navigator.of(context).push(
+                                                                           MaterialPageRoute(
+                                                                             builder: (context) =>  ProgramNotes(),
+                                                                           ),
+                                                                         );
+                                                                       },
+                                                                       child: ListTile(
+                                                                         leading: Icon(Icons.assignment, color: Styles.primaryColor),
+                                                                         title: Text('Program notes', style: TextStyle(color: Styles.primaryColor)),
+                                                                       ),
+                                                                     ),
+                                                                     PopupMenuItem<ListTile>(
+                                                                       onTap: () {
+                                                                         ProgramsPage.activeProgramIndex = index;
+                                                                         showDialog(
+                                                                             context: context,
+                                                                             builder: (BuildContext context) {
+                                                                               return EditDialog(dataToEdit: label, identifier: "Name", editData: editLabel);
+                                                                             }
+                                                                         );
+                                                                       },
+                                                                       child: ListTile(
+                                                                         leading: Icon(Icons.edit, color: Styles.primaryColor),
+                                                                         title: Text('Rename', style: TextStyle(color: Styles.primaryColor)),
+                                                                       ),
+                                                                     ),
+                                                                     PopupMenuItem<ListTile>(
+                                                                       onTap: () {
+                                                                         remove() {
+                                                                           setState(() {
+                                                                             box.delete(ProgramsPage.programsList[index].key);
+                                                                             ProgramsPage.programsList.removeAt(index);
+                                                                           });
+                                                                         }
+                                                                         showDialog(
+                                                                             context: context,
+                                                                             builder: (BuildContext context) {
+                                                                               return ConfirmationDialog(content: "Are you sure you want to delete this program?", callbackFunction: remove);
+                                                                             }
+                                                                         );
+                                                                       },
+                                                                       child: ListTile(
+                                                                         leading: Icon(Icons.delete, color: Styles.primaryColor),
+                                                                         title: Text('Delete', style: TextStyle(color: Styles.primaryColor)),
+                                                                       ),
+                                                                     ),
+                                                                   ];
+                                                                 },
+                                                                 icon: const Icon(Icons.more_vert, color: Colors.white, size: 30)),
+                                                        )
                                                    ]
                                                 ),
                                               const Spacer(),

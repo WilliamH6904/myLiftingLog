@@ -10,6 +10,18 @@ import 'home_screen.dart';
 import 'notification.dart';
 
 
+final GlobalKey movementListKey = GlobalKey();
+final GlobalKey movementOptionsKey = GlobalKey();
+final GlobalKey movementEditButtonsKey = GlobalKey();
+final GlobalKey thisSessionKey = GlobalKey();
+final GlobalKey thisSessionIconKey = GlobalKey();
+final GlobalKey lastSessionKey = GlobalKey();
+final GlobalKey lastSessionIconKey = GlobalKey();
+final GlobalKey notesIconKey = GlobalKey();
+final GlobalKey completeIconKey = GlobalKey();
+
+
+
 
 
 
@@ -143,7 +155,7 @@ class _MovementWidgetState extends State<MovementWidget> {
                             globalKey: movementOptionsKey,
                             stepID: 10,
                             title: "Making Changes To The Movements List",
-                            content: "Tap this button to make changes to the days list, such as copying, deleting, or changing movements, as well as adding supersets.",
+                            content: "Tap this button to make changes to the days list, such as adding supersets, or copying, deleting, and changing movements.",
                             child: PopupMenuButton<ListTile>(
                               padding: const EdgeInsets.all(0),
                                 itemBuilder: (context) {
@@ -550,9 +562,7 @@ class _MovementWidgetState extends State<MovementWidget> {
 
 
 
-final GlobalKey movementListKey = GlobalKey();
-final GlobalKey movementOptionsKey = GlobalKey();
-final GlobalKey movementEditButtonsKey = GlobalKey();
+
 
 
 class OpenMovement extends StatefulWidget {
@@ -581,11 +591,12 @@ class _OpenMovementState extends State<OpenMovement> {
   @override
   void initState() {
     super.initState();
+    ShowcaseView.register();
 
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 300), () {
-        ShowcaseView.get().startShowCase([movementEditButtonsKey]);
+        ShowcaseView.get().startShowCase([movementEditButtonsKey, thisSessionKey, thisSessionIconKey, lastSessionKey, lastSessionIconKey, notesIconKey, completeIconKey]);
       });
     });
 
@@ -765,8 +776,8 @@ void startTimer() {
                 children: [
                   ShowcaseTemplate(
                     globalKey: movementEditButtonsKey,
-                    content: "test",
-                    title: "asd",
+                    content: "These buttons are for editing different properties of the movement, like sets, reps, etc.",
+                    title: "Editing Movement Properties",
                     stepID: 11,
                     radius: 15.0,
                     child: Container(
@@ -1176,24 +1187,38 @@ void startTimer() {
                          child: Column(
                            children: [
                             const SizedBox(height: 20),
-                             Row(
-                             children: [
-                               const SizedBox(width: 5),
-                               const Text("This session", style: Styles.labelText),
-                               if(widget.thisMovement.hasBeenLogged == false && widget.thisMovement.resultSets.length < 8) ...[
-                                 IconButton(onPressed: () {
-                                   setState(() {
-                                     widget.thisMovement.resultSets.add(ResultSet(setNumber: 0, idForKey: MovementWidget.thisLinesId ++, reps: 0, rir: 0, weight: 0));
-                                   });
-                                   thisProgram.save();
-                                 },
-                                     icon: const Icon(Icons.add_circle, size: 30),
-                                     color: Colors.white
-                                 ),
-                                 const SizedBox(width: 20)
+                             ShowcaseTemplate(
+                               radius: 10,
+                               stepID: 12,
+                               globalKey: thisSessionKey,
+                               title: "Inputting Sets",
+                               content: "Below this is where you input the sets you perform so that they can be added to your log.",
+                               child: Row(
+                               children: [
+                                 const SizedBox(width: 5),
+                                 const Text("This session", style: Styles.labelText),
+                                 if(widget.thisMovement.hasBeenLogged == false && widget.thisMovement.resultSets.length < 8) ...[
+                                   ShowcaseTemplate(
+                                     radius: 10,
+                                     stepID: 13,
+                                     globalKey: thisSessionIconKey,
+                                     title: "Adding Sets",
+                                     content: "Click here to add a new set to this session.",
+                                     child: IconButton(onPressed: () {
+                                       setState(() {
+                                         widget.thisMovement.resultSets.add(ResultSet(setNumber: 0, idForKey: MovementWidget.thisLinesId ++, reps: 0, rir: 0, weight: 0));
+                                       });
+                                       thisProgram.save();
+                                     },
+                                         icon: const Icon(Icons.add_circle, size: 30),
+                                         color: Colors.white
+                                     ),
+                                   ),
+                                   const SizedBox(width: 20)
+                                 ],
                                ],
-                             ],
-                           ),
+                               ),
+                             ),
                              const SizedBox(height: 20),
                              Container(
                                decoration: BoxDecoration(
@@ -1380,44 +1405,59 @@ void startTimer() {
                                ),
                              ),
                              const SizedBox(height: 20),
-                             Row(
-                               children: [
-                                 const SizedBox(width: 5),
-                                 const Text("Last session", style: Styles.labelText),
-                                 IconButton(onPressed: () {
-                                   setState(() {
-                                     LogPage.currentMovementLogIndex = existingLogIndex;
-                                     LogPage.movementsLogged[existingLogIndex].resultSetBlocks.sort((a, b) => a.date.compareTo(b.date));
+                             ShowcaseTemplate(
+                               stepID: 14,
+                               globalKey: lastSessionKey,
+                               title: "Previous Lifts",
+                               content: "The data from the last time you performed this movement will appear below here.",
+                               radius: 10,
+                               child: Row(
+                                 children: [
+                                   const SizedBox(width: 5),
+                                   const Text("Last session", style: Styles.labelText),
+                                   ShowcaseTemplate(
+                                     globalKey: lastSessionIconKey,
+                                     radius: 20,
+                                     stepID: 15,
+                                     title: "Movement Log Shortcut",
+                                     content: "You can click here to go to this movement's log.",
+                                     child: IconButton(onPressed: () {
+                                       setState(() {
+                                         LogPage.currentMovementLogIndex = existingLogIndex;
+                                         ScreenManager.screenIndex = 0;
+                                         LogPage.movementsLogged[existingLogIndex].resultSetBlocks.sort((a, b) => a.date.compareTo(b.date));
 
 
-                                     if (LogPage.movementsLogged[existingLogIndex].resultSetBlocks.isNotEmpty) {
-                                       ResultSetBlock lastBlockInExistingLog = LogPage.movementsLogged[existingLogIndex].resultSetBlocks.last;
-                                       MovementLogScreenState.monthNumber = lastBlockInExistingLog.date.month;
-                                       MovementLogScreenState.yearNumber = lastBlockInExistingLog.date.year;
-                                     }
-                                     else {
-                                       MovementLogScreenState.monthNumber = DateTime.now().month;
-                                       MovementLogScreenState.yearNumber = DateTime.now().year;
-                                     }
+                                         if (LogPage.movementsLogged[existingLogIndex].resultSetBlocks.isNotEmpty) {
+                                           ResultSetBlock lastBlockInExistingLog = LogPage.movementsLogged[existingLogIndex].resultSetBlocks.last;
+                                           MovementLogScreenState.monthNumber = lastBlockInExistingLog.date.month;
+                                           MovementLogScreenState.yearNumber = lastBlockInExistingLog.date.year;
+                                         }
+                                         else {
+                                           MovementLogScreenState.monthNumber = DateTime.now().month;
+                                           MovementLogScreenState.yearNumber = DateTime.now().year;
+                                         }
 
-                                     if (widget.thisMovement.timerActive == true) {
-                                       GlobalTimerWidgetState.startTimer();
-                                       stopTimer();
-                                     }
+                                         if (widget.thisMovement.timerActive == true) {
+                                           GlobalTimerWidgetState.startTimer();
+                                           stopTimer();
+                                         }
 
-                                     Navigator.of(context).push(
-                                       MaterialPageRoute(
-                                         builder: (context) => ScreenManager(refreshScreen: refreshPage, sortLog: (){}, updateLogOrder: (MovementLog log) {
-                                           log.date = DateTime.now();
-                                         }),
-                                       ),
-                                     );
-                                   });
-                                 },
-                                     icon: const Icon(Icons.arrow_circle_right_rounded, size: 30),
-                                     color: Colors.white
-                                 ),
-                               ],
+                                         Navigator.of(context).push(
+                                           MaterialPageRoute(
+                                             builder: (context) => ScreenManager(refreshScreen: refreshPage, sortLog: (){}, updateLogOrder: (MovementLog log) {
+                                               log.date = DateTime.now();
+                                             }),
+                                           ),
+                                         );
+                                       });
+                                     },
+                                         icon: const Icon(Icons.arrow_circle_right_rounded, size: 30),
+                                         color: Colors.white
+                                     ),
+                                   ),
+                                 ],
+                               ),
                              ),
                              const SizedBox(height: 20),
                              if(LogPage.movementsLogged[existingLogIndex].resultSetBlocks.isNotEmpty || lastSessionResultSets.isNotEmpty)... [
@@ -1488,7 +1528,6 @@ void startTimer() {
                              else ... [
                                const Divider(color: Colors.white54)
                              ],
-
                            ],
                          ),
                    ),
@@ -1523,9 +1562,18 @@ void startTimer() {
                       ),
                     );
                   },
-                  child: const Column(
-                      children: [ Icon(Icons.assignment_outlined, color: Colors.white, size: 30), Text("Notes", style: Styles.smallTextWhite)]
-                  ),
+                  child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ShowcaseTemplate(
+                              globalKey: notesIconKey,
+                              stepID: 16,
+                              radius: 10,
+                              title: "Writing Notes",
+                              content: "This is where you can add notes on this movement in the current session. These notes are unique to each instance of the movement.",
+                              child: const Icon(Icons.assignment_outlined, color: Colors.white, size: 30)),
+                          const Text("Notes", style: Styles.smallTextWhite)]
+                    ),
                 ),
                 InkWell(
                   onTap: () {
@@ -1676,8 +1724,17 @@ void startTimer() {
                     }
                   },
                   child: Column(
-                    children: [Icon(Icons.check_box, color: widget.thisMovement.hasBeenLogged == true ? Colors.white54 : Colors.white, size: 30), const Text("Done", style: Styles.smallTextWhite)],
-                  ),
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ShowcaseTemplate(
+                            globalKey: completeIconKey,
+                            radius: 10,
+                            stepID: 17,
+                            title: "Completing a Movement",
+                            content: "Click here when you are done with this movement, and you would like to add the sets to your movement log. Keep in mind that once a movement's sets are added to the log, you can no longer edit the sets or re-log them.",
+                            child: Icon(Icons.check_box, color: widget.thisMovement.hasBeenLogged == true ? Colors.white54 : Colors.white, size: 30)),
+                        const Text("Complete", style: Styles.smallTextWhite)],
+                    ),
                 ),
               ],
             )

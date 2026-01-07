@@ -1874,12 +1874,12 @@ class _OneRMCalculatorState extends State<OneRMCalculator> {
                                    color: Styles.primaryColor
                                  ),
                                  child: const Center(
-                                     child: Text("1RM calculator", style: Styles.labelText, textAlign: TextAlign.center),
+                                     child: Text("1RM calculator", style: Styles.regularText, textAlign: TextAlign.center),
                                  ),
                                ),
                               Material(
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  padding: const EdgeInsets.symmetric(horizontal: 50),
                                   width: double.infinity,
                                   decoration: BoxDecoration(
                                     gradient: Styles.darkGradient()
@@ -1963,18 +1963,18 @@ class _OneRMCalculatorState extends State<OneRMCalculator> {
                               ),
                               const SizedBox(height: 10),
                               const Divider(height: 15),
-                                       Center(
+                              Center(
                                          child: Text(oneRepMax.toStringAsFixed(oneRepMax.truncateToDouble() == oneRepMax ? 0 : 1), style: Styles.regularText, textAlign: TextAlign.center),
                                       ),
                             ],
                           ),
-                          Positioned(left: 0, top: 10,
+                          Positioned(left: 0, top: 7,
                             child: IconButton(onPressed: () {
                               Navigator.of(context).pop();
                             },
-                                icon: const Icon(Icons.arrow_back_ios_rounded, color: Colors.white)),
+                                icon: const Icon(Icons.arrow_back_ios_rounded, color: Colors.white, size: 24)),
                           ),
-                          const Positioned(bottom: 24.0, left: 5,
+                          const Positioned(bottom: 30.0, left: 5,
                               child: Text("Calculated 1RM:", style: Styles.smallTextWhite,))
                         ],
                       ),
