@@ -371,7 +371,7 @@ void editLabel(editedText, identifier) {
                                                  if(ProgramsPage.programsList[index].isCurrentProgram) const Text("Current Program", style: Styles.smallTextWhite),
                                                  const Spacer(),
                                                   Text(
-                                                    DateFormat(AppSettings.dateFormat + "yy").format(DateUtils.dateOnly(ProgramsPage.programsList[index].date)).toString(),
+                                                    DateFormat("${AppSettings.dateFormat}yy").format(DateUtils.dateOnly(ProgramsPage.programsList[index].date)).toString(),
                                                     style: Styles.smallTextWhite,
                                                   ),
                                                 ],

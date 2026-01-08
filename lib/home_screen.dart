@@ -1032,7 +1032,7 @@ class _AppSettingsState extends State<AppSettings> {
               Row(
                   children: [
                     Switch(
-                        activeColor: Colors.white,
+                        activeThumbColor: Colors.white,
                         inactiveThumbColor: Styles.primaryColor,
                         activeTrackColor: Colors.white38,
                         value: AppSettings.rirActive,

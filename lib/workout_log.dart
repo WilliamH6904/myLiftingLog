@@ -2504,7 +2504,7 @@ class ChartSettingsState extends State<ChartSettings> {
                                 Row(
                                     children: [
                                       Switch(
-                                          activeColor: Colors.white,
+                                          activeThumbColor: Colors.white,
                                           inactiveThumbColor: Styles.primaryColor,
                                           activeTrackColor: Colors.white38,
                                           value: ProgressChart.dotsActive,
@@ -2521,7 +2521,7 @@ class ChartSettingsState extends State<ChartSettings> {
                                       const Text(" Data points", style: Styles.smallTextWhite),
                                       const Spacer(),
                                       Switch(
-                                          activeColor: Colors.white,
+                                          activeThumbColor: Colors.white,
                                           inactiveThumbColor: Styles.primaryColor,
                                           activeTrackColor: Colors.white38,
                                           value: ProgressChart.yearViewActive,

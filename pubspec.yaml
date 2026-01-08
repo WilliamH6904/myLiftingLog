@@ -30,6 +30,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   showcaseview: ^5.0.1
+  in_app_purchase: ^3.2.3
   hive:
   hive_flutter:
   shared_preferences: ^2.2.2

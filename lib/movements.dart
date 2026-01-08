@@ -67,7 +67,7 @@ class _MovementWidgetState extends State<MovementWidget> {
           if(widget.movementIndex == 0) const SizedBox(height: 30),
           ColorFiltered(
           colorFilter: ColorFilter.mode(
-          Colors.grey.withOpacity(thisMovement.hasBeenLogged == true ? 0.3 : 0),
+          Colors.grey.withValues(alpha: thisMovement.hasBeenLogged == true ? 0.3 : 0),
           BlendMode.srcATop,
           ),
             child: ShowcaseTemplate(

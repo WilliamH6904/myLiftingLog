@@ -84,7 +84,7 @@ double borderWidth1 = 4;
             ),
             shadowColor: Colors.black54,
             flexibleSpace: Container(
-              color: Styles.primaryColor.withOpacity(1.0),
+              color: Styles.primaryColor.withValues(alpha: 1.0),
             ),
           ),
           body: Container(
