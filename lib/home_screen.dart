@@ -1317,20 +1317,20 @@ class _HelpSectionState extends State<HelpSection> {
                       showDialog(context: context, builder: (BuildContext context) {
                         return ConfirmationDialog(
                             content: "Are you sure you would like to reset the tooltips? All help pop-ups will be displayed until viewed again.",
-                            callbackFunction: () async {
-                              final navigator = Navigator.of(context);
 
-                              SharedPreferences prefs = await SharedPreferences.getInstance();
-                              prefs.setStringList('showcaseList', []);
-                              ShowcaseTemplate.previousSteps = {};
+                            callbackFunction: () {
 
-                              navigator.pop();
-                              widget.refreshHomePageCallback();
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                Future.delayed(const Duration(milliseconds: 0), () {
-                                  ShowcaseView.get().startShowCase([programPageKey, logPageKey, streakKey, preferencesKey]);
+                              () async {
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                prefs.setStringList('showcaseList', []);
+                                ShowcaseTemplate.previousSteps = {};
+
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  Future.delayed(const Duration(milliseconds: 0), () {
+                                    ShowcaseView.get().startShowCase([programPageKey, logPageKey, streakKey, preferencesKey]);
+                                  });
                                 });
-                              });
+                              }();
                             });
                       });
                     },

@@ -40,8 +40,6 @@ class ShowcaseTemplateState extends State<ShowcaseTemplate> {
   initState() {
     super.initState();
 
-
-
     () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       if (prefs.getStringList('showcaseList') != null) {

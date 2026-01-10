@@ -592,14 +592,16 @@ class _OpenMovementState extends State<OpenMovement> {
   @override
   void initState() {
     super.initState();
-    ShowcaseView.register();
 
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        ShowcaseView.get().startShowCase([movementEditButtonsKey, thisSessionKey, thisSessionIconKey, lastSessionKey, lastSessionIconKey, notesIconKey, completeIconKey]);
+    if (widget.thisMovement.resultSets.length < 4) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          ShowcaseView.get().startShowCase([movementEditButtonsKey, thisSessionKey, thisSessionIconKey, duplicateSessionKey, lastSessionKey, lastSessionIconKey, notesIconKey, completeIconKey]);
+        });
       });
-    });
+    }
+
 
     if (GlobalTimerWidgetState.backgroundTimerActive == true && GlobalTimerWidgetState.movementOfTimer == widget.thisMovement) {
       startTimer();
@@ -1549,8 +1551,9 @@ void startTimer() {
                                          children: [
                                            Container(
                                                margin: const EdgeInsets.only(left: 10),
+                                               width: 110,
                                                child: Text(pastResultSet.setType != "default" ? pastResultSet.setType : "SET ${index + 1}:", style: Styles.smallTextWhite)),
-                                           const Spacer(),
+                                           Spacer(),
                                            SizedBox(
                                                width: 120,
                                                child: Row(
@@ -1567,15 +1570,16 @@ void startTimer() {
                                                    const Text("REPS", style: Styles.smallTextWhite)
                                                  ],
                                                )),
-                                          if(AppSettings.rirActive == true) ...[ SizedBox(
-                                               width: 90,
-                                               child: Row(
-                                                 children: [
-                                                   Text("${pastResultSet.rir}", style: Styles.regularText),
-                                                   const Text("RIR", style: Styles.smallTextWhite)
-                                                 ],
-                                               )),
-                                        ] else ...[const SizedBox(width: 90)]
+                                          if(AppSettings.rirActive == true) ...[
+                                            SizedBox(
+                                                width: 90,
+                                                 child: Row(
+                                                   children: [
+                                                     Text("${pastResultSet.rir}", style: Styles.regularText),
+                                                     const Text("RIR", style: Styles.smallTextWhite)
+                                                   ],
+                                                 )),
+                                        ] else ...[SizedBox( width: 90)]
                                          ]
                                      ),
                                    );

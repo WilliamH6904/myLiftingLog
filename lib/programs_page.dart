@@ -63,8 +63,6 @@ void editLabel(editedText, identifier) {
   void initState() {
     super.initState();
 
-    ShowcaseView.register();
-
 
     WidgetsBinding.instance.addPostFrameCallback(
           (_) {

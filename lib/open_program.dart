@@ -47,7 +47,6 @@ class _OpenProgramState extends State<OpenProgram> {
   @override
   void initState() {
     super.initState();
-    ShowcaseView.register();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 300), () {
@@ -1440,8 +1439,6 @@ class DayWidgetState extends State<DayWidget> {
   void initState() {
     super.initState();
     currentDay = widget.currentProgram.weeks[widget.weekIndex].days[widget.dayIndex];
-    ShowcaseView.register();
-
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 300), () {

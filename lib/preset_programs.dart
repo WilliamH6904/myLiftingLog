@@ -1520,7 +1520,6 @@ List<String> calcMuscleGroups(daysName) {
    rather than just a list of days with movements, this is my quick solution to adding muscle groups to the days
    */
 
-
 switch (daysName) {
   case "Upper":
 

@@ -81,8 +81,6 @@ class _LogPageState extends State<LogPage> {
 
     sortLog();
 
-    ShowcaseView.register();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 300), () {
         if (LogPage.movementsLogged.isNotEmpty) {
@@ -507,8 +505,6 @@ class _ScreenManagerState extends State<ScreenManager> {
   @override
   void initState() {
     super.initState();
-
-    ShowcaseView.register();
 
     screens = [MovementLogScreen(addResultSetBlock: addResultSetBlock, updateLogOrder: widget.updateLogOrder, sortLog: widget.sortLog),
     MovementStatsScreen(updateLogOrder: widget.updateLogOrder),
@@ -974,9 +970,6 @@ class _MovementStatsScreenState extends State<MovementStatsScreen> {
 
     super.initState();
 
-  ShowcaseView.register();
-
-
   WidgetsBinding.instance.addPostFrameCallback((_) {
     Future.delayed(const Duration(milliseconds: 300), () {
       ShowcaseView.get().startShowCase([prHistoryKey, movementStatsKey]);
@@ -1361,9 +1354,6 @@ class _MovementGoalScreenState extends State<MovementGoalScreen> {
   void initState() {
     projectionValues = generateProjectionValues(thisMovementLog.goal.startWeight, thisMovementLog.goal.targetWeight, thisMovementLog.goal.startDate, thisMovementLog.goal.endDate);
     super.initState();
-
-    ShowcaseView.register();
-
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 300), () {
@@ -1975,9 +1965,9 @@ class _SetBlockWidgetState extends State<SetBlockWidget> {
                   return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(width: 65, child: Row(children: [Text(thisEntry.setType != "default" ? thisEntry.setType : "SET ${thisEntry.setNumber.toString()}:", style: Styles.smallTextWhite)])),
-                        SizedBox(width: 120,child: Row(children: [Text("${stripDecimals(thisEntry.weight)}", style: Styles.regularText.copyWith(fontWeight: FontWeight.normal)), Text(AppSettings.selectedUnit, style: Styles.smallTextWhite)])),
-                        SizedBox(width: 80, child: Row(children: [Text(thisEntry.reps.toString(), style: Styles.regularText.copyWith(fontWeight: FontWeight.normal)), const Text("REPS", style: Styles.smallTextWhite)])),
+                        SizedBox(width: 100, child: Row(children: [Text(thisEntry.setType != "default" ? thisEntry.setType : "SET ${thisEntry.setNumber.toString()}:", style: Styles.smallTextWhite)])),
+                        SizedBox(width: 110,child: Row(children: [Text("${stripDecimals(thisEntry.weight)}", style: Styles.regularText.copyWith(fontWeight: FontWeight.normal)), Text(AppSettings.selectedUnit, style: Styles.smallTextWhite)])),
+                        SizedBox(width: 90, child: Row(children: [Text(thisEntry.reps.toString(), style: Styles.regularText.copyWith(fontWeight: FontWeight.normal)), const Text("REPS", style: Styles.smallTextWhite)])),
                         if(AppSettings.rirActive) SizedBox(width: 80, child: Row(children: [Text(thisEntry.rir.toString(), style: Styles.regularText.copyWith(fontWeight: FontWeight.normal)), const Text("RIR", style: Styles.smallTextWhite)])),
                       ]
                   );
