@@ -71,17 +71,17 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
     favoriteMovements = LogPage.movementsLogged.where((log) => log.favorited == true).toList();
 
-    ShowcaseView.register(onComplete: (index, key) {
-     // ShowcaseView.get().startShowCase([logPageKey, streakKey, preferencesKey]);
+    ShowcaseView.register(onFinish: () {
+      initWorkoutLog();
     });
 
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 300), () {
 
-        ShowcaseView.get().startShowCase([programPageKey, logPageKey, streakKey, preferencesKey]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          ShowcaseView.get().startShowCase([programPageKey, logPageKey, streakKey, preferencesKey]);
+        });
       });
-    });
   }
 
 
@@ -139,7 +139,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 radius: 20,
                 stepID: 32,
                 title: "Streak",
-                content: "This is where your streak is displayed. The streak is based on the number of subsequent days you have checked off a day in your programs.",
+                content: "This is where your streak is displayed. The streak is based on the number of days you have sequentially checked off in your programs.",
                 child: Text(HomeScreen.streakLength.toString(), style: Styles.labelText.copyWith(color: HomeScreen.lastStreakDay == DateUtils.dateOnly(DateTime.now()) ? Colors.white : Colors.white54))),
            const Spacer(),
           ]

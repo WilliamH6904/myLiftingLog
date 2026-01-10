@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gym_app/preset_programs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'home_screen.dart';
 import 'movements.dart';
 import 'programs_page.dart';
@@ -15,7 +16,69 @@ final GlobalKey templateKey = GlobalKey();
 final GlobalKey programPageKey = GlobalKey();
 final GlobalKey logPageKey = GlobalKey();
 
+class ShowcaseTemplate extends StatefulWidget {
+  final GlobalKey globalKey;
+  final int stepID;
+  final double radius;
+  final Widget child;
+  final String title;
+  final String content;
 
+  static Set<int> previousSteps = {};
+
+
+  const ShowcaseTemplate({required this.radius, required this.globalKey, required this.stepID, required this.title, required this.content, required this.child});
+
+  @override
+  ShowcaseTemplateState createState() => ShowcaseTemplateState();
+}
+
+class ShowcaseTemplateState extends State<ShowcaseTemplate> {
+
+
+  @override
+  initState() {
+    super.initState();
+
+
+
+    () async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (prefs.getStringList('showcaseList') != null) {
+        List<String> stringList = prefs.getStringList('showcaseList')!.toList();
+        for (int i = 0; i < stringList.length; i ++) {
+          ShowcaseTemplate.previousSteps.add(int.parse(stringList[i]));
+        }
+      }
+
+      prefs.setStringList('showcaseList', ShowcaseTemplate.previousSteps.map((e) => e.toString()).toList());
+    }();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    if (!ShowcaseTemplate.previousSteps.contains(widget.stepID) && !ShowcaseTemplate.previousSteps.contains(-1) && !(widget.stepID == 35 && (LogPage.movementsLogged.isNotEmpty || ProgramsPage.programsList.isNotEmpty))) {
+      ShowcaseTemplate.previousSteps.add(widget.stepID);
+
+      return Showcase(
+        targetBorderRadius: BorderRadius.all(
+          Radius.circular(widget.radius),
+        ),
+        titleTextAlign: TextAlign.center,
+        descTextStyle: TextStyle(color: Styles.primaryColor),
+        titleTextStyle: TextStyle(color: Styles.primaryColor, fontWeight: FontWeight.bold, fontSize: 18),
+        descriptionTextAlign: TextAlign.center,
+        title: widget.title,
+        description: widget.content,
+        key: widget.globalKey,
+        child: widget.child,
+      );
+    } else {
+      return widget.child;
+    }
+  }
+}
 
 
 Future main() async {
@@ -82,10 +145,8 @@ Future main() async {
 class MyApp extends StatelessWidget {
 
 
-
   @override
   Widget build(BuildContext context) {
-
 
     return MaterialApp(
       theme: ThemeData(
@@ -100,7 +161,6 @@ class MyApp extends StatelessWidget {
 
 
 class PageManager extends StatefulWidget {
-
 
   @override
   PageManagerState createState() => PageManagerState();
@@ -131,8 +191,6 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
-   initWorkoutLog();
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -182,8 +240,10 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
            GlobalTimerWidgetState.movementOfTimer.remainingRestTime -= difference!;
          }
          else {
-           GlobalTimerWidgetState.movementOfTimer.remainingRestTime = Duration(seconds: 0);
+           GlobalTimerWidgetState.movementOfTimer.remainingRestTime = Duration.zero;
          }
+
+         start = null;
        }
      }
    }
@@ -206,51 +266,51 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
        canvasColor: Colors.transparent
     ),
       child: Container(
-          decoration: BoxDecoration(
-            boxShadow: const [
-              BoxShadow(
-               color: Colors.black87,
-               spreadRadius: 5,
-               blurRadius: 6,
-              offset: Offset(0, 3),
+            decoration: BoxDecoration(
+              boxShadow: const [
+                BoxShadow(
+                 color: Colors.black87,
+                 spreadRadius: 5,
+                 blurRadius: 6,
+                offset: Offset(0, 3),
+                ),
+              ],
+              gradient: Styles.darkGradient()
+            ),
+        child: BottomNavigationBar(
+          elevation: 0,
+            items:  <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: ShowcaseTemplate(
+                  globalKey: programPageKey,
+                  stepID: 35,
+                   title: "Programs Page",
+                   content: "This is where you create your programs using the movements in your workout log.",
+                   radius: 10,
+                    child: Icon(Icons.format_list_bulleted_outlined)),
+                label: 'Programs',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_filled),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: ShowcaseTemplate(
+                    globalKey: logPageKey,
+                    stepID: 36,
+                    title: "Workout Log Page",
+                    content: "This is where your movements are stored along with their data. You can create your own movements with custom names here.",
+                    radius: 10,
+                    child: Icon(Icons.note_alt_rounded)),
+                label: 'Workout Log',
               ),
             ],
-            gradient: Styles.darkGradient()
+            currentIndex: selectedIndex,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.white54,
+            onTap: onItemTapped,
           ),
-      child: BottomNavigationBar(
-        elevation: 0,
-          items:  <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: ShowcaseTemplate(
-                globalKey: programPageKey,
-                stepID: 35,
-                 title: "Programs Page",
-                 content: "This is where you create your programs using the movements in your workout log.",
-                 radius: 10,
-                  child: Icon(Icons.format_list_bulleted_outlined)),
-              label: 'Programs',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: ShowcaseTemplate(
-                  globalKey: logPageKey,
-                  stepID: 36,
-                  title: "Workout Log Page",
-                  content: "This is where your movements are stored along with their data. You can create your own movements with custom names here.",
-                  radius: 10,
-                  child: Icon(Icons.note_alt_rounded)),
-              label: 'Workout Log',
-            ),
-          ],
-          currentIndex: selectedIndex,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white54,
-          onTap: onItemTapped,
         ),
-      ),
       )
    );
   }
@@ -457,255 +517,254 @@ String? stripDecimals(double? data) {
   return data?.toStringAsFixed(data.truncateToDouble() == data ? 0 : 1);
 }
 
-void initWorkoutLog() {
-  List<MovementLog> defaultMovementLogs = [
-
-    MovementLog(
-      name: "Barbell bench press",
-      primaryMuscleGroups: ["Chest"],
-      secondaryMuscleGroups: ["Triceps", "Shoulders"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Machine chest press",
-      primaryMuscleGroups: ["Chest"],
-      secondaryMuscleGroups: ["Triceps", "Shoulders"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Low-to-high chest flies",
-      primaryMuscleGroups: ["Chest"],
-      secondaryMuscleGroups: [],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-
-    MovementLog(
-      name: "Lat pulldown",
-      primaryMuscleGroups: ["Back"],
-      secondaryMuscleGroups: ["Biceps", "Forearms"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Dumbbell rows",
-      primaryMuscleGroups: ["Back"],
-      secondaryMuscleGroups: ["Biceps", "Forearms"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Barbell rows",
-      primaryMuscleGroups: ["Back"],
-      secondaryMuscleGroups: ["Forearms"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Low row",
-      primaryMuscleGroups: ["Back"],
-      secondaryMuscleGroups: ["Forearms"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-
-    MovementLog(
-      name: "Dumbbell shoulder press",
-      primaryMuscleGroups: ["Shoulders"],
-      secondaryMuscleGroups: ["Triceps"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Machine shoulder press",
-      primaryMuscleGroups: ["Shoulders"],
-      secondaryMuscleGroups: ["Triceps"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Dumbbell lateral raise",
-      primaryMuscleGroups: ["Shoulders"],
-      secondaryMuscleGroups: [],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Face pulls",
-      primaryMuscleGroups: ["Back", "Shoulders"],
-      secondaryMuscleGroups: [],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-
-    MovementLog(
-      name: "Dumbbell bicep curls",
-      primaryMuscleGroups: ["Biceps"],
-      secondaryMuscleGroups: ["Forearms"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Dumbbell hammer curls",
-      primaryMuscleGroups: ["Biceps"],
-      secondaryMuscleGroups: ["Forearms"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Preacher curls",
-      primaryMuscleGroups: ["Biceps"],
-      secondaryMuscleGroups: ["Forearms"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Ez-bar skullcrushers",
-      primaryMuscleGroups: ["Triceps"],
-      secondaryMuscleGroups: [],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Cable tricep extensions",
-      primaryMuscleGroups: ["Triceps"],
-      secondaryMuscleGroups: [],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Barbell back squats",
-      primaryMuscleGroups: ["Quads"],
-      secondaryMuscleGroups: ["Hamstrings", "Glutes"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Barbell RDLs",
-      primaryMuscleGroups: ["Hamstrings"],
-      secondaryMuscleGroups: ["Glutes"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Barbell deadlifts",
-      primaryMuscleGroups: ["Hamstrings"],
-      secondaryMuscleGroups: ["Glutes", "Quads"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Leg press",
-      primaryMuscleGroups: ["Quads"],
-      secondaryMuscleGroups: ["Glutes", "Hamstrings"],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Hamstring curls",
-      primaryMuscleGroups: ["Hamstrings"],
-      secondaryMuscleGroups: [],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Leg extensions",
-      primaryMuscleGroups: ["Quads"],
-      secondaryMuscleGroups: [],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-
-    MovementLog(
-      name: "Smith calf raises",
-      primaryMuscleGroups: ["Calves"],
-      secondaryMuscleGroups: [],
-      favorited: false,
-      resultSetBlocks: [],
-      date: DateTime.now(),
-      notes: "",
-    ),
-  ];
-
-  () async {
+void initWorkoutLog() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool firstLaunch = prefs.getBool("firstLaunch") ?? true;
 
-    if (firstLaunch) {
+    if (firstLaunch && LogPage.movementsLogged.isEmpty) {
+      final box = Boxes.getMovementLogs();
+      List<MovementLog> defaultMovementLogs = [
+
+        MovementLog(
+          name: "Barbell bench press",
+          primaryMuscleGroups: ["Chest"],
+          secondaryMuscleGroups: ["Triceps", "Shoulders"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Machine chest press",
+          primaryMuscleGroups: ["Chest"],
+          secondaryMuscleGroups: ["Triceps", "Shoulders"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Low-to-high chest flies",
+          primaryMuscleGroups: ["Chest"],
+          secondaryMuscleGroups: [],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+
+        MovementLog(
+          name: "Lat pulldown",
+          primaryMuscleGroups: ["Back"],
+          secondaryMuscleGroups: ["Biceps", "Forearms"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Dumbbell rows",
+          primaryMuscleGroups: ["Back"],
+          secondaryMuscleGroups: ["Biceps", "Forearms"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Barbell rows",
+          primaryMuscleGroups: ["Back"],
+          secondaryMuscleGroups: ["Forearms"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Low row",
+          primaryMuscleGroups: ["Back"],
+          secondaryMuscleGroups: ["Forearms"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+
+        MovementLog(
+          name: "Dumbbell shoulder press",
+          primaryMuscleGroups: ["Shoulders"],
+          secondaryMuscleGroups: ["Triceps"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Machine shoulder press",
+          primaryMuscleGroups: ["Shoulders"],
+          secondaryMuscleGroups: ["Triceps"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Dumbbell lateral raise",
+          primaryMuscleGroups: ["Shoulders"],
+          secondaryMuscleGroups: [],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Face pulls",
+          primaryMuscleGroups: ["Back", "Shoulders"],
+          secondaryMuscleGroups: [],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+
+        MovementLog(
+          name: "Dumbbell bicep curls",
+          primaryMuscleGroups: ["Biceps"],
+          secondaryMuscleGroups: ["Forearms"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Dumbbell hammer curls",
+          primaryMuscleGroups: ["Biceps"],
+          secondaryMuscleGroups: ["Forearms"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Preacher curls",
+          primaryMuscleGroups: ["Biceps"],
+          secondaryMuscleGroups: ["Forearms"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Ez-bar skullcrushers",
+          primaryMuscleGroups: ["Triceps"],
+          secondaryMuscleGroups: [],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Cable tricep extensions",
+          primaryMuscleGroups: ["Triceps"],
+          secondaryMuscleGroups: [],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Barbell back squats",
+          primaryMuscleGroups: ["Quads"],
+          secondaryMuscleGroups: ["Hamstrings", "Glutes"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Barbell RDLs",
+          primaryMuscleGroups: ["Hamstrings"],
+          secondaryMuscleGroups: ["Glutes"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Barbell deadlifts",
+          primaryMuscleGroups: ["Hamstrings"],
+          secondaryMuscleGroups: ["Glutes", "Quads"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Leg press",
+          primaryMuscleGroups: ["Quads"],
+          secondaryMuscleGroups: ["Glutes", "Hamstrings"],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Hamstring curls",
+          primaryMuscleGroups: ["Hamstrings"],
+          secondaryMuscleGroups: [],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Leg extensions",
+          primaryMuscleGroups: ["Quads"],
+          secondaryMuscleGroups: [],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+
+        MovementLog(
+          name: "Smith calf raises",
+          primaryMuscleGroups: ["Calves"],
+          secondaryMuscleGroups: [],
+          favorited: false,
+          resultSetBlocks: [],
+          date: DateTime.now(),
+          notes: "",
+        ),
+      ];
+
+
       for (var movement in defaultMovementLogs) {
         LogPage.movementsLogged.add(movement);
+        box.add(movement);
       }
-
-      prefs.setBool("firstLaunch", false);
     }
-  }();
 }
 
 class Styles {

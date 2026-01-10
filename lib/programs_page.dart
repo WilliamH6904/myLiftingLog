@@ -14,67 +14,6 @@ final GlobalKey programsListKey = GlobalKey();
 final GlobalKey editingProgramsKey = GlobalKey();
 
 
-class ShowcaseTemplate extends StatefulWidget {
-  final GlobalKey globalKey;
-  final int stepID;
-  final double radius;
-  final Widget child;
-  final String title;
-  final String content;
-
-  static Set<int> previousSteps = {};
-
-
-  const ShowcaseTemplate({required this.radius, required this.globalKey, required this.stepID, required this.title, required this.content, required this.child});
-
-  @override
-  ShowcaseTemplateState createState() => ShowcaseTemplateState();
-}
-
-class ShowcaseTemplateState extends State<ShowcaseTemplate> {
-
-
- @override
-  initState() {
-    super.initState();
-
-   () async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (prefs.getStringList('showcaseList') != null) {
-        List<String> stringList = prefs.getStringList('showcaseList')!.toList();
-        for (int i = 0; i < stringList.length; i ++) {
-          ShowcaseTemplate.previousSteps.add(int.parse(stringList[i]));
-        }
-      }
-
-      prefs.setStringList('showcaseList', ShowcaseTemplate.previousSteps.map((e) => e.toString()).toList());
-     }();
-    }
-
-  @override
-  Widget build(BuildContext context) {
-    if (!ShowcaseTemplate.previousSteps.contains(widget.stepID) && !ShowcaseTemplate.previousSteps.contains(-1)) {
-      ShowcaseTemplate.previousSteps.add(widget.stepID);
-
-      return Showcase(
-        targetBorderRadius: BorderRadius.all(
-           Radius.circular(widget.radius),
-        ),
-        titleTextAlign: TextAlign.center,
-        descTextStyle: TextStyle(color: Styles.primaryColor),
-        titleTextStyle: TextStyle(color: Styles.primaryColor, fontWeight: FontWeight.bold, fontSize: 18),
-        descriptionTextAlign: TextAlign.center,
-        title: widget.title,
-        description: widget.content,
-        key: widget.globalKey,
-        child: widget.child,
-      );
-    } else {
-      return widget.child;
-    }
-  }
-}
-
 
 class ProgramsPage extends StatefulWidget {
   static List<Program> programsList = Boxes.getPrograms().values.toList().cast<Program>();
@@ -102,9 +41,11 @@ void updateProgramList (Program newProgram) {
         ProgramsPage.programsList[0].isCurrentProgram = true;
       }
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ShowcaseView.get().startShowCase([programsListKey, editingProgramsKey]);
-      });
+      if (ProgramsPage.programsList.length == 1) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ShowcaseView.get().startShowCase([programsListKey, editingProgramsKey]);
+        });
+      }
     });
   }
 
@@ -123,6 +64,7 @@ void editLabel(editedText, identifier) {
     super.initState();
 
     ShowcaseView.register();
+
 
     WidgetsBinding.instance.addPostFrameCallback(
           (_) {

@@ -155,59 +155,64 @@ class PresetProgramsState extends State<PresetPrograms> {
  static addZoesProgram() {
     List<List<Movement>> zoesInitializer(){
       List<Movement> day1 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell back squats",
             sets: 3,
             reps: "10",
             rir: "1-2",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Quads"],
+            secondaryMuscleGroups: ["Hamstrings, Glutes"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
 
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Dumbbell RDLs",
             sets: 3,
             reps: "10",
             rir: "1-2",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
-            secondaryMuscleGroups: ["Back"],
+            primaryMuscleGroups: ["Hamstrings", "Glutes"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
 
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Leg extensions",
             sets: 2,
             reps: "12",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Quads"],
             rest: const Duration(minutes: 1),
             remainingRestTime: const Duration(minutes: 1)),
 
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Cable kickbacks",
             sets: 2,
             reps: "10",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Glutes"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
 
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Calf raises",
             sets: 3,
             reps: "15",
             rir: "0-1",
             weight: 0,
-            primaryMuscleGroups: ["Legs"],
+            primaryMuscleGroups: ["Calves"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
       ];
@@ -307,53 +312,64 @@ class PresetProgramsState extends State<PresetPrograms> {
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
       ];
       List<Movement> day4 = [
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Barbell back squats",
             sets: 3,
             reps: "10",
             rir: "1-2",
             weight: 0,
+            primaryMuscleGroups: ["Quads"],
+            secondaryMuscleGroups: ["Hamstrings, Glutes"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
 
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Hip thrust",
             sets: 3,
             reps: "10",
             rir: "1-2",
             weight: 0,
+            primaryMuscleGroups: ["Glutes"],
             rest: const Duration(minutes: 2),
             remainingRestTime: const Duration(minutes: 2)),
 
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Seated leg curl",
             sets: 2,
             reps: "12",
             rir: "0-1",
             weight: 0,
+            primaryMuscleGroups: ["Hamstrings"],
             rest: const Duration(minutes: 1),
             remainingRestTime: const Duration(minutes: 1)),
 
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Cable kickbacks",
             sets: 2,
             reps: "10",
             rir: "0-1",
             weight: 0,
+            primaryMuscleGroups: ["Glutes"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
 
-        Movement( resultSets: [],
+        Movement(
+            resultSets: [],
             notes: "",
             name: "Calf raises",
             sets: 3,
             reps: "15",
             rir: "0-1",
             weight: 0,
+            primaryMuscleGroups: ["Calves"],
             rest: const Duration(minutes: 1, seconds: 30),
             remainingRestTime: const Duration(minutes: 1, seconds: 30)),
       ];
@@ -1512,7 +1528,7 @@ switch (daysName) {
 
   case "Lower":
 
-  return ["Legs"];
+  return ["Hamstrings", "Quads", "Calves", "Glutes"];
 
   case "Push":
 
@@ -1524,7 +1540,7 @@ switch (daysName) {
 
   case "Legs":
 
-  return ["Legs"];
+  return ["Hamstrings", "Quads", "Calves", "Glutes"];
 
   case "Chack":
 

@@ -95,28 +95,36 @@ class _LogPageState extends State<LogPage> {
     });
   }
 
+  void addMovementLog(String logName, List<String> primaryMuscleGroups, List<String> secondaryMuscleGroups) {
+    setState(() {
+      LogPage.movementsLogged.add(MovementLog(
+          primaryMuscleGroups: primaryMuscleGroups,
+          secondaryMuscleGroups: secondaryMuscleGroups,
+          date: DateTime.now(),
+          favorited: false,
+          name: logName,
+          notes: "",
+          resultSetBlocks: []));
+      box.add(LogPage.movementsLogged.last);
+      searchController.text = "";
+    });
+
+    sortLog();
+
+    if (LogPage.movementsLogged.length == 1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (LogPage.movementsLogged.isNotEmpty) {
+          ShowcaseView.get().startShowCase([movementLogKey, editingMovementLogKey]);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
     displayList = List.from(LogPage.movementsLogged.where((element) => element.name.replaceAll(RegExp(r'\s+'), '').toLowerCase().contains(searchController.text.replaceAll(RegExp(r'\s+'), '').toLowerCase())));
 
-
-    void addMovementLog(String logName, List<String> primaryMuscleGroups, List<String> secondaryMuscleGroups) {
-      setState(() {
-        LogPage.movementsLogged.add(MovementLog(
-            primaryMuscleGroups: primaryMuscleGroups,
-            secondaryMuscleGroups: secondaryMuscleGroups,
-            date: DateTime.now(),
-            favorited: false,
-            name: logName,
-            notes: "",
-            resultSetBlocks: []));
-        box.add(LogPage.movementsLogged.last);
-        searchController.text = "";
-      });
-
-      sortLog();
-    }
 
     return GestureDetector(
       onTap: () {

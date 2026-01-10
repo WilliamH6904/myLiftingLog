@@ -15,6 +15,7 @@ final GlobalKey movementOptionsKey = GlobalKey();
 final GlobalKey movementEditButtonsKey = GlobalKey();
 final GlobalKey thisSessionKey = GlobalKey();
 final GlobalKey thisSessionIconKey = GlobalKey();
+final GlobalKey duplicateSessionKey = GlobalKey();
 final GlobalKey lastSessionKey = GlobalKey();
 final GlobalKey lastSessionIconKey = GlobalKey();
 final GlobalKey notesIconKey = GlobalKey();
@@ -1214,6 +1215,30 @@ void startTimer() {
                                          color: Colors.white
                                      ),
                                    ),
+                                   Spacer(),
+                                   ShowcaseTemplate(
+                                     radius: 10,
+                                     stepID: 79,
+                                     globalKey: duplicateSessionKey,
+                                     title: "Duplicating Sets",
+                                     content: "Click here to add a duplicate of your latest set to this session.",
+                                     child: IconButton(onPressed: () {
+                                       setState(() {
+                                         widget.thisMovement.resultSets.add(ResultSet(
+                                             setNumber: widget.thisMovement.resultSets.last.setNumber,
+                                             idForKey: MovementWidget.thisLinesId ++,
+                                             reps: widget.thisMovement.resultSets.last.reps,
+                                             rir: widget.thisMovement.resultSets.last.rir,
+                                             weight: widget.thisMovement.resultSets.last.weight
+                                         ));
+                                         widget.thisMovement.resultSets.last.setType =  widget.thisMovement.resultSets[widget.thisMovement.resultSets.length - 2].setType;
+                                       });
+                                       thisProgram.save();
+                                     },
+                                         icon: const Icon(Icons.control_point_duplicate_sharp, size: 30),
+                                         color: Colors.white
+                                     ),
+                                   ),
                                    const SizedBox(width: 20)
                                  ],
                                ],
@@ -1254,7 +1279,7 @@ void startTimer() {
                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                        children: [
                                         if(!widget.thisMovement.hasBeenLogged)...[
-                                          DropdownButton(
+                                          DropdownButton<String>(
                                             isDense: true,
                                             borderRadius: BorderRadius.all(Radius.circular(15)),
                                             iconSize: 20,
@@ -1262,12 +1287,28 @@ void startTimer() {
                                             style: Styles.smallTextWhite,
                                             value: thisResultSet.setType,
                                             items: setTypes,
+
+                                            selectedItemBuilder: (BuildContext context) {
+                                              return setTypes.map((item) {
+                                                String displayText;
+
+                                                if (item.value == "default") {
+                                                  displayText = "SET ${index + 1}:";
+                                                } else {
+                                                  String text = (item.child as Text).data ?? "";
+                                                  displayText = text.endsWith(":") ? text : "$text:";
+                                                }
+
+                                                return Text(displayText, style: Styles.smallTextWhite);
+                                              }).toList();
+                                            },
+
                                             onChanged: (value) {
                                               setState(() {
                                                 thisResultSet.setType = value!;
                                               });
                                             },
-                                          ),
+                                          )
                                         ]
                                          else ...[
                                            Container(
@@ -1326,21 +1367,38 @@ void startTimer() {
                                            children: [
                                              Container(
                                                  margin: const EdgeInsets.only(left: 10),
-                                                     child: !widget.thisMovement.hasBeenLogged ? DropdownButton(
-                                                       isDense: true,
-                                                       borderRadius: BorderRadius.all(Radius.circular(15)),
-                                                       iconSize: 20,
-                                                       dropdownColor: Styles.primaryColor,
-                                                       style: Styles.smallTextWhite,
-                                                       value: thisResultSet.setType,
-                                                       items: setTypes,
+                                                     child: !widget.thisMovement.hasBeenLogged
+                                                         ? DropdownButton<String>(
+                                                           isDense: true,
+                                                           borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                           iconSize: 20,
+                                                           dropdownColor: Styles.primaryColor,
+                                                           style: Styles.smallTextWhite,
+                                                           value: thisResultSet.setType,
+                                                           items: setTypes,
+
+                                                       selectedItemBuilder: (BuildContext context) {
+                                                         return setTypes.map((item) {
+                                                           String displayText;
+
+                                                           if (item.value == "default") {
+                                                             displayText = "SET ${index + 1}:";
+                                                           } else {
+                                                             String text = (item.child as Text).data ?? "";
+                                                             displayText = text.endsWith(":") ? text : "$text:";
+                                                           }
+
+                                                           return Text(displayText, style: Styles.smallTextWhite);
+                                                          }).toList();
+                                                       },
+
                                                        onChanged: (value) {
                                                          setState(() {
                                                            thisResultSet.setType = value!;
                                                          });
                                                        },
-                                                     ) :
-                                                        Container(
+                                                     )
+                                                         : Container(
                                                            margin: const EdgeInsets.only(left: 10),
                                                            child: Text(thisResultSet.setType != "default" ? thisResultSet.setType : "SET ${index + 1}:", style: Styles.smallTextWhite))
 
