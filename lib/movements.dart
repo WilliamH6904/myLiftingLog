@@ -1206,7 +1206,7 @@ void startTimer() {
                                      stepID: 13,
                                      globalKey: thisSessionIconKey,
                                      title: "Adding Sets",
-                                     content: "Click here to add a new set to this session.",
+                                     content: "Click here to add a new set to this session. (swipe left to delete them)",
                                      child: IconButton(onPressed: () {
                                        setState(() {
                                          widget.thisMovement.resultSets.add(ResultSet(setNumber: 0, idForKey: MovementWidget.thisLinesId ++, reps: 0, rir: 0, weight: 0));
@@ -1226,16 +1226,31 @@ void startTimer() {
                                      content: "Click here to add a duplicate of your latest set to this session.",
                                      child: IconButton(onPressed: () {
                                        setState(() {
-                                         widget.thisMovement.resultSets.add(ResultSet(
-                                             setNumber: widget.thisMovement.resultSets.last.setNumber,
-                                             idForKey: MovementWidget.thisLinesId ++,
-                                             reps: widget.thisMovement.resultSets.last.reps,
-                                             rir: widget.thisMovement.resultSets.last.rir,
-                                             weight: widget.thisMovement.resultSets.last.weight
-                                         ));
-                                         widget.thisMovement.resultSets.last.setType =  widget.thisMovement.resultSets[widget.thisMovement.resultSets.length - 2].setType;
+                                         var resultSets = widget.thisMovement.resultSets;
+
+
+                                         if (resultSets.isNotEmpty) {
+                                           resultSets.add(ResultSet(
+                                               setNumber: resultSets.last.setNumber,
+                                               idForKey: MovementWidget.thisLinesId ++,
+                                               reps: resultSets.last.reps,
+                                               rir: resultSets.last.rir,
+                                               weight: resultSets.last.weight
+                                           ));
+                                           if (resultSets[resultSets.length - 2].setType.contains("side")) {
+                                             if (resultSets[resultSets.length - 2].setType[0] == "L") {
+                                               resultSets.last.setType = "Right side:";
+                                             }
+                                             else {
+                                               resultSets.last.setType = "Left side:";
+                                             }
+                                           }
+                                           else {
+                                             resultSets.last.setType = resultSets[resultSets.length - 2].setType;
+                                           }
+                                           thisProgram.save();
+                                         }
                                        });
-                                       thisProgram.save();
                                      },
                                          icon: const Icon(Icons.control_point_duplicate_sharp, size: 30),
                                          color: Colors.white
