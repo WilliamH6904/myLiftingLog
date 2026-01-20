@@ -1,16 +1,9 @@
-# gym_app
+A fitness mobile application developed with the Flutter framework. It provides users with useful tools to create workout programs, log their exercises, and track progress.
 
-A new Flutter project.
+Currently cleaning up the codebase by dividing large files, following SOLID principles, and implementing an MVVM structure.
 
-## Getting Started
+Sample screenshots:
 
-This project is a starting point for a Flutter application.
+<img width="1290" height="2796" alt="Simulator Screenshot - iPhone 15 Pro Max - 2026-01-20 at 13 49 38" src="https://github.com/user-attachments/assets/6a50419c-7441-4afc-bdeb-50f24b715c7d" />
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img width="1290" height="2796" alt="Simulator Screenshot - iPhone 15 Pro Max - 2026-01-20 at 13 48 36" src="https://github.com/user-attachments/assets/aef907bb-f516-4b79-9c5d-14e1ac93f897" />
