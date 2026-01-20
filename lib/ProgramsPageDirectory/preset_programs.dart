@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
-import 'dialogs.dart';
+import '../main.dart';
+import '../dialogs.dart';
 
 class PresetPrograms extends StatefulWidget {
   final Function (Program) updateProgramList;

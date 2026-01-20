@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:gym_app/home_screen.dart';
-import 'package:gym_app/workout_log.dart';
+import 'package:gym_app/HomePageDirectory/home_screen.dart';
+import 'package:gym_app/WorkoutLogPageDirectory/workout_log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'programs_page.dart';
-import 'main.dart';
+import '../main.dart';
 import 'movements.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'dialogs.dart';
+import '../dialogs.dart';
 
 final GlobalKey currentWeekKey = GlobalKey();
 final GlobalKey daysListKey = GlobalKey();

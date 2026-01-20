@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gym_app/workout_log.dart';
+import 'package:gym_app/WorkoutLogPageDirectory/workout_log.dart';
 import 'main.dart';
-import 'programs_page.dart';
+import 'ProgramsPageDirectory/programs_page.dart';
 import 'package:wheel_slider/wheel_slider.dart';
 import 'dart:math' as math;
 import 'dart:core';
-import 'home_screen.dart';
+import 'HomePageDirectory/home_screen.dart';
 
 class ProgramNotes extends StatelessWidget {
   final TextEditingController _textController = TextEditingController();

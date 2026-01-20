@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gym_app/programs_page.dart';
+import 'package:gym_app/ProgramsPageDirectory/programs_page.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'main.dart';
+import '../main.dart';
 import 'dart:async';
-import 'dialogs.dart';
-import 'workout_log.dart';
-import 'home_screen.dart';
-import 'notification.dart';
+import '../dialogs.dart';
+import '../WorkoutLogPageDirectory/workout_log.dart';
+import '../HomePageDirectory/home_screen.dart';
+import '../notification.dart';
 
 
 final GlobalKey movementListKey = GlobalKey();

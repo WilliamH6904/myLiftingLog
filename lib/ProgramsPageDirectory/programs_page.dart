@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'home_screen.dart';
-import 'main.dart';
+import '../HomePageDirectory/home_screen.dart';
+import '../main.dart';
 import 'open_program.dart';
 import 'custom_program_screens.dart';
-import 'dialogs.dart';
+import '../dialogs.dart';
 import 'preset_programs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

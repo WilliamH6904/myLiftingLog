@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gym_app/home_screen.dart';
-import 'package:gym_app/programs_page.dart';
+import 'package:gym_app/HomePageDirectory/home_screen.dart';
+import 'package:gym_app/ProgramsPageDirectory/programs_page.dart';
 import 'package:wheel_slider/wheel_slider.dart';
-import 'main.dart';
+import '../main.dart';
 import 'preset_programs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

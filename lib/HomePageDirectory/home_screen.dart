@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/dialogs.dart';
-import 'package:gym_app/open_program.dart';
-import 'package:gym_app/programs_page.dart';
-import 'package:gym_app/workout_log.dart';
+import 'package:gym_app/ProgramsPageDirectory/open_program.dart';
+import 'package:gym_app/ProgramsPageDirectory/programs_page.dart';
+import 'package:gym_app/WorkoutLogPageDirectory/workout_log.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'main.dart';
+import '../main.dart';
 import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'movements.dart';
-import 'notification.dart';
+import '../ProgramsPageDirectory/movements.dart';
+import '../notification.dart';
 
 
 final GlobalKey streakKey = GlobalKey();

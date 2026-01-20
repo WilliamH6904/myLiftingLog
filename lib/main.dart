@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:gym_app/preset_programs.dart';
+import 'package:gym_app/ProgramsPageDirectory/preset_programs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'home_screen.dart';
-import 'movements.dart';
-import 'programs_page.dart';
+import 'HomePageDirectory/home_screen.dart';
+import 'ProgramsPageDirectory/movements.dart';
+import 'ProgramsPageDirectory/programs_page.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'workout_log.dart';
+import 'WorkoutLogPageDirectory/workout_log.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'notification.dart';
 part 'main.g.dart';

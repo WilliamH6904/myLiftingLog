@@ -1,12 +1,12 @@
 import 'package:flutter/services.dart';
-import 'package:gym_app/home_screen.dart';
-import 'package:gym_app/programs_page.dart';
+import 'package:gym_app/HomePageDirectory/home_screen.dart';
+import 'package:gym_app/ProgramsPageDirectory/programs_page.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'main.dart';
-import 'dialogs.dart';
-import 'open_program.dart';
+import '../main.dart';
+import '../dialogs.dart';
+import '../ProgramsPageDirectory/open_program.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:math' as math;
 import 'package:shared_preferences/shared_preferences.dart';
