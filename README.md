@@ -1,6 +1,6 @@
 A fitness mobile application developed with the Flutter framework. It provides users with useful tools to create workout programs, log their exercises, and track progress.
 
-Currently cleaning up the codebase by dividing large files, following SOLID principles, and implementing an MVVM structure.
+This project was originally built to learn Flutter. Over time, the codebase has grown significantly, so I’m currently refactoring it by dividing large files, applying SOLID principles, and introducing an MVVM structure to improve maintainability and scalability.
 
 Sample screenshots:
 
