@@ -1457,7 +1457,6 @@ class _EditRestDialogState extends State<EditRestDialog> {
 
 
 
-//ignore: must_be_immutable
 class EditDialog extends StatefulWidget {
   dynamic dataToEdit;
   String identifier;
