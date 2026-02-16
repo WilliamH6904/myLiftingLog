@@ -219,18 +219,20 @@ class PageManagerState extends State<PageManager> with WidgetsBindingObserver {
   }
 
  @override
- void didChangeAppLifecycleState(AppLifecycleState state) {
+ void didChangeAppLifecycleState(AppLifecycleState state) async {
 
    super.didChangeAppLifecycleState(state);
 
    if (GlobalTimerWidgetState.localTimerActive || GlobalTimerWidgetState.backgroundTimerActive || OpenMovement.inMovementTimerActive) {
-     if (state == AppLifecycleState.paused) {
+     final alreadyScheduled = (await flutterLocalNotificationsPlugin.pendingNotificationRequests()).isNotEmpty;
+
+     if (!alreadyScheduled) {
+         NotificationServices().scheduleNotification(id: 0, title: "Timer Done", body: "Your rest time for '${GlobalTimerWidgetState.movementOfTimer.name}' is done", scheduledDate: DateTime.now().add(GlobalTimerWidgetState.movementOfTimer.remainingRestTime));
        start = DateTime.now();
-       NotificationServices().scheduleNotification(id: 0, title: "Timer Done", body: "Your rest time for '${GlobalTimerWidgetState.movementOfTimer.name}' is done", scheduledDate: DateTime.now().add(GlobalTimerWidgetState.movementOfTimer.remainingRestTime));
      }
 
      if (state == AppLifecycleState.resumed) {
-       flutterLocalNotificationsPlugin.cancel(0);
+       flutterLocalNotificationsPlugin.cancelAll();
 
        if (start != null) {
          difference = DateTime.now().difference(start!);

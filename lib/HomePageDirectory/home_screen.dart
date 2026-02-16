@@ -509,7 +509,6 @@ class GlobalTimerWidgetState extends State<GlobalTimerWidget> {
      }
 
     ProgramsPage.activeProgramIndex = programIndexOfTimer;
-    //Navigator.push(context, MaterialPageRoute(builder: (context) => openProgram()));
 
     bool dayFound = false;
 
